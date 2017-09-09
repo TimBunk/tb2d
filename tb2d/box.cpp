@@ -1,7 +1,8 @@
 #include "box.h"
 
-Box::Box(int x, int y, int w, int h, bool dyn, float p2m, b2World * world)
+Box::Box(int x, int y, int w, int h, bool dyn, float p2m, b2World * world, glm::mat4 projection)
 {
+	this->projection = projection;
 	this->world = world;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
@@ -28,19 +29,21 @@ Box::Box(int x, int y, int w, int h, bool dyn, float p2m, b2World * world)
 	fixtureDef.friction = 0.3f;
 	fixtureDef.restitution = 0.5f;
 	fixture = body->CreateFixture(&fixtureDef);
-	b2Vec2 point[4];
-
+	//b2Vec2 point[4];
+	dr = new DebugRenderer(projection, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
-		std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;
+		//std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;
 	}
+	dr->DrawBox(point);
+	dr->Init();
 
 	float vertices[] = {
 		// position				
 		point[0].x, point[0].y, 0.0f, 0.0f,  // lower-left corner  
 		point[1].x, point[1].y, 1.0f, 0.0f,  // lower-right corner
-		point[2].x, point[2].y, 1.0f, 1.0f,  // upper-left corner
-		point[3].x, point[3].y, 0.0f, 1.0f  // uper right corner
+		point[2].x, point[2].y, 1.0f, 1.0f,  // upper-right corner
+		point[3].x, point[3].y, 0.0f, 1.0f  // uper left corner
 	};
 
 	unsigned int indices[] = {
@@ -74,13 +77,22 @@ Box::~Box()
 {
 	body->DestroyFixture(fixture);
 	world->DestroyBody(body);
+	delete dr;
 }
 
-void Box::Draw()
+void Box::Draw(glm::mat4 view, Shader* shader, float m2p)
 {
+	shader->SetMatrix4("projection", projection);
+	shader->SetMatrix4("view", view);
+	glm::mat4 model;
+	model = glm::translate(model, GetPositionInPixels(m2p));
+	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(m2p, m2p, 0.0f));
+	shader->SetMatrix4("model", model);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+	dr->Render(view, model, 10.0f);
 }
 
 glm::vec3 Box::GetPositionInPixels(float m2p)

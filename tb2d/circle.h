@@ -5,6 +5,7 @@
 
 #include "shader.h"
 #include "OBJloader.h"
+#include "debugRenderer.h"
 
 #include <gl\glew.h>
 #include <glfw3.h>
@@ -16,18 +17,22 @@
 
 class Circle {
 public:
-	Circle(int x, int y, int radius, bool dynamic, float p2m, b2World* world);
+	Circle(int x, int y, int radius, bool dynamic, float p2m, b2World* world, glm::mat4 projection);
 	~Circle();
 
-	void Draw();
+	void Draw(glm::mat4 view, Shader* shader, float m2p);
 	glm::vec3 GetPositionInPixels(float m2p);
 	// Note that the angle is in radians
 	float GetAngle();
 
 private:
+	glm::mat4 projection;
+	DebugRenderer* dr;
+
 	GLuint VBO, VAO, EBO;
+	b2World* world;
 	b2Body* body;
-	Mesh* mesh;
+	b2Fixture* fixture;
 };
 
 #endif // !CIRCLE_H

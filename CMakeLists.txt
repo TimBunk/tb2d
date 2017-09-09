@@ -60,14 +60,18 @@ set(TB2DSOURCE
   tb2d/texture.h
   tb2d/shader.cpp
   tb2d/shader.h
-  tb2d/OBJloader.cpp
-  tb2d/OBJloader.h
   tb2d/box.cpp
   tb2d/box.h
-  tb2d/circle.h
   tb2d/circle.cpp
-  tb2d/shape.h
-  tb2d/shape.cpp
+  tb2d/circle.h
+  tb2d/entity.h
+  tb2d/entity.cpp
+  tb2d/scene.h
+  tb2d/scene.cpp
+  tb2d/camera.h
+  tb2d/camera.cpp
+  tb2d/debugRenderer.h
+  tb2d/debugRenderer.cpp
 )
 
 set(SOILSOURCE
