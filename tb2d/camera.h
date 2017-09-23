@@ -3,11 +3,10 @@
 
 #include <iostream>
 
-#include <gl\glew.h>
-#include <glfw3.h>
-#include <glm-0.9.8.4\glm\glm.hpp>
-#include <glm-0.9.8.4\glm\gtc\matrix_transform.hpp>
-#include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
+#include <GL/glew.h>
+#include <glm-0.9.8.4/glm/glm.hpp>
+#include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
+#include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
 
 class Camera {
 public:

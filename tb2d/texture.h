@@ -4,8 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include <gl\glew.h>
-#include <glfw3.h>
+#include <GL/glew.h>
 #include "SOIL2/SOIL2.h"
 
 struct Texture {

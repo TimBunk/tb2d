@@ -1,9 +1,9 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
-#include <gl\glew.h>
-#include <glm-0.9.8.4\glm\glm.hpp>
-#include <Box2D\Box2D.h>
+#include <GL/glew.h>
+#include <glm-0.9.8.4/glm/glm.hpp>
+#include <Box2D/Box2D.h>
 
 #include <fstream>
 #include <vector>

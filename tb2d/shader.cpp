@@ -147,7 +147,7 @@ std::string Shader::ReadShader(const GLchar * shaderPath)
 {
 	std::string shaderCode;
 	std::ifstream shaderFile;
-	shaderFile.exceptions(std::ifstream::failbit || std::ifstream::badbit);
+	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
 		// open the files
 		shaderFile.open(shaderPath, std::ios::in);

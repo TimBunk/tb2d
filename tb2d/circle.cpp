@@ -35,8 +35,8 @@ Circle::Circle(int x, int y, int radius, bool dynamic, float p2m, b2World* world
 	dr->Init();
 
 	float vertices[] = {
-		// position				
-		-radius * p2m, -radius * p2m, 0.0f, 0.0f,  // lower-left corner  
+		// position
+		-radius * p2m, -radius * p2m, 0.0f, 0.0f,  // lower-left corner
 		radius * p2m, -radius * p2m, 1.0f, 0.0f,  // lower-right corner
 		radius * p2m, radius * p2m, 1.0f, 1.0f,  // upper-left corner
 		-radius * p2m, radius * p2m, 0.0f, 1.0f  // uper right corner
@@ -88,7 +88,7 @@ void Circle::Draw(glm::mat4 view, Shader* shader, float m2p)
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-	dr->Render(view, model, 10.0f);
+	dr->Render(view, model, 1.0f);
 }
 
 glm::vec3 Circle::GetPositionInPixels(float m2p)

@@ -35,6 +35,7 @@ Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	
 }
 
 void Mesh::DrawTextures(Shader * shader)
@@ -53,7 +54,7 @@ void Mesh::DrawTextures(Shader * shader)
 		std::string number;
 		std::string name = textures[i].type;
 		if (name == "diffuse") {
-			ss << diffuseCount++; // NOTE to self: In this case C++ the increment call: variable++ returns the variable as is and then increments the variable 
+			ss << diffuseCount++; // NOTE to self: In this case C++ the increment call: variable++ returns the variable as is and then increments the variable
 		}
 		else if (name == "specular") {
 			ss << specularCount++;

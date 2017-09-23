@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include <GL\glew.h>
-#include <Box2D\Box2D.h>
+#include <GL/glew.h>
+#include <Box2D/Box2D.h>
 
 #include "shader.h"
 #include "texture.h"

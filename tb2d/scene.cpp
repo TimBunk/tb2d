@@ -16,7 +16,7 @@ Scene::~Scene()
 
 void Scene::CalculateDeltaTime()
 {
-	float currentFrame = glfwGetTime();
+	/*float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 	std::cout << "deltaTime: " << deltaTime << std::endl;
@@ -32,5 +32,5 @@ void Scene::CalculateDeltaTime()
 		totalTime -= 1.0f;
 		std::cout << "fps: " << fpsCount << std::endl;
 		fpsCount = 0;
-	}
+	}*/
 }

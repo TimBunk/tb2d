@@ -39,8 +39,8 @@ Box::Box(int x, int y, int w, int h, bool dyn, float p2m, b2World * world, glm::
 	dr->Init();
 
 	float vertices[] = {
-		// position				
-		point[0].x, point[0].y, 0.0f, 0.0f,  // lower-left corner  
+		// position
+		point[0].x, point[0].y, 0.0f, 0.0f,  // lower-left corner
 		point[1].x, point[1].y, 1.0f, 0.0f,  // lower-right corner
 		point[2].x, point[2].y, 1.0f, 1.0f,  // upper-right corner
 		point[3].x, point[3].y, 0.0f, 1.0f  // uper left corner
@@ -92,7 +92,7 @@ void Box::Draw(glm::mat4 view, Shader* shader, float m2p)
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-	dr->Render(view, model, 10.0f);
+	dr->Render(view, model, 1.0f);
 }
 
 glm::vec3 Box::GetPositionInPixels(float m2p)

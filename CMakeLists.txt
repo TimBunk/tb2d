@@ -1,5 +1,5 @@
 #CMake entry point
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.5.1)
 project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
@@ -24,8 +24,16 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory (external)
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/include/GLFW
+# Set c++11 as main language
+set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
+
+# Find sdl2 pkg
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
+
+include_directories(}
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src
   ${CMAKE_SOURCE_DIR}/external
@@ -33,7 +41,6 @@ include_directories(
 )
 
 link_directories(
-  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/src
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
   ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
   ${CMAKE_SOURCE_DIR}/external
@@ -41,8 +48,8 @@ link_directories(
 
 set(ALL_GRAPHICS_LIBS
 	${OPENGL_LIBRARY}
-	glfw
-	GLEW
+  GLEW
+  ${GLEW_LIBRARIES}
 )
 
 add_definitions(
@@ -158,10 +165,12 @@ IF(MAKE_START)
     ${SOILSOURCE}
     ${TB2DSOURCE}
     start/main.cpp
-	)
+  )
 	target_link_libraries(start
     ${BOX2D_LIB}
-		${ALL_GRAPHICS_LIBS}
+    ${ALL_GRAPHICS_LIBS}
+    ${SDL2_LIBRARIES} 
+    ${SDL2IMAGE_LIBRARIES}
 	)
 	# Copy assets/shaders/textures to the build directory
   file(
