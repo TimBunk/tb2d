@@ -13,6 +13,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "text.h"
+#include "resourceManager.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -42,6 +43,7 @@ Shader* shader;
 glm::mat4 projection;
 Camera* cam;
 Text* text;
+ResourceManager* rm;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -91,21 +93,26 @@ int main() {
 
             projection = glm::ortho(0.0f, screenWidth, screenHeight, 0.0f, -50.0f, 50.0f);
 
-            shader = new Shader("shaders//shader.vs", "shaders//shader.fs");
+            rm = new ResourceManager();
+            rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
+            shader = rm->GetShader("shader");
 
             cam = new Camera(screenWidth, screenHeight);
-
             shader->Use();
             shader->SetMatrix4("projection", projection);
 
-            Texture texture = Tex::LoadTexture("textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-            glActiveTexture(GL_TEXTURE0 + texture.index);
+            //Texture texture = Tex::LoadTexture("textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+            rm->CreateTexture("container", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+            Texture texture = rm->GetTexture("container");
+            glActiveTexture(GL_TEXTURE0 + texture.id);
             shader->SetInt("ourTexture", texture.id);
             glBindTexture(GL_TEXTURE_2D, texture.id);
             glActiveTexture(GL_TEXTURE0);
 
-            Texture texture2 = Tex::LoadTexture("textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-            glActiveTexture(GL_TEXTURE0 + texture2.index);
+            //Texture texture2 = Tex::LoadTexture("textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+            rm->CreateTexture("awesomeFace", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+            Texture texture2 = rm->GetTexture("awesomeFace");
+            glActiveTexture(GL_TEXTURE0 + texture2.id);
             shader->SetInt("ourTexture", texture2.id);
             glBindTexture(GL_TEXTURE_2D, texture2.id);
             glActiveTexture(GL_TEXTURE0);
@@ -185,9 +192,11 @@ int main() {
 	SDL_Quit();
 
 	delete ground;
-	delete shader;
+	//delete shader;
 	delete circle;
 	delete cam;
+	delete text;
+	delete rm;
 	while (boxes.size() > 0) {
 		int i = boxes.size() - 1;
 		delete boxes[i];

@@ -1,12 +1,11 @@
 #include "scene.h"
 
-Scene::Scene() : Entity::Entity() {
+Scene::Scene(Camera* camera) : Entity::Entity() {
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
 	totalTime = 0.0f;
-	printFPS = true;
-	std::cout << "totalTime: " << totalTime << std::endl;
 	fpsCount = 0;
+	this->camera = camera;
 }
 
 Scene::~Scene()
@@ -14,23 +13,23 @@ Scene::~Scene()
 
 }
 
+void Scene::Update() {
+	CalculateDeltaTime();
+	this->position = glm::vec3(camera->GetPosition(), 0.0f);
+	this->angle = camera->GetAngle();
+	this->UpdateChilderen(this, deltaTime);
+}
+
 void Scene::CalculateDeltaTime()
 {
-	/*float currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
+	float currentFrame = SDL_GetTicks();
+	deltaTime = ((currentFrame - lastFrame) / 1000.0f);
 	lastFrame = currentFrame;
-	std::cout << "deltaTime: " << deltaTime << std::endl;
-
-	if (printFPS && totalTime < 1.0f) {
-		totalTime += deltaTime;
-		fpsCount++;
-	}
-	else if (totalTime >= 1.0f) {
-		totalTime += deltaTime;
-		fpsCount++;
-
+	fpsCount++;
+	totalTime += deltaTime;
+	if (totalTime >= 1.0f) {
 		totalTime -= 1.0f;
 		std::cout << "fps: " << fpsCount << std::endl;
 		fpsCount = 0;
-	}*/
+	}
 }

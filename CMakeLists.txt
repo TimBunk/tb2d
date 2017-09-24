@@ -66,8 +66,6 @@ add_definitions(
 )
 
 set(TB2DSOURCE
-  tb2d/mesh.cpp
-  tb2d/mesh.h
   tb2d/texture.cpp
   tb2d/texture.h
   tb2d/shader.cpp
@@ -86,6 +84,8 @@ set(TB2DSOURCE
   tb2d/debugRenderer.cpp
   tb2d/text.h
   tb2d/text.cpp
+  tb2d/resourceManager.h
+  tb2d/resourceManager.cpp
 )
 
 set(SOILSOURCE
@@ -172,6 +172,10 @@ IF(MAKE_START)
     ${SOILSOURCE}
     ${TB2DSOURCE}
     start/main.cpp
+    start/game.h
+    start/game.cpp
+    start/player.h
+    start/player.cpp
   )
 	target_link_libraries(start
     ${BOX2D_LIB}

@@ -55,6 +55,8 @@ Text::Text(const char* filePath, const char* text, int fontSize, glm::vec4 color
 	if( TTF_Init() == -1 ) {
 		printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
 	}
+	// generate the needed texture for the text
+	glGenTextures(1, &textureId);
 	//Create the texture
 	fontColor = {color.x * 255, color.y * 255, color.z * 255, color.w * 255};
 	CreateText();
@@ -111,7 +113,6 @@ void Text::CreateText() {
 	// Create a SDL_surface
 	SDL_Surface* sdlSurface = TTF_RenderText_Blended(font, currentText, fontColor);
 	// Create texture
-	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

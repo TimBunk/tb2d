@@ -9,7 +9,6 @@
 
 struct Texture {
 	unsigned int id;
-	unsigned int index;
 	std::string type;
 };
 

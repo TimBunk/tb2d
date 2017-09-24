@@ -41,7 +41,8 @@ protected:
 	Texture texture;
 
 	void AddChild(Entity* child);
-	void UpdateChilderen(Entity* parent);
+	void RemoveChild(Entity* child);
+	void UpdateChilderen(Entity* parent, float deltaTime);
 private:
 	glm::mat4 model;
 };

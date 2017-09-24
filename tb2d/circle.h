@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "shader.h"
-#include "OBJloader.h"
 #include "debugRenderer.h"
 
 #include <GL/glew.h>
