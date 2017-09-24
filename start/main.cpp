@@ -12,6 +12,7 @@
 #include "texture.h"
 #include "scene.h"
 #include "camera.h"
+#include "text.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -19,6 +20,7 @@
 #include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 const float screenWidth = 800, screenHeight = 600;
 SDL_Window* window;
@@ -39,6 +41,7 @@ double mouseY;
 Shader* shader;
 glm::mat4 projection;
 Camera* cam;
+Text* text;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -48,17 +51,17 @@ void CalculateFrameRate();
 
 int main() {
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+    mouseX = 0;
+    mouseY = 0;
 
 	quit = false;
     window = nullptr;
-
+    // Initialize SDL2
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         std::cout << "Video initialization error: " << SDL_GetError() << std::endl;
 	}
 	else {
@@ -111,11 +114,31 @@ int main() {
 
             circle = new Circle(400, 0, 50, true, p2m, world, projection);
 
+            text = new Text("fonts/OpenSans-Regular.ttf", "Hello world", 100, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, 300, 100, projection);
+            text->SetPosition(glm::vec3(screenWidth/2, screenHeight-100, 0.0f));
+            text->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+            text->SetFontSize(100);
+            text->DrawHUD();
+
+            // THE GAME LOOP
             while (!quit) {
                 while(SDL_PollEvent(&sdlEvent) != 0) {
-                    // Esc button is pressed
+                    // Closes the window
                     if(sdlEvent.type == SDL_QUIT) {
                         quit = true;
+                    }
+                    // Checks for key input
+                    else if (sdlEvent.type == SDL_KEYDOWN) {
+                        switch (sdlEvent.key.keysym.sym) {
+                            case SDLK_t:
+                                Box* box;
+                                box = new Box(mouseX, mouseY, 50, 50, true, p2m, world, projection);
+                                boxes.push_back(box);
+                        }
+                    }
+                    else if (sdlEvent.type == SDL_MOUSEMOTION) {
+                        mouseX = sdlEvent.button.x;
+                        mouseY = sdlEvent.button.y;
                     }
                 }
                 // Set background color as cornflower blue
@@ -125,7 +148,7 @@ int main() {
 
                 shader->Use();
 
-                glActiveTexture(GL_TEXTURE0 + texture2.index);
+                glActiveTexture(GL_TEXTURE0 + texture2.id);
                 shader->SetInt("ourTexture", texture2.id);
                 glBindTexture(GL_TEXTURE_2D, texture2.id);
                 glActiveTexture(GL_TEXTURE0);
@@ -138,23 +161,27 @@ int main() {
                 }
                 // draw the ground
                 shader->Use();
-                glActiveTexture(GL_TEXTURE0 + texture.index);
+                glActiveTexture(GL_TEXTURE0 + texture.id);
                 shader->SetInt("ourTexture", texture.id);
                 glBindTexture(GL_TEXTURE_2D, texture.id);
                 glActiveTexture(GL_TEXTURE0);
 
                 ground->Draw(cam->GetViewMatrix(), shader, m2p);
-
+                // Draw text
+                text->DrawHUD();
                 // update box2D world
                 world->Step(deltaTime, 8, 3);
 
                 // Update window with OpenGL rendering
                 SDL_GL_SwapWindow(window);
                 CalculateFrameRate();
-            }
+            }// THE END OF THE GAME LOOP
         }
     }
+    // CLEAR ALL ALLOCATED MEMORY
 	SDL_DestroyWindow(window);
+	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 
 	delete ground;
@@ -170,6 +197,7 @@ int main() {
 	return 0;
 }
 
+// CALCULATE DELTATIME AND FRAMERATE
 void CalculateFrameRate()
 {
 	float currentFrame = SDL_GetTicks();

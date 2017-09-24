@@ -31,7 +31,11 @@ set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/SDL2/")
+find_package(SDL2_mixer REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
 
 include_directories(}
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
@@ -43,6 +47,7 @@ include_directories(}
 link_directories(
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
   ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
+  ${CMAKE_SOURCE_DIR}/external/SDL2_TTF
   ${CMAKE_SOURCE_DIR}/external
 )
 
@@ -79,6 +84,8 @@ set(TB2DSOURCE
   tb2d/camera.cpp
   tb2d/debugRenderer.h
   tb2d/debugRenderer.cpp
+  tb2d/text.h
+  tb2d/text.cpp
 )
 
 set(SOILSOURCE
@@ -171,6 +178,8 @@ IF(MAKE_START)
     ${ALL_GRAPHICS_LIBS}
     ${SDL2_LIBRARIES} 
     ${SDL2IMAGE_LIBRARIES}
+    ${SDL2_MIXER_LIBRARIES}
+    ${SDL2_TTF_LIBRARY}
 	)
 	# Copy assets/shaders/textures to the build directory
   file(
@@ -183,6 +192,10 @@ IF(MAKE_START)
 	)
   file(
 		COPY tb2d/textures
+		DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+		COPY tb2d/fonts
 		DESTINATION ${CMAKE_BINARY_DIR}
 	)
 ENDIF()

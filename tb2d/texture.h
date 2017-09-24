@@ -36,12 +36,6 @@ public:
 
 	static Texture LoadTexture(const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType);
 	static void SaveImage(const unsigned int* screenWidth, const unsigned int* screenHeight);
-
-	//static int activeTex;
-
-private:
-
-	static int activeTex;
 };
 
 #endif // !TEXTURE_H

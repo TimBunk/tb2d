@@ -1,7 +1,5 @@
 #include "texture.h"
 
-int Tex::activeTex = 0;
-
 Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType)
 {
 	// Note to self the first texture of a ID is 1 instead of 0
@@ -76,9 +74,7 @@ Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, Texture
 	// free the allocated memory
 	SOIL_free_image_data(data);
 
-	activeTex++;
 	texture.id = id;
-	texture.index = activeTex;
 	texture.type = type;
 
 	// return the texture
