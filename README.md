@@ -1,4 +1,4 @@
-## About tbfw
+## About tb2d
 
 tb2d is a framework that is using box2D and openGL. It is still a work in progress, but so far so good.
 
