@@ -5,9 +5,8 @@ project (TB2D)
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
 OPTION(MAKE_START "Make TB2D start applications" ON)
-OPTION(MAKE_DEMO_SCENES "Make TB2D demo applications" ON)
+OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
 OPTION(USE_BOX2D "Use Box2D" ON)
-OPTION(MAKE_BOX2DSTART "Make Box2D/RT2D box2dstart" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
     message( FATAL_ERROR "Please select another Build Directory ! (and give it a clever name, like 'build')" )
@@ -22,7 +21,7 @@ endif()
 # Compile external dependencies
 find_package(OpenGL REQUIRED)
 
-add_subdirectory (external)
+add_subdirectory(external)
 
 # Set c++11 as main language
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
@@ -37,7 +36,7 @@ find_package(SDL2_ttf REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
 
-include_directories(}
+include_directories(
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src
   ${CMAKE_SOURCE_DIR}/external
@@ -151,23 +150,77 @@ IF(USE_BOX2D)
 ENDIF()
 
 ####################################################################
-# Box2D/RT2D box2dstart                                            #
+# TheRestlessTombs                                                 #
 ####################################################################
-IF(MAKE_BOX2DSTART AND USE_BOX2D)
-	add_executable(box2dstart
-		external/Box2D/Box2D/HelloWorld/HelloWorld.cpp
-	)
-	target_link_libraries (box2dstart
-		${BOX2D_LIB}
-		${ALL_GRAPHICS_LIBS}
-	)
-ENDIF()
-
-####################################################################
-# DEMO_SCENES                                                      #
-####################################################################
-IF(MAKE_DEMO_SCENES)
-
+IF(MAKE_THERESTLESSTOMBS)
+add_executable(trt
+  ${SOILSOURCE}
+  ${TB2DSOURCE}
+  TheRestlessTombs/main.cpp
+  TheRestlessTombs/armoredOrc.cpp 
+  TheRestlessTombs/armoredOrc.h 
+  TheRestlessTombs/babyOrc.cpp 
+  TheRestlessTombs/babyOrc.h 
+  TheRestlessTombs/bomb.cpp 
+  TheRestlessTombs/bomb.h 
+  TheRestlessTombs/bomberOrc.cpp 
+  TheRestlessTombs/bomberOrc.h 
+  TheRestlessTombs/boss.cpp 
+  TheRestlessTombs/boss.h 
+  TheRestlessTombs/bossOrc.cpp 
+  TheRestlessTombs/bossOrc.h 
+  TheRestlessTombs/crate.cpp 
+  TheRestlessTombs/crate.h 
+  TheRestlessTombs/damagePotion.cpp 
+  TheRestlessTombs/damagePotion.h 
+  TheRestlessTombs/destructable.cpp 
+  TheRestlessTombs/destructable.h
+  TheRestlessTombs/door.cpp 
+  TheRestlessTombs/door.h 
+  TheRestlessTombs/enemy.cpp 
+  TheRestlessTombs/enemy.h 
+  TheRestlessTombs/gold.cpp 
+  TheRestlessTombs/gold.h 
+  TheRestlessTombs/healthPotion.cpp 
+  TheRestlessTombs/healthPotion.h 
+  TheRestlessTombs/level1.cpp 
+  TheRestlessTombs/level1.h 
+  TheRestlessTombs/lootChest.cpp 
+  TheRestlessTombs/lootChest.h 
+  TheRestlessTombs/necromancerOrc.cpp 
+  TheRestlessTombs/necromancerOrc.h 
+  TheRestlessTombs/orc.cpp 
+  TheRestlessTombs/orc.h 
+  TheRestlessTombs/person.cpp 
+  TheRestlessTombs/person.h 
+  TheRestlessTombs/player.cpp 
+  TheRestlessTombs/player.h 
+  TheRestlessTombs/potion.cpp  
+  TheRestlessTombs/potion.h 
+  TheRestlessTombs/psychoOrc.cpp 
+  TheRestlessTombs/psychoOrc.h 
+  TheRestlessTombs/room.cpp 
+  TheRestlessTombs/room.h 
+  TheRestlessTombs/shop.cpp 
+  TheRestlessTombs/shop.h 
+  TheRestlessTombs/speedPotion.cpp 
+  TheRestlessTombs/speedPotion.h 
+  TheRestlessTombs/wall.cpp 
+  TheRestlessTombs/wall.h
+)
+target_link_libraries(trt
+  ${BOX2D_LIB}
+  ${ALL_GRAPHICS_LIBS}
+  ${SDL2_LIBRARIES} 
+  ${SDL2IMAGE_LIBRARIES}
+  ${SDL2_MIXER_LIBRARIES}
+  ${SDL2_TTF_LIBRARY}
+)
+# Copy shaders to the build directory
+file(
+  COPY tb2d/shaders
+  DESTINATION ${CMAKE_BINARY_DIR}
+)
 ENDIF()
 
 ####################################################################
