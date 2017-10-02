@@ -1,5 +1,5 @@
 #ifndef RESOURCEMANAGER_H
-#define RESOURCEMANGER_H
+#define RESOURCEMANAGER_H
 
 #include <iostream>
 #include <map>
@@ -31,4 +31,4 @@ private:
 	std::map<std::string, Texture> textures;
 };
 
-#endif RESOURCHEMANAGER_H // !RESOURCEMANGER_H
+#endif // !RESOURCEMANGER_H

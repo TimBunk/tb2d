@@ -9,6 +9,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "box.h"
+#include "camera.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -18,7 +19,7 @@
 
 class Entity {
 public:
-	Entity();
+	Entity(Camera* camera);
 	virtual ~Entity();
 
 	// global values
@@ -31,20 +32,20 @@ public:
 	glm::vec2 localScale;
 
 	virtual void Update(float deltaTime);
-	virtual void Draw(glm::mat4 view, glm::mat4 projection);
-
-	void AddTexture(Texture texture);
+	virtual void Draw();
 
 protected:
 	std::vector<Entity*> entities;
 	Shader* shader;
 	Texture texture;
 
+	// You only have to add a child one, otherwise it might cause unexpected behaviour
 	void AddChild(Entity* child);
 	void RemoveChild(Entity* child);
 	void UpdateChilderen(Entity* parent, float deltaTime);
 private:
 	glm::mat4 model;
+	Camera* camera;
 };
 
 #endif // !ENTITY_H

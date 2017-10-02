@@ -1,4 +1,4 @@
-#define GLEW_STATIC
+/*#define GLEW_STATIC
 #define _USE_MATH_DEFINES
 
 #include <iostream>
@@ -14,6 +14,7 @@
 #include "camera.h"
 #include "text.h"
 #include "resourceManager.h"
+#include "configure.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -51,8 +52,12 @@ float totalTime = 0.0f;
 int fpsCount = 0;
 void CalculateFrameRate();
 
-int main() {
+float Configure::M2P = 50;
+float Configure::P2M = 1 / Configure::M2P;
 
+int main() {
+	std::cout << "M2P = " << Configure::M2P << std::endl;
+	std::cout << "P2M = " << Configure::P2M << std::endl;
     mouseX = 0;
     mouseY = 0;
 
@@ -121,7 +126,7 @@ int main() {
 
             circle = new Circle(400, 0, 50, true, p2m, world, projection);
 
-            text = new Text("fonts/OpenSans-Regular.ttf", "Hello world", 100, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, 300, 100, projection);
+            text = new Text("fonts/OpenSans-Regular.ttf", "Hello world", 100, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, 300, 100, cam->GetProjectionMatrix());
             text->SetPosition(glm::vec3(screenWidth/2, screenHeight-100, 0.0f));
             text->SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
             text->SetFontSize(100);
@@ -219,4 +224,4 @@ void CalculateFrameRate()
 		std::cout << "fps: " << fpsCount << std::endl;
 		fpsCount = 0;
 	}
-}
+}*/

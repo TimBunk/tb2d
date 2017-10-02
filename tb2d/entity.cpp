@@ -1,7 +1,8 @@
 #include "entity.h"
 
-Entity::Entity()
+Entity::Entity(Camera* camera)
 {
+	this->camera = camera;
 	position = glm::vec3(0.0f);
 	angle = 0.0f;
 	scale = glm::vec2(1.0f);
@@ -21,17 +22,12 @@ void Entity::Update(float deltaTime)
 
 }
 
-void Entity::Draw(glm::mat4 view, glm::mat4 projection)
+void Entity::Draw()
 {
 	shader->SetMatrix4("model", model);
-	shader->SetMatrix4("view", view);
-	shader->SetMatrix4("projection", projection);
+	shader->SetMatrix4("view", camera->GetViewMatrix());
+	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->Use();
-}
-
-void Entity::AddTexture(Texture texture)
-{
-	this->texture = texture;
 }
 
 void Entity::AddChild(Entity* child)

@@ -12,7 +12,6 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 Shader::~Shader()
 {
 	glDeleteProgram(this->program);
-	std::cout << "Great you deleted a shader" << std::endl;
 }
 
 void Shader::Use()

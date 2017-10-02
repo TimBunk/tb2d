@@ -86,6 +86,12 @@ set(TB2DSOURCE
   tb2d/text.cpp
   tb2d/resourceManager.h
   tb2d/resourceManager.cpp
+  tb2d/shape.h
+  tb2d/shape.cpp
+  tb2d/configure.h
+  tb2d/configure.cpp
+  tb2d/input.h
+  tb2d/input.cpp
 )
 
 set(SOILSOURCE

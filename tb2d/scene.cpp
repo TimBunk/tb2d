@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(Camera* camera) : Entity::Entity() {
+Scene::Scene(Camera* camera) : Entity::Entity(camera) {
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
 	totalTime = 0.0f;
@@ -15,8 +15,6 @@ Scene::~Scene()
 
 void Scene::Update() {
 	CalculateDeltaTime();
-	this->position = glm::vec3(camera->GetPosition(), 0.0f);
-	this->angle = camera->GetAngle();
 	this->UpdateChilderen(this, deltaTime);
 }
 

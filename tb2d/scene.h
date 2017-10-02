@@ -1,11 +1,18 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#define GLEW_STATIC
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <vector>
 
 #include "camera.h"
 #include "entity.h"
+#include "resourceManager.h"
+#include "circle.h"
+#include "configure.h"
+#include "input.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -19,12 +26,13 @@ class Scene : public Entity {
 public:
 	Scene(Camera* camera);
 	~Scene();
-	void Update();
-	void CalculateDeltaTime();
+
+	virtual void Update();
 protected:
 	float deltaTime;
-
 	Camera* camera;
+	
+	void CalculateDeltaTime();
 private:
 	float lastFrame;
 	float totalTime;
