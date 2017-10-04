@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(Camera* camera) : Entity::Entity(camera) {
+Scene::Scene(Camera* camera) : Entity::Entity() {
 	deltaTime = 0.0f;
 	lastFrame = 0.0f;
 	totalTime = 0.0f;

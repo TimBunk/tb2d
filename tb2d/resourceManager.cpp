@@ -6,6 +6,7 @@ ResourceManager::ResourceManager() {
 ResourceManager::~ResourceManager() {
 	std::map<std::string, Shader*>::iterator it = shaders.begin();
 	while (it != shaders.end()) {
+		delete (*it).second;
 		it = shaders.erase(it);
 	}
 }

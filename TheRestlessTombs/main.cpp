@@ -6,27 +6,38 @@
 #include <math.h>
 #include <vector>
 
-#include "shader.h"
-#include "texture.h"
+#include "resourceManager.h"
 #include "scene.h"
 #include "camera.h"
 #include "text.h"
+#include "player.h"
+#include "configure.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
+
 
 const float screenWidth = 800, screenHeight = 600;
 SDL_Window* window;
 SDL_GLContext glContext;
 bool quit;
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+float totalTime = 0.0f;
+int fpsCount = 0;
+void CalculateFrameRate();
+
 Camera* camera;
 Input* input;
+ResourceManager* rm;
+b2World* world;
+
+Player* player;
+float Configure::M2P = 50;
+float Configure::P2M = 1 / Configure::M2P;
 
 int main() {
-	camera = new Camera(screenWidth, screenHeight);
-	input = new Input();
-
 	quit = false;
     window = nullptr;
     // Initialize SDL2
@@ -58,8 +69,19 @@ int main() {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+            camera = new Camera(screenWidth, screenHeight);
+			input = new Input();
+			rm = new ResourceManager();
+			world = new b2World(b2Vec2(0.0f, 0.0f));
+
+			rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
+			rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+			player = new Player(camera, rm->GetShader("shader"));
+			player->GiveTexture(rm->GetTexture("player"));
+			player->CreateBody(screenWidth/2, screenHeight/2, 100, 100, world);
+
             // THE GAME LOOP
-            int i = 0;
             while (!input->Quit()) {
                 // Set background color
                 glClearColor(0, 0.5, 0.5, 1);
@@ -67,7 +89,10 @@ int main() {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 // Update the keyboard/mouse input
                 input->Update();
-                
+                player->Draw();
+                // Update the box2d world
+                CalculateFrameRate();
+                world->Step(deltaTime, 8, 3);
                 // Update window with OpenGL rendering
                 SDL_GL_SwapWindow(window);
             }// THE END OF THE GAME LOOP
@@ -81,9 +106,26 @@ int main() {
     SDL_Quit();
 
     // DELETE ALL VARIABLES CREATED WITH THE KEYWORD "new"
+    delete player;
     delete camera;
     delete input;
+    delete rm;
+    delete world;
 
     std::cout << "Program succeeded" << std::endl;
 	return 0;
+}
+
+void CalculateFrameRate()
+{
+	float currentFrame = SDL_GetTicks();
+	deltaTime = ((currentFrame - lastFrame) / 1000.0f);
+	lastFrame = currentFrame;
+    fpsCount++;
+	totalTime += deltaTime;
+	if (totalTime >= 1.0f) {
+		totalTime -= 1.0f;
+		std::cout << "fps: " << fpsCount << std::endl;
+		fpsCount = 0;
+	}
 }

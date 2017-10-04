@@ -104,7 +104,7 @@ void Shader::CreateProgram(const GLchar * vertexPath, const GLchar * fragmentPat
 	std::string _vShaderCode = ReadShader(vertexPath);
 	std::string _fShaderCode = ReadShader(fragmentPath);
 	const GLchar* vShaderCode = _vShaderCode.c_str();
-	const GLchar* fShaderCode = _fShaderCode.c_str();
+	const GLchar* fShaderCode = _fShaderCode.c_str();;
 	// compile shaders
 	GLuint vertex, fragment;
 	int succes;

@@ -1,8 +1,7 @@
 #include "entity.h"
 
-Entity::Entity(Camera* camera)
+Entity::Entity()
 {
-	this->camera = camera;
 	position = glm::vec3(0.0f);
 	angle = 0.0f;
 	scale = glm::vec2(1.0f);
@@ -24,10 +23,19 @@ void Entity::Update(float deltaTime)
 
 void Entity::Draw()
 {
-	shader->SetMatrix4("model", model);
-	shader->SetMatrix4("view", camera->GetViewMatrix());
-	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	shader->Use();
+
+}
+
+glm::vec3 Entity::GetGlobalPosition() {
+	return position;
+}
+
+float Entity::GetGlobalAngle() {
+	return angle;
+}
+
+glm::vec2 Entity::GetGlobalScale() {
+	return scale;
 }
 
 void Entity::AddChild(Entity* child)
@@ -53,9 +61,9 @@ void Entity::UpdateChilderen(Entity * parent, float deltaTime)
 		this->position = this->localPosition + parent->position;
 		this->angle = this->localAngle + parent->angle;
 		this->scale = this->localScale * parent->scale;
-		model = glm::translate(model, this->position);
+		/*model = glm::translate(model, this->position);
 		model = glm::rotate(model, glm::radians(this->angle), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(this->scale, 0.0f));
+		model = glm::scale(model, glm::vec3(this->scale, 0.0f));*/
 	}
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->Update(deltaTime);

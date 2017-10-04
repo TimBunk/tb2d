@@ -1,4 +1,4 @@
-/*#define GLEW_STATIC
+#define GLEW_STATIC
 #define _USE_MATH_DEFINES
 
 #include <iostream>
