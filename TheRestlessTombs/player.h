@@ -3,15 +3,16 @@
 
 #include "person.h"
 #include "camera.h"
+#include "input.h"
 
 class Player : public Person {
 public:
-    Player(Camera* camera, Shader* shader);
+    Player(Input* input, Camera* camera, Shader* shader);
     ~Player();
 
     void Update(float deltaTime);
 private:
-
+    Input* input;
 };
 
 #endif // !PLAYER_H

@@ -207,6 +207,8 @@ add_executable(trt
   TheRestlessTombs/speedPotion.h 
   TheRestlessTombs/wall.cpp 
   TheRestlessTombs/wall.h
+  TheRestlessTombs/b2entity.cpp 
+  TheRestlessTombs/b2entity.h 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
@@ -219,6 +221,10 @@ target_link_libraries(trt
 # Copy shaders to the build directory
 file(
   COPY tb2d/shaders
+  DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+  COPY TheRestlessTombs/textures
   DESTINATION ${CMAKE_BINARY_DIR}
 )
 ENDIF()

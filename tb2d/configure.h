@@ -10,6 +10,8 @@ class Configure {
 public:
 	static float M2P;
 	static float P2M;
+	static float screenWidth;
+	static float screenHeight;
 };
 
 #endif // !CONFIGURE_H
