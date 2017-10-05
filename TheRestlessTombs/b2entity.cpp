@@ -23,7 +23,7 @@ void B2Entity::Draw() {
 	glm::mat4 model;
 	model = glm::translate(model, GetPositionInPixels());
 	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(Configure::M2P, Configure::M2P, 0.0f));
+	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
 	shader->SetMatrix4("model", model);
 	glActiveTexture(GL_TEXTURE0 + texture.id);
 	shader->SetInt("ourTexture", texture.id);
@@ -39,7 +39,8 @@ void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* wor
 	this->world = world;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
-	bodydef.position.Set(x*Configure::P2M, y*Configure::P2M);
+	bodydef.position.Set(x*Window::p2m, y*Window::p2m);
+	bodydef.fixedRotation = true;
 	if (dynamic) {
 		bodydef.type = b2_dynamicBody;
 	}
@@ -53,8 +54,7 @@ void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* wor
 	// Step 3 create shape
 	b2PolygonShape shape;
 	// the reason for dividing by 2 is because box2D draws from the center
-	shape.SetAsBox(w / 2 * Configure::P2M, h / 2 * Configure::P2M);
-
+	shape.SetAsBox(w / 2 * Window::p2m, h / 2 * Window::p2m);
 	// step 4 create fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
@@ -108,7 +108,7 @@ void B2Entity::GiveTexture(Texture texture) {
 glm::vec3 B2Entity::GetPositionInPixels()
 {
 	glm::vec3 pos;
-	pos = glm::vec3(body->GetPosition().x * Configure::M2P, body->GetPosition().y * Configure::M2P, 0.0f);
+	pos = glm::vec3(body->GetPosition().x * Window::m2p, body->GetPosition().y * Window::m2p, 0.0f);
 	return pos;
 }
 

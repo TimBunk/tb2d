@@ -5,7 +5,8 @@
 #include <string>
 
 #include <GL/glew.h>
-#include "SOIL2/SOIL2.h"
+//#include "SOIL2/SOIL2.h"
+#include <SOIL2.h>
 
 struct Texture {
 	unsigned int id;

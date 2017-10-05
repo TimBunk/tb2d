@@ -6,14 +6,14 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	this->world = world;
 	player = new Player(input, camera, rm->GetShader("shader"));
 	player->GiveTexture(rm->GetTexture("player"));
-	player->CreateBody(Configure::screenWidth/2, Configure::screenHeight/2, 100, 100, true, world);
+	player->CreateBody(Window::width/2, Window::height/2, 100, 100, true, world);
 	this->AddChild(player);
 	wall = new Wall(camera, rm->GetShader("shader"), true);
 	wall->GiveTexture(rm->GetTexture("wall"));
-	wall->CreateBody(Configure::screenWidth/2, 25, Configure::screenWidth, 50, false, world);
+	wall->CreateBody(Window::width/2, 25, Window::width, 50, false, world);
 	this->AddChild(wall);
 	wall2 = new Wall(camera, rm->GetShader("shader"), false);
-	wall2->CreateBody(0, 25, 50, Configure::screenHeight, false, world);
+	wall2->CreateBody(0, 0, 50, Window::height, false, world);
 	this->AddChild(wall2);
 }
 

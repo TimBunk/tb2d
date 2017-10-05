@@ -28,4 +28,5 @@ void Player::Update(float deltaTime) {
 		vel.x -= speed;
 	}
 	body->SetLinearVelocity(vel);
+	this->camera->SetPosition(glm::vec2(-this->GetPositionInPixels().x - -Window::width/2, -this->GetPositionInPixels().y - -Window::height/2));
 }

@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "shader.h"
+#include "window.h"
 #include "configure.h"
 
 #include <Box2D/Box2D.h>

@@ -38,7 +38,8 @@ INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2_MIXER_
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
-  ${CMAKE_SOURCE_DIR}/external/SOIL2/src
+  ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
+  ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/tb2d
 )
@@ -87,10 +88,10 @@ set(TB2DSOURCE
   tb2d/resourceManager.cpp
   tb2d/shape.h
   tb2d/shape.cpp
-  tb2d/configure.h
-  tb2d/configure.cpp
   tb2d/input.h
   tb2d/input.cpp
+  tb2d/window.h 
+  tb2d/window.cpp 
 )
 
 set(SOILSOURCE
@@ -118,6 +119,8 @@ set(SOILSOURCE
   external/SOIL2/src/SOIL2/stbi_pvr.h
   ##END SOIL IMAGE LOADER
 )
+
+# Create a library from the source of SOIL2
 
 ####################################################################
 # box2d.a                                                          #
