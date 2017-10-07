@@ -13,11 +13,11 @@
 
 class Input {
 public:
-	Input();
+	Input(SDL_DisplayMode dm);
 	~Input();
 	void Update();
 
-	glm::vec2 GetMousePositionScreenSpace();
+	glm::vec2 GetMousePositionScreenSpace(Camera* camera);
 	glm::vec2 GetMousePositionWorldSpace(Camera* camera);
 	bool MousePress(int key);
 	bool MouseDown(int key);
@@ -30,6 +30,7 @@ public:
 	bool Quit();
 private:
 	SDL_Event sdlEvent;
+	SDL_DisplayMode dm;
 
 	glm::vec2 mousePosition;
 	bool mousePressed[6];

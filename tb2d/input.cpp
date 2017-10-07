@@ -1,7 +1,8 @@
 #include "input.h"
 
-Input::Input() {
-	mousePosition = glm::vec2(0);
+Input::Input(SDL_DisplayMode dm) {
+	this->dm = dm;
+	mousePosition = glm::vec2(0.0f);
 	quit = false;
 	for (int i=0;i<285;i++) {
 		keysPressed[i] = false;
@@ -68,13 +69,15 @@ void Input::Update() {
 	}
 }
 
-glm::vec2 Input::GetMousePositionScreenSpace() {
-	return mousePosition;
+glm::vec2 Input::GetMousePositionScreenSpace(Camera* camera) {
+	glm::vec2 mousePositionScreenSpace;
+	mousePositionScreenSpace = glm::vec2(camera->screenWidth/dm.w*mousePosition.x, camera->screenHeight/dm.h*mousePosition.y);
+	return mousePositionScreenSpace;
 }
 
 glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
 	glm::vec2 mousePositionWorldSpace;
-	mousePositionWorldSpace = glm::vec2(mousePosition.x + camera->GetPosition().x, mousePosition.y + camera->GetPosition().y);
+	mousePositionWorldSpace = glm::vec2(camera->screenWidth/dm.w*mousePosition.x + -camera->GetPosition().x, camera->screenHeight/dm.h*mousePosition.y + -camera->GetPosition().y);
 	return mousePositionWorldSpace;
 }
 

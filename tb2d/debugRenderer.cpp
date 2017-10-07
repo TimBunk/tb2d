@@ -89,7 +89,7 @@ void DebugRenderer::Init()
 	verts.clear();
 }
 
-void DebugRenderer::Render(glm::mat4& view, glm::mat4& model, float lineWidth)
+void DebugRenderer::Render(glm::mat4 view, glm::mat4 model, float lineWidth)
 {
 	shader->Use();
 	shader->SetMatrix4("model", model);

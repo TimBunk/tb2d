@@ -11,7 +11,6 @@
 #include "camera.h"
 #include "text.h"
 #include "player.h"
-#include "configure.h"
 #include "level1.h"
 #include "window.h"
 
@@ -30,21 +29,18 @@ b2World* world;
 Level1* level1;
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
-float Window::width = 800.0f;
-float Window::height = 600.0f;
-
-float Window::scaleX = Window::width/1920.0f;
-float Window::scaleY = Window::height/1080.0f;
 
 int main() {
 	quit = false;
-	window = new Window(800, 600, "TheRestlessTombs");
+	window = new Window(800, 600, "TheRestlessTombs", false);
 	camera = window->GetCamera();
 	input = window->GetInput();
 	rm = window->GetResourceManager();
 	rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("playerHand", "textures/PlayerHand.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("wall", "textures/Wallx3.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("floor", "textures/Floor2.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	level1 = new Level1(world, rm, input, camera);
 	//glViewport(0, 0, 700, 500);

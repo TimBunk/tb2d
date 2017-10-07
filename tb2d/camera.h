@@ -8,9 +8,12 @@
 #include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
 #include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
 
+#include <GL/glew.h>
+#include <SDL2/SDL.h>
+
 class Camera {
 public:
-	Camera(const float screenWidth, const float screenHeight);
+	Camera(int screenWidth, int screenHeight, SDL_DisplayMode dm);
 	~Camera();
 
 	// Position in pixels
@@ -27,6 +30,9 @@ public:
 
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
+
+	float screenWidth;
+	float screenHeight;
 
 private:
 	glm::vec2 position;

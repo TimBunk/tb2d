@@ -212,6 +212,10 @@ add_executable(trt
   TheRestlessTombs/wall.h
   TheRestlessTombs/b2entity.cpp 
   TheRestlessTombs/b2entity.h 
+  TheRestlessTombs/floor.cpp 
+  TheRestlessTombs/floor.h 
+  TheRestlessTombs/hand.cpp 
+  TheRestlessTombs/hand.h 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}

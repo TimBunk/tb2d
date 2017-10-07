@@ -5,7 +5,6 @@
 
 #include "shader.h"
 #include "debugRenderer.h"
-#include "configure.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>

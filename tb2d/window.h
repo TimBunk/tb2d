@@ -19,15 +19,11 @@
 
 class Window {
 public:
-	Window(int screenWidth, int screenHeight, const char* screenName);
+	Window(int screenWidth, int screenHeight, const char* screenName, bool fullScreen);
 	~Window();
 
 	static float m2p;
 	static float p2m;
-	static float width;
-	static float height;
-	static float scaleX;
-	static float scaleY;
 
 	void Update();
 	void ClearWindow();

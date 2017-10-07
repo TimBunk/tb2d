@@ -1,6 +1,6 @@
 #include "window.h"
 
-Window::Window(int screenWidth, int screenHeight, const char* screenName) {
+Window::Window(int screenWidth, int screenHeight, const char* screenName, bool fullScreen) {
 	// Initialize all variables with a value
 	backgroundColor = glm::vec3(0.0f, 0.0f, 0.0f);
 	deltaTime = 0.0f;
@@ -17,7 +17,14 @@ Window::Window(int screenWidth, int screenHeight, const char* screenName) {
 		std::cout << "Video initialization error: " << SDL_GetError() << std::endl;
 	}
 	else {
-		window = SDL_CreateWindow(screenName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+		SDL_DisplayMode dm;
+		SDL_GetCurrentDisplayMode(0, &dm);
+		if (fullScreen) {
+			window = SDL_CreateWindow(screenName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dm.w, dm.h, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+		}
+		else {
+			window = SDL_CreateWindow(screenName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dm.w, dm.h, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+		}
 		if (window == NULL) {
 			std::cout << "sdl2 window creation failed! " << SDL_GetError() << std::endl;
 		}
@@ -37,21 +44,14 @@ Window::Window(int screenWidth, int screenHeight, const char* screenName) {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			camera = new Camera(screenWidth, screenHeight);
-			input = new Input();
+			camera = new Camera(screenWidth, screenHeight, dm);
+			input = new Input(dm);
 			rm = new ResourceManager();
-
-
-
-
-
-			/*SDL_DisplayMode DM;
-			SDL_GetCurrentDisplayMode(0, &DM);
-			std::cout << "Widhtscreen = " << DM.w << "HeightScreen = " << DM.h << std::endl;*/
 
 		}
 	}
 }
+
 
 Window::~Window() {
 	SDL_GL_DeleteContext(glContext);

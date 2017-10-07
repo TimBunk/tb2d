@@ -24,7 +24,7 @@ public:
 	void DrawBox(b2Vec2* points);
 	void DrawCircle(const glm::vec3& center, float radius);
 	void Init();
-	void Render(glm::mat4& view, glm::mat4& model, float lineWidth);
+	void Render(glm::mat4 view, glm::mat4 model, float lineWidth);
 
 private:
 	Shader* shader;

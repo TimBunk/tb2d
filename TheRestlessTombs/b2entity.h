@@ -6,7 +6,6 @@
 #include "camera.h"
 #include "shader.h"
 #include "window.h"
-#include "configure.h"
 
 #include <Box2D/Box2D.h>
 
@@ -18,7 +17,7 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
-	void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
+	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
 	void GiveTexture(Texture texture);
 
 	glm::vec3 GetPositionInPixels();

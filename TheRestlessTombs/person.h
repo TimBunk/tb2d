@@ -4,7 +4,6 @@
 #include "b2entity.h"
 #include "camera.h"
 #include "texture.h"
-#include "configure.h"
 #include "shader.h"
 #include <Box2D/Box2D.h>
 

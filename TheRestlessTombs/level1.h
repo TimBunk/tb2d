@@ -4,9 +4,9 @@
 #include "scene.h"
 #include "resourceManager.h"
 #include "input.h"
-#include "configure.h"
 #include "player.h"
 #include "wall.h"
+#include "floor.h"
 
 #include <Box2D/Box2D.h>
 
@@ -23,6 +23,7 @@ private:
 	Player* player;
 	Wall* wall;
 	Wall* wall2;
+	Floor* floor;
 };
 
 #endif // !LEVEL1_H

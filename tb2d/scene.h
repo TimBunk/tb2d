@@ -11,7 +11,6 @@
 #include "entity.h"
 #include "resourceManager.h"
 #include "circle.h"
-#include "configure.h"
 #include "input.h"
 
 #include <GL/glew.h>
