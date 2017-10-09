@@ -21,7 +21,7 @@ void B2Entity::Draw() {
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
 	glm::mat4 model;
-	model = glm::translate(model, GetPositionInPixels());
+	model = glm::translate(model, glm::vec3(GetPositionInPixels(), this->GetGlobalPosition().z));
 	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
 	shader->SetMatrix4("model", model);
@@ -61,7 +61,11 @@ void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* wor
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.3f;
 	fixtureDef.restitution = 0.5f;
+	// Set the collision filters
+	//fixtureDef.filter.categoryBits = 0x0002;
+	//fixtureDef.filter.maskBits = 0x0004;
 	fixture = body->CreateFixture(&fixtureDef);
+	fixture->SetUserData(this);
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
 		//std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;
@@ -105,10 +109,10 @@ void B2Entity::GiveTexture(Texture texture) {
 	this->texture = texture;
 }
 
-glm::vec3 B2Entity::GetPositionInPixels()
+glm::vec2 B2Entity::GetPositionInPixels()
 {
-	glm::vec3 pos;
-	pos = glm::vec3(body->GetPosition().x * Window::m2p, body->GetPosition().y * Window::m2p, 0.0f);
+	glm::vec2 pos;
+	pos = glm::vec2(body->GetPosition().x * Window::m2p, body->GetPosition().y * Window::m2p);
 	return pos;
 }
 
@@ -117,4 +121,28 @@ float B2Entity::GetAngle()
 	float angle;
 	angle = body->GetAngle();
 	return angle;
+}
+
+void B2Entity::AddContact(B2Entity* contact) {
+	this->contacts.push_back(contact);
+	std::cout << "added a contact" << std::endl;
+}
+
+void B2Entity::RemoveContact(B2Entity* contact) {
+	std::vector<B2Entity*>::iterator it = contacts.begin();
+	while (it != contacts.end()) {
+		if ((*it) == contact) {
+			it = contacts.erase(it);
+			std::cout << "removed a contact" << std::endl;
+			return;
+		}
+		++it;
+	}
+	std::cout << "You tried to remove a contact, but that contact could not be found!" << std::endl;
+}
+
+void B2Entity::SetActive(bool active) {
+	if (body != NULL) {
+		body->SetActive(active);
+	}
 }

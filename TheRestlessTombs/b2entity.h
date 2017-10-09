@@ -20,9 +20,14 @@ public:
 	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
 	void GiveTexture(Texture texture);
 
-	glm::vec3 GetPositionInPixels();
+	glm::vec2 GetPositionInPixels();
 	// Note that the angle is in radians
 	float GetAngle();
+
+	void AddContact(B2Entity* contact);
+	void RemoveContact(B2Entity* contact);
+
+	void SetActive(bool active);
 
 protected:
 	Camera* camera;
@@ -34,6 +39,8 @@ protected:
 	b2Body* body;
 	b2Fixture* fixture;
 	b2Vec2 point[4];
+
+	std::vector<B2Entity*> contacts;
 private:
 
 };

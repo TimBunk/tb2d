@@ -10,10 +10,30 @@ Wall::~Wall() {
 
 void Wall::Update(float deltaTime) {
 	glm::mat4 model;
-	model = glm::translate(model, GetPositionInPixels());
+	model = glm::translate(model, glm::vec3(GetPositionInPixels(), 0.0f));
 	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
 	dr->Render(camera->GetViewMatrix(), model, 3.0f);
+}
+
+void Wall::Draw() {
+	if (visible) {
+		shader->Use();
+		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(GetPositionInPixels(), this->GetGlobalPosition().z));
+		model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
+		shader->SetMatrix4("model", model);
+		glActiveTexture(GL_TEXTURE0 + texture.id);
+		shader->SetInt("ourTexture", texture.id);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(0);
+	}
 }
 
 void Wall::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world) {
@@ -45,6 +65,7 @@ void Wall::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world) 
 	fixtureDef.friction = 0.3f;
 	fixtureDef.restitution = 0.5f;
 	fixture = body->CreateFixture(&fixtureDef);
+	fixture->SetUserData(this);
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
 		//std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;

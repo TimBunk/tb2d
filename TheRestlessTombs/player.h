@@ -5,6 +5,8 @@
 #include "camera.h"
 #include "input.h"
 #include "hand.h"
+#include "floor.h"
+#include "door.h"
 
 class Player : public Person {
 public:
@@ -12,9 +14,12 @@ public:
     ~Player();
 
     void Update(float deltaTime);
+    void SetRoom(int number);
+    int GetRoom();
 private:
     Input* input;
-    Hand* hand;
+    Floor* hand;
+    int currentRoom;
 };
 
 #endif // !PLAYER_H

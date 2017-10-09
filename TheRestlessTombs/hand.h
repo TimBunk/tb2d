@@ -1,14 +1,17 @@
 #ifndef HAND_H
 #define HAND_H
 
-#include "b2entity.h"
+#include "entity.h"
+#include "camera.h"
+#include "shader.h"
 
-class Hand : public B2Entity {
+class Hand : public Entity {
 public:
 	Hand(Camera* camera, Shader* shader);
 	~Hand();
 
 	void Update(float deltaTime);
+
 private:
 
 };

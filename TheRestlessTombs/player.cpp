@@ -2,10 +2,14 @@
 
 Player::Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, b2World* world) : Person::Person(camera, shader) {
 	this->input =  input;
-	hand = new Hand(camera, shader);
+	/*hand = new Hand(camera, shader);
 	hand->GiveTexture(textureHand);
-	hand->CreateBody(200, 200, 20, 20, false, world);
+	hand->CreateBody(200, 200, 20, 20, false, world);*/
+	hand = new Floor(camera, shader);
+	hand->GiveTexture(textureHand);
+	hand->CreateBody(200, 200, 20, 20, 20, 20);
 	this->AddChild(hand);
+	currentRoom = 0;
 }
 
 Player::~Player() {
@@ -41,7 +45,16 @@ void Player::Update(float deltaTime) {
 	// Save the player's current rotation and set the distance of the hand from the player
 	this->localPosition.x = this->GetPositionInPixels().x;
 	this->localPosition.y = this->GetPositionInPixels().y;
+	this->localPosition.z = 5.0f;
 	hand->localPosition.x = angle.x;
 	hand->localPosition.y = angle.y;
 	hand->Draw();
+}
+
+void Player::SetRoom(int number) {
+	this->currentRoom = number;
+}
+
+int Player::GetRoom() {
+	return currentRoom;
 }

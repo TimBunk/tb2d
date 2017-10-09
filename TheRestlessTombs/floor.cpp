@@ -35,11 +35,11 @@ void Floor::GiveTexture(Texture texture) {
 	this->texture = texture;
 }
 
-void Floor::CreateBody(int x, int y, int w, int h, float wRepeat, float hRepeat) {
+void Floor::CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight) {
 	this->localPosition.x = x;
 	this->localPosition.y = y;
-	float multiplyW = w/wRepeat;
-	float multiplyH = h/hRepeat;
+	float multiplyW = w/textureWidth;
+	float multiplyH = h/textureHeight;
 	float vertices[] = {
 		// position
 		-w/2, -h/2, 0.0f, 0.0f,  // lower-left corner

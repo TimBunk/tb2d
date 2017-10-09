@@ -16,7 +16,7 @@ public:
 
 	void GiveTexture(Texture texture);
 	// repeat means how many times the texture should repeat this goes by the amount of pixels
-	void CreateBody(int x, int y, int w, int h, float wRepeat, float hRepeat);
+	void CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight);
 
 private:
 	GLuint VBO, VAO, EBO;

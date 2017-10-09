@@ -26,15 +26,10 @@ public:
 	Scene(Camera* camera);
 	~Scene();
 
-	virtual void Update();
+	virtual void Update(float deltaTime);
 protected:
-	float deltaTime;
 	Camera* camera;
-	
-	void CalculateDeltaTime();
 private:
-	float lastFrame;
-	float totalTime;
-	int fpsCount;
+
 };
 #endif // !SCENE_H

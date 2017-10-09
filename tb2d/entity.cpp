@@ -66,6 +66,7 @@ void Entity::UpdateChilderen(Entity * parent, float deltaTime)
 		model = glm::scale(model, glm::vec3(this->scale, 0.0f));*/
 	}
 	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->Draw();
 		entities[i]->Update(deltaTime);
 		entities[i]->UpdateChilderen(this, deltaTime);
 	}

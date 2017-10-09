@@ -21,16 +21,17 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
-protected:
-	std::vector<Entity*> entities;
-	//glm::mat4 model;
+	// You only have to add a child one, otherwise it might cause unexpected behaviour
+	void AddChild(Entity* child);
+	void RemoveChild(Entity* child);
+
 	glm::vec3 GetGlobalPosition();
 	float GetGlobalAngle();
 	glm::vec2 GetGlobalScale();
 
-	// You only have to add a child one, otherwise it might cause unexpected behaviour
-	void AddChild(Entity* child);
-	void RemoveChild(Entity* child);
+protected:
+	std::vector<Entity*> entities;
+
 	void UpdateChilderen(Entity* parent, float deltaTime);
 private:
 	// global values

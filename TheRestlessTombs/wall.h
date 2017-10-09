@@ -11,6 +11,7 @@ public:
 	~Wall();
 
 	void Update(float deltaTime);
+	void Draw();
 	void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
 
 	bool visible;
