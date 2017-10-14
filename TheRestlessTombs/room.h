@@ -1,8 +1,7 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include "floor.h"
-#include "wall.h"
+#include "b2entity.h"
 #include "scene.h"
 
 class Room : public Scene {

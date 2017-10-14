@@ -6,9 +6,10 @@
 #include "input.h"
 #include "player.h"
 #include "wall.h"
-#include "floor.h"
+#include "renderable.h"
 #include "room.h"
 #include "door.h"
+#include "crate.h"
 #include "contactListener.h"
 
 #include <Box2D/Box2D.h>
@@ -37,13 +38,14 @@ private:
 	Wall* wall6;
 	Wall* wall7;
 	Wall* wall8;
-	Floor* floor;
-	Floor* floor2;
-	Floor* stair1;
+	Renderable* floor;
+	Renderable* floor2;
+	Renderable* stair1;
 	Room* room1;
 	Room* room2;
 	Door* door;
 	Door* door2;
+	Crate* crate1;
 };
 
 #endif // !LEVEL1_H

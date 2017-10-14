@@ -6,9 +6,12 @@ B2Entity::B2Entity(Camera* camera, Shader* shader) : Entity::Entity() {
 }
 
 B2Entity::~B2Entity() {
-	if (world != NULL) {
+	if (body != NULL) {
 		body->DestroyFixture(fixture);
 		world->DestroyBody(body);
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
 	}
 }
 
@@ -34,7 +37,7 @@ void B2Entity::Draw() {
 	glBindVertexArray(0);
 }
 
-void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world) {
+void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world) {
 	// Create a pointer to the world the body will be connected to
 	this->world = world;
 	// Step 1 defina a body
@@ -65,6 +68,9 @@ void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* wor
 	//fixtureDef.filter.categoryBits = 0x0002;
 	//fixtureDef.filter.maskBits = 0x0004;
 	fixture = body->CreateFixture(&fixtureDef);
+	if (sensor) {
+		fixture->SetSensor(true);
+	}
 	fixture->SetUserData(this);
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
@@ -125,7 +131,6 @@ float B2Entity::GetAngle()
 
 void B2Entity::AddContact(B2Entity* contact) {
 	this->contacts.push_back(contact);
-	std::cout << "added a contact" << std::endl;
 }
 
 void B2Entity::RemoveContact(B2Entity* contact) {
@@ -133,7 +138,6 @@ void B2Entity::RemoveContact(B2Entity* contact) {
 	while (it != contacts.end()) {
 		if ((*it) == contact) {
 			it = contacts.erase(it);
-			std::cout << "removed a contact" << std::endl;
 			return;
 		}
 		++it;

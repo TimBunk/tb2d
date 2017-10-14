@@ -13,6 +13,10 @@ public:
     virtual ~Person();
 
     virtual void Update(float deltaTime);
+    virtual void FlipTextureAutomatic();
+    // if it is already flipped set to true
+    void FlipTexture();
+    bool IsTextureFlipped();
 
 protected:
 
@@ -20,6 +24,9 @@ protected:
 	float damage;
 	float attackSpeed;
 	float speed;
+
+	bool flippedTexture;
+	float currentX;
 
 private:
 

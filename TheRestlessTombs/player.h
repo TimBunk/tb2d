@@ -1,16 +1,22 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#define _USE_MATH_DEFINES
+
 #include "person.h"
 #include "camera.h"
 #include "input.h"
 #include "hand.h"
-#include "floor.h"
+#include "renderable.h"
 #include "door.h"
+#include "weapon.h"
+
+#include <math.h>
+#include <glm-0.9.8.4/glm/gtx/rotate_vector.hpp>
 
 class Player : public Person {
 public:
-    Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, b2World* world);
+    Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, Texture textureSword, b2World* world);
     ~Player();
 
     void Update(float deltaTime);
@@ -18,7 +24,8 @@ public:
     int GetRoom();
 private:
     Input* input;
-    Floor* hand;
+    Weapon* sword;
+
     int currentRoom;
 };
 

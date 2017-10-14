@@ -17,7 +17,7 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
-	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
+	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world);
 	void GiveTexture(Texture texture);
 
 	glm::vec2 GetPositionInPixels();
@@ -27,7 +27,7 @@ public:
 	void AddContact(B2Entity* contact);
 	void RemoveContact(B2Entity* contact);
 
-	void SetActive(bool active);
+	virtual void SetActive(bool active);
 
 protected:
 	Camera* camera;

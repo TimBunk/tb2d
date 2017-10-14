@@ -10,9 +10,10 @@
 #include "scene.h"
 #include "camera.h"
 #include "text.h"
-#include "player.h"
-#include "level1.h"
 #include "window.h"
+#include "box.h"
+#include "player.h"
+#include "ground.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -26,7 +27,9 @@ Input* input;
 ResourceManager* rm;
 b2World* world;
 
-Level1* level1;
+Player* player1;
+Ground* ground;
+
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
 
@@ -49,16 +52,22 @@ int main() {
 	rm->CreateTexture("doorWest", "textures/DoorWest.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerSword", "textures/PlayerSword.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("crate", "textures/Crate.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	world = new b2World(b2Vec2(0.0f, 0.0f));
-	level1 = new Level1(world, rm, input, camera);
-	//glViewport(0, 0, 700, 500);
+	world = new b2World(b2Vec2(0.0f, 9.91f));
+	player1 = new Player(400, 300, 50, 75, true, world, camera, rm->GetShader("shader"));
+	player1->SetTexture(rm->GetTexture("player"));
+	player1->SetMovement(SDL_SCANCODE_A, SDL_SCANCODE_D, window->GetInput());
+	ground = new Ground(camera->screenWidth/2, camera->screenHeight, camera->screenWidth, 200, false, world, camera, rm->GetShader("shader"));
+	ground->SetTexture(rm->GetTexture("floorStandard"));
 	// THE GAME LOOP
 	while (!input->Quit()) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();
 
-		level1->Update(window->GetDeltaTime());
+		player1->Draw();
+		player1->Update(window->GetDeltaTime());
+
+		ground->Draw();
 
 		// Update the box2d world
 		world->Step(window->GetDeltaTime(), 8, 3);
@@ -68,7 +77,6 @@ int main() {
 
     // DELETE ALL VARIABLES CREATED WITH THE KEYWORD "new"
 	delete window;
-    delete level1;
     delete world;
 
     std::cout << "Program succeeded" << std::endl;

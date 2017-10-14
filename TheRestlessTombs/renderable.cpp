@@ -1,19 +1,23 @@
-#include "floor.h"
+#include "renderable.h"
 
-Floor::Floor(Camera* camera, Shader* shader) : Entity::Entity() {
+Renderable::Renderable(Camera* camera, Shader* shader) : Entity::Entity() {
 	this->camera = camera;
 	this->shader = shader;
 }
 
-Floor::~Floor() {
+Renderable::~Renderable() {
+	if (VAO != NULL) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
+}
+
+void Renderable::Update(float deltaTime) {
 
 }
 
-void Floor::Update(float deltaTime) {
-
-}
-
-void Floor::Draw() {
+void Renderable::Draw() {
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
@@ -31,11 +35,11 @@ void Floor::Draw() {
 	glBindVertexArray(0);
 }
 
-void Floor::GiveTexture(Texture texture) {
+void Renderable::GiveTexture(Texture texture) {
 	this->texture = texture;
 }
 
-void Floor::CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight) {
+void Renderable::CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight) {
 	this->localPosition.x = x;
 	this->localPosition.y = y;
 	float multiplyW = w/textureWidth;

@@ -19,7 +19,6 @@ void ContactListener::BeginContact(b2Contact* contact) {
 	// Add the contacts to the b2entity
 	static_cast<B2Entity*>(fa->GetUserData())->AddContact(static_cast<B2Entity*>(fb->GetUserData()));
 	static_cast<B2Entity*>(fb->GetUserData())->AddContact(static_cast<B2Entity*>(fa->GetUserData()));
-	std::cout << "A collision happend" << std::endl;
 }
 
 void ContactListener::EndContact(b2Contact* contact) {
@@ -33,5 +32,4 @@ void ContactListener::EndContact(b2Contact* contact) {
 	// remove the contacts from the b2entity
 	static_cast<B2Entity*>(fa->GetUserData())->RemoveContact(static_cast<B2Entity*>(fb->GetUserData()));
 	static_cast<B2Entity*>(fb->GetUserData())->RemoveContact(static_cast<B2Entity*>(fa->GetUserData()));
-	std::cout << "A collision stopped" << std::endl;
 }

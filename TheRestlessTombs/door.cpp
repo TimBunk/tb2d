@@ -16,25 +16,21 @@ void Door::Update(float deltaTime) {
 			switch (direction) {
 			case north:
 				if (this->GetGlobalPosition().y > playerPosition.y) {
-					std::cout << "Player went to the next room!" << std::endl;
 					dynamic_cast<Player*>(contacts[i])->SetRoom(roomNumber);
 				}
 				break;
 			case east:
 				if (this->GetGlobalPosition().x < playerPosition.x) {
-					std::cout << "Player went to the next room!" << std::endl;
 					dynamic_cast<Player*>(contacts[i])->SetRoom(roomNumber);
 				}
 				break;
 			case south:
 				if (this->GetGlobalPosition().y < playerPosition.y) {
-					std::cout << "Player went to the next room!" << std::endl;
 					dynamic_cast<Player*>(contacts[i])->SetRoom(roomNumber);
 				}
 				break;
 			case west:
 				if (this->GetGlobalPosition().x > playerPosition.x) {
-					std::cout << "Player went to the next room!" << std::endl;
 					dynamic_cast<Player*>(contacts[i])->SetRoom(roomNumber);
 				}
 				break;

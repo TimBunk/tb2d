@@ -1,19 +1,16 @@
 #include "player.h"
 
-Player::Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, b2World* world) : Person::Person(camera, shader) {
+Player::Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, Texture textureSword, b2World* world) : Person::Person(camera, shader) {
 	this->input =  input;
-	/*hand = new Hand(camera, shader);
-	hand->GiveTexture(textureHand);
-	hand->CreateBody(200, 200, 20, 20, false, world);*/
-	hand = new Floor(camera, shader);
-	hand->GiveTexture(textureHand);
-	hand->CreateBody(200, 200, 20, 20, 20, 20);
-	this->AddChild(hand);
+	sword = new Weapon(1.0f, 135.0f, 0.25f, true, camera, shader);
+	sword->GiveTexture(textureSword);
+	sword->CreateBody(0, 0, 30, 60, world);
+	this->AddChild(sword);
 	currentRoom = 0;
 }
 
 Player::~Player() {
-	delete hand;
+	delete sword;
 }
 
 void Player::Update(float deltaTime) {
@@ -31,8 +28,28 @@ void Player::Update(float deltaTime) {
 	if (input->KeyDown(SDL_SCANCODE_A) || input->KeyDown(SDL_SCANCODE_LEFT)) {
 		vel.x -= speed;
 	}
+	if (input->MousePress(1)) {
+		if (!sword->IsAttacking()) {
+			sword->Attack();
+			std::cout << "Mouse clicked" << std::endl;
+		}
+	}
+
 	body->SetLinearVelocity(vel);
 	this->camera->SetPosition(glm::vec2(-this->GetPositionInPixels().x - -camera->screenWidth/2, -this->GetPositionInPixels().y - -camera->screenHeight/2));
+
+	this->localPosition.x = this->GetPositionInPixels().x;
+	this->localPosition.y = this->GetPositionInPixels().y;
+	this->localPosition.z = 5.0f;
+	// FLIP the player's texture according to the mouse it's location
+	if (input->GetMousePositionScreenSpace(camera).x > camera->screenWidth/2 && this->IsTextureFlipped()) {
+		this->FlipTexture();
+		sword->FlipBody();
+	}
+	else if (input->GetMousePositionScreenSpace(camera).x < camera->screenWidth/2 && !this->IsTextureFlipped()) {
+		this->FlipTexture();
+		sword->FlipBody();
+	}
 
 	// Get the mouse position in world space
 	glm::vec2 mp = input->GetMousePositionWorldSpace(camera);
@@ -40,15 +57,11 @@ void Player::Update(float deltaTime) {
 	glm::vec2 angle = mp - glm::vec2(this->GetPositionInPixels().x, this->GetPositionInPixels().y);
 	// Normalize the angle
 	angle = glm::normalize(angle);
-	// Set the length of the angle to 60 pixels away from the player's piviot
-	angle *= 60;
-	// Save the player's current rotation and set the distance of the hand from the player
-	this->localPosition.x = this->GetPositionInPixels().x;
-	this->localPosition.y = this->GetPositionInPixels().y;
-	this->localPosition.z = 5.0f;
-	hand->localPosition.x = angle.x;
-	hand->localPosition.y = angle.y;
-	hand->Draw();
+	// Set the length of the angle to 40 pixels away from the player's piviot
+	angle *= 40;
+	sword->SetAngle(angle);
+	sword->localPosition.x = angle.x;
+	sword->localPosition.y = angle.y;
 }
 
 void Player::SetRoom(int number) {

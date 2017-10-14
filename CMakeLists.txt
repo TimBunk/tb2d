@@ -6,6 +6,7 @@ project (TB2D)
 ####################################################################
 OPTION(MAKE_START "Make TB2D start applications" ON)
 OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
+OPTION(MAKE_EpicFighter "Make EpicFighter" OFF)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -212,12 +213,14 @@ add_executable(trt
   TheRestlessTombs/wall.h
   TheRestlessTombs/b2entity.cpp 
   TheRestlessTombs/b2entity.h 
-  TheRestlessTombs/floor.cpp 
-  TheRestlessTombs/floor.h 
+  TheRestlessTombs/renderable.cpp 
+  TheRestlessTombs/renderable.h 
   TheRestlessTombs/hand.cpp 
   TheRestlessTombs/hand.h 
   TheRestlessTombs/contactListener.h 
   TheRestlessTombs/contactListener.cpp
+  TheRestlessTombs/weapon.cpp 
+  TheRestlessTombs/weapon.h 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
@@ -235,6 +238,44 @@ file(
 file(
   COPY TheRestlessTombs/textures
   DESTINATION ${CMAKE_BINARY_DIR}
+)
+ENDIF()
+
+####################################################################
+# EpicFighter                                                            #
+####################################################################
+
+IF (MAKE_EpicFighter)
+
+add_executable(ef
+  ${SOILSOURCE}
+  ${TB2DSOURCE}
+  EpicFighter/main.cpp 
+  EpicFighter/player.cpp 
+  EpicFighter/player.h 
+  EpicFighter/sword.cpp 
+  EpicFighter/sword.h 
+  EpicFighter/ground.cpp 
+  EpicFighter/ground.h 
+)
+
+
+target_link_libraries(ef
+${BOX2D_LIB}
+${ALL_GRAPHICS_LIBS}
+${SDL2_LIBRARIES} 
+${SDL2IMAGE_LIBRARIES}
+${SDL2_MIXER_LIBRARIES}
+${SDL2_TTF_LIBRARY}
+)
+# Copy shaders to the build directory
+file(
+COPY tb2d/shaders
+DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+COPY TheRestlessTombs/textures
+DESTINATION ${CMAKE_BINARY_DIR}
 )
 ENDIF()
 

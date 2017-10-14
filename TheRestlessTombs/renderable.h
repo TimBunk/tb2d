@@ -1,28 +1,29 @@
-#ifndef FLOOR_H
-#define FLOOR_H
+#ifndef RENDERABLE_H
+#define RENDERABLE_H
 
 #include "entity.h"
 #include "texture.h"
 #include "camera.h"
 #include "shader.h"
 
-class Floor : public Entity {
+class Renderable : public Entity {
 public:
-	Floor(Camera* camera, Shader* shader);
-	~Floor();
+	Renderable(Camera* camera, Shader* shader);
+	~Renderable();
 
 	void Update(float deltaTime);
-	void Draw();
+	virtual void Draw();
 
 	void GiveTexture(Texture texture);
 	// repeat means how many times the texture should repeat this goes by the amount of pixels
-	void CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight);
-
-private:
+	virtual void CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight);
+protected:
 	GLuint VBO, VAO, EBO;
 	Camera* camera;
 	Shader* shader;
 	Texture texture;
+private:
+
 };
 
-#endif // !FLOOR_H
+#endif // !RENDERABLE_H

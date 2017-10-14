@@ -7,9 +7,9 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	contactListener = new ContactListener();
 	currentRoom = 0;
 	world->SetContactListener(contactListener);
-	player = new Player(input, camera, rm->GetShader("shader"), rm->GetTexture("playerHand"), world);
+	player = new Player(input, camera, rm->GetShader("shader"), rm->GetTexture("playerHand"), rm->GetTexture("playerSword"), world);
 	player->GiveTexture(rm->GetTexture("player"));
-	player->CreateBody(camera->screenWidth/2, camera->screenHeight/2, 50, 75, true, world);
+	player->CreateBody(camera->screenWidth/2, camera->screenHeight/2, 50, 75, true, false, world);
 	wall = new Wall(camera, rm->GetShader("shader"), true);
 	wall->GiveTexture(rm->GetTexture("wall"));
 	wall->CreateBody(150, 0, 300, 74, false, world);
@@ -29,13 +29,13 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	wall8 = new Wall(camera, rm->GetShader("shader"), true);
 	wall8->GiveTexture(rm->GetTexture("wall"));
 	wall8->CreateBody(camera->screenWidth/2, -537, camera->screenWidth, 74, false, world);
-	floor = new Floor(camera, rm->GetShader("shader"));
+	floor = new Renderable(camera, rm->GetShader("shader"));
 	floor->GiveTexture(rm->GetTexture("floorDetailed"));
 	floor->CreateBody(camera->screenWidth/2, camera->screenHeight/2 + 37, camera->screenWidth, camera->screenHeight, camera->screenWidth, camera->screenHeight);
-	floor2 = new Floor(camera, rm->GetShader("shader"));
+	floor2 = new Renderable(camera, rm->GetShader("shader"));
 	floor2->GiveTexture(rm->GetTexture("floorStandard"));
 	floor2->CreateBody(camera->screenWidth/2, -400, camera->screenWidth, 200, camera->screenWidth, 200);
-	stair1 = new Floor(camera, rm->GetShader("shader"));
+	stair1 = new Renderable(camera, rm->GetShader("shader"));
 	stair1->GiveTexture(rm->GetTexture("stairs"));
 	stair1->CreateBody(camera->screenWidth/2, -200 + 37, 200, 400, 200, 400);
 	door = new Door(camera, rm->GetShader("shader"), 1);
@@ -44,6 +44,9 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	door2 = new Door(camera, rm->GetShader("shader"), 1);
 	door2->CreateBody(0 + 25, -400, Direction::west, 200.0f, world);
 	door2->GiveTexture(rm->GetTexture("doorWest"));
+	crate1 = new Crate(camera, rm->GetShader("shader"));
+	crate1->CreateBody(450, 150, 50, 60, false, false, world);
+	crate1->GiveTexture(rm->GetTexture("crate"));
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -61,13 +64,14 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	room1->AddChild(wall8);
 	room1->AddChild(door);
 	room1->AddChild(door2);
+	room1->AddChild(crate1);
 	room1->SetActive(true);
 	rooms.push_back(room1);
 
 	room2 = new Room(camera);
+	this->AddChild(room2);
 	room2->SetActive(false);
 	rooms.push_back(room2);
-	this->AddChild(room2);
 
 	this->AddChild(player);
 }
@@ -89,6 +93,7 @@ Level1::~Level1() {
 	delete wall7;
 	delete wall8;
 	delete stair1;
+	delete crate1;
 }
 
 void Level1::Update(float deltaTime) {
@@ -100,6 +105,9 @@ void Level1::Update(float deltaTime) {
 		currentRoom = playerRoom;
 		rooms[currentRoom]->SetActive(true);
 		this->AddChild(rooms[currentRoom]);
+	}
+	if (input->KeyPress(SDL_SCANCODE_R)) {
+		crate1->Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }
