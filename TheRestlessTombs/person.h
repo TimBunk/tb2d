@@ -13,6 +13,10 @@ public:
     virtual ~Person();
 
     virtual void Update(float deltaTime);
+
+    void TakeDamage(int damage);
+    void ApplyHealing(int healing);
+
     virtual void FlipTextureAutomatic();
     // if it is already flipped set to true
     void FlipTexture();
@@ -20,7 +24,8 @@ public:
 
 protected:
 
-	float health;
+	int health;
+	int currentHealth;
 	float damage;
 	float attackSpeed;
 	float speed;

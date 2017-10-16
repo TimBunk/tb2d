@@ -10,7 +10,8 @@
 #include "room.h"
 #include "door.h"
 #include "crate.h"
-#include "contactListener.h"
+#include "healthPotion.h"
+#include "lootChest.h"
 
 #include <Box2D/Box2D.h>
 
@@ -24,7 +25,6 @@ private:
 	ResourceManager* rm;
 	Input* input;
 	b2World* world;
-	ContactListener* contactListener;
 
 	std::vector<Room*> rooms;
 	int currentRoom;
@@ -46,6 +46,9 @@ private:
 	Door* door;
 	Door* door2;
 	Crate* crate1;
+	HealthPotion* healthPotion1;
+	LootChest* lootChest1;
+
 };
 
 #endif // !LEVEL1_H

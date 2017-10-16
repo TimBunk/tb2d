@@ -65,6 +65,11 @@ void Entity::UpdateChilderen(Entity * parent, float deltaTime)
 		model = glm::rotate(model, glm::radians(this->angle), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(this->scale, 0.0f));*/
 	}
+	else {
+		this->position = this->localPosition;
+		this->angle = this->localAngle;
+		this->scale = this->localScale;
+	}
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->Draw();
 		entities[i]->Update(deltaTime);

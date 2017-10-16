@@ -9,13 +9,13 @@ public:
 	~Destructable();
 
 	virtual void Update(float deltaTime);
-	void Draw();
+	virtual void Draw();
 
 	virtual void Destroy();
 	virtual void Reset();
 	bool IsAlive();
 
-	void SetActive(bool active);
+	virtual void SetActive(bool active);
 protected:
 	bool alive;
 private:

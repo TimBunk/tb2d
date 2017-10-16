@@ -4,6 +4,7 @@
 #include "destructable.h"
 #include "weapon.h"
 #include "player.h"
+#include "healthPotion.h"
 
 class Crate : public Destructable{
 public:
@@ -12,11 +13,12 @@ public:
 
 	void Update(float deltaTime);
 
+	void Store(Potion* potion);
 	void Destroy();
 	void Reset();
 
 private:
-
+	Potion* potion;
 };
 
 #endif // !CRATE_H

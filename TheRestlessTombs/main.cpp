@@ -13,6 +13,7 @@
 #include "player.h"
 #include "level1.h"
 #include "window.h"
+#include "contactListener.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -25,6 +26,7 @@ Camera* camera;
 Input* input;
 ResourceManager* rm;
 b2World* world;
+ContactListener* contactListener;
 
 Level1* level1;
 float Window::m2p = 50;
@@ -37,6 +39,10 @@ int main() {
 	input = window->GetInput();
 	rm = window->GetResourceManager();
 	rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
+	rm->CreateShader("hud", "shaders//hud.vs", "shaders//hud.fs");
+	rm->CreateShader("text", "shaders//text.vs", "shaders//text.fs");
+	rm->CreateShader("textHud", "shaders//textHUD.vs", "shaders//textHUD.fs");
+
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerHand", "textures/PlayerHand.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("wall", "textures/Wallx3.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -49,7 +55,19 @@ int main() {
 	rm->CreateTexture("doorWest", "textures/DoorWest.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerSword", "textures/PlayerSword.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("crate", "textures/Crate.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("healthPotion", "textures/HealthPotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("speedPotion", "textures/SpeedPotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("damagePotion", "textures/DamagePotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("showCase", "textures/ShowCase.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("goldLootChestClosed", "textures/GoldLootChestClosed.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("goldLootChestOpened", "textures/GoldLootChestOpened.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("silverLootChestClosed", "textures/SilverLootChestClosed.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("silverLootChestOpened", "textures/SilverLootChestOpened.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("heartEmpty", "textures/HeartEmpty.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("heartFilled", "textures/HeartFilled.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	world = new b2World(b2Vec2(0.0f, 0.0f));
+	contactListener = new ContactListener();
+	world->SetContactListener(contactListener);
 	level1 = new Level1(world, rm, input, camera);
 	//glViewport(0, 0, 700, 500);
 	// THE GAME LOOP

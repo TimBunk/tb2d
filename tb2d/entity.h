@@ -32,7 +32,7 @@ public:
 protected:
 	std::vector<Entity*> entities;
 
-	void UpdateChilderen(Entity* parent, float deltaTime);
+	virtual void UpdateChilderen(Entity* parent, float deltaTime);
 private:
 	// global values
 	glm::vec3 position;

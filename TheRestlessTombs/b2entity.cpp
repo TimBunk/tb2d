@@ -39,6 +39,7 @@ void B2Entity::Draw() {
 
 void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world) {
 	// Create a pointer to the world the body will be connected to
+	this->localPosition = glm::vec3(x, y, 1.0f);
 	this->world = world;
 	// Step 1 defina a body
 	b2BodyDef bodydef;

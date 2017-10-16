@@ -18,7 +18,7 @@ public:
 	virtual void Draw();
 
 	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world);
-	void GiveTexture(Texture texture);
+	virtual void GiveTexture(Texture texture);
 
 	glm::vec2 GetPositionInPixels();
 	// Note that the angle is in radians

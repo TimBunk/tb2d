@@ -10,21 +10,36 @@
 #include "renderable.h"
 #include "door.h"
 #include "weapon.h"
+#include "healthPotion.h"
+#include "showCase.h"
+#include "text.h"
 
 #include <math.h>
+#include <string.h>
 #include <glm-0.9.8.4/glm/gtx/rotate_vector.hpp>
 
 class Player : public Person {
 public:
-    Player(Input* input, Camera* camera, Shader* shader, Texture textureHand, Texture textureSword, b2World* world);
+    Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader, b2World* world);
     ~Player();
 
     void Update(float deltaTime);
     void SetRoom(int number);
     int GetRoom();
+
+    void AddGold(int gold);
+
 private:
     Input* input;
+    ResourceManager* rm;
     Weapon* sword;
+    ShowCase* showCase;
+
+    std::vector<Hud*> hudHealth;
+    int lastHealth;
+    Potion* potion;
+    Text* textGold;
+    int gold;
 
     int currentRoom;
 };

@@ -93,6 +93,8 @@ set(TB2DSOURCE
   tb2d/input.cpp
   tb2d/window.h 
   tb2d/window.cpp 
+  tb2d/hud.h 
+  tb2d/hud.cpp 
 )
 
 set(SOILSOURCE
@@ -221,6 +223,8 @@ add_executable(trt
   TheRestlessTombs/contactListener.cpp
   TheRestlessTombs/weapon.cpp 
   TheRestlessTombs/weapon.h 
+  TheRestlessTombs/showCase.cpp 
+  TheRestlessTombs/showCase.h 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}

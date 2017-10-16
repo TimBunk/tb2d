@@ -4,10 +4,8 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	this->rm = rm;
 	this->input = input;
 	this->world = world;
-	contactListener = new ContactListener();
 	currentRoom = 0;
-	world->SetContactListener(contactListener);
-	player = new Player(input, camera, rm->GetShader("shader"), rm->GetTexture("playerHand"), rm->GetTexture("playerSword"), world);
+	player = new Player(input, camera, rm, rm->GetShader("shader"), world);
 	player->GiveTexture(rm->GetTexture("player"));
 	player->CreateBody(camera->screenWidth/2, camera->screenHeight/2, 50, 75, true, false, world);
 	wall = new Wall(camera, rm->GetShader("shader"), true);
@@ -44,9 +42,16 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	door2 = new Door(camera, rm->GetShader("shader"), 1);
 	door2->CreateBody(0 + 25, -400, Direction::west, 200.0f, world);
 	door2->GiveTexture(rm->GetTexture("doorWest"));
+	healthPotion1 = new HealthPotion(1, camera, rm->GetShader("shader"));
+	healthPotion1->CreateBody(450, 150, 30, 36, false, true, world);
+	healthPotion1->GiveTexture(rm->GetTexture("healthPotion"));
 	crate1 = new Crate(camera, rm->GetShader("shader"));
 	crate1->CreateBody(450, 150, 50, 60, false, false, world);
 	crate1->GiveTexture(rm->GetTexture("crate"));
+	crate1->Store(healthPotion1);
+	lootChest1 = new LootChest(100, player, camera, rm->GetShader("shader"), rm->GetShader("text"));
+	lootChest1->CreateBody(400, 500, 75, 75, false, false, world);
+	lootChest1->GiveTexture(rm->GetTexture("goldLootChestClosed"), rm->GetTexture("goldLootChestOpened"));
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -65,6 +70,8 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	room1->AddChild(door);
 	room1->AddChild(door2);
 	room1->AddChild(crate1);
+	room1->AddChild(healthPotion1);
+	room1->AddChild(lootChest1);
 	room1->SetActive(true);
 	rooms.push_back(room1);
 
@@ -94,6 +101,8 @@ Level1::~Level1() {
 	delete wall8;
 	delete stair1;
 	delete crate1;
+	delete healthPotion1;
+	delete lootChest1;
 }
 
 void Level1::Update(float deltaTime) {
@@ -106,6 +115,7 @@ void Level1::Update(float deltaTime) {
 		rooms[currentRoom]->SetActive(true);
 		this->AddChild(rooms[currentRoom]);
 	}
+	// RESET
 	if (input->KeyPress(SDL_SCANCODE_R)) {
 		crate1->Reset();
 	}

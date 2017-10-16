@@ -19,6 +19,24 @@ void Person::Update(float deltaTime) {
 
 }
 
+void Person::TakeDamage(int damage) {
+	if (currentHealth - damage > 0) {
+		currentHealth -= damage;
+	}
+	else {
+		currentHealth = 0;
+	}
+}
+
+void Person::ApplyHealing(int healing) {
+	if (healing + currentHealth > health) {
+		currentHealth = health;
+	}
+	else {
+		currentHealth += healing;
+	}
+}
+
 void Person::FlipTextureAutomatic() {
 	if (!flippedTexture && currentX > this->localPosition.x) {
 		FlipTexture();
