@@ -26,7 +26,7 @@ protected:
 
 	int health;
 	int currentHealth;
-	float damage;
+	int damage;
 	float attackSpeed;
 	float speed;
 

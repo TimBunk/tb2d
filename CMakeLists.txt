@@ -4,8 +4,9 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
-OPTION(MAKE_START "Make TB2D start applications" ON)
+OPTION(MAKE_START "Make TB2D start applications" OFF)
 OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
+OPTION(MAKE_BOX2DLES "Box2dLes" ON)
 OPTION(MAKE_EpicFighter "Make EpicFighter" OFF)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
@@ -71,10 +72,6 @@ set(TB2DSOURCE
   tb2d/texture.h
   tb2d/shader.cpp
   tb2d/shader.h
-  tb2d/box.cpp
-  tb2d/box.h
-  tb2d/circle.cpp
-  tb2d/circle.h
   tb2d/entity.h
   tb2d/entity.cpp
   tb2d/scene.h
@@ -225,6 +222,8 @@ add_executable(trt
   TheRestlessTombs/weapon.h 
   TheRestlessTombs/showCase.cpp 
   TheRestlessTombs/showCase.h 
+  TheRestlessTombs/rayCastCallBack.h
+  TheRestlessTombs/rayCastCallBack.cpp
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
@@ -281,6 +280,49 @@ file(
 COPY TheRestlessTombs/textures
 DESTINATION ${CMAKE_BINARY_DIR}
 )
+ENDIF()
+
+####################################################################
+# BOX2DLES                                                            #
+####################################################################
+
+IF (MAKE_BOX2DLES)
+
+add_executable(b2
+  ${SOILSOURCE}
+  ${TB2DSOURCE}
+  Box2dLes/main.cpp 
+  Box2dLes/b2entity.h 
+  Box2dLes/b2entity.cpp 
+  Box2dLes/contactListener.h 
+  Box2dLes/contactListener.cpp 
+  Box2dLes/circle.h 
+  Box2dLes/circle.cpp 
+)
+
+
+target_link_libraries(b2
+${BOX2D_LIB}
+${ALL_GRAPHICS_LIBS}
+${SDL2_LIBRARIES} 
+${SDL2IMAGE_LIBRARIES}
+${SDL2_MIXER_LIBRARIES}
+${SDL2_TTF_LIBRARY}
+)
+# Copy shaders to the build directory
+file(
+COPY tb2d/shaders
+DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+COPY tb2d/textures
+DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+  COPY tb2d/fonts
+  DESTINATION ${CMAKE_BINARY_DIR}
+)
+
 ENDIF()
 
 ####################################################################

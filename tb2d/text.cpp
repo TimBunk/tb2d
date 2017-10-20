@@ -31,7 +31,6 @@ Text::~Text() {
 }
 
 void Text::SetText(std::string text) {
-	std::cout << "currentText = " << currentText << " text = " << text << std::endl;
 	if (text != currentText) {
 		currentText = text;
 		CreateText();
@@ -103,10 +102,10 @@ int Text::GetHeight() {
 
 void Text::CreateText() {
 	// Open the font
-	std::cout << "creating text; "<< currentText << std::endl;
 	font = TTF_OpenFont(filePath, fontSize);
 	// Create a SDL_surface
-	SDL_Surface* sdlSurface = TTF_RenderText_Blended(font, currentText.c_str(), fontColor);
+	//SDL_Surface* sdlSurface = TTF_RenderText_Blended(font, currentText.c_str(), fontColor);
+	SDL_Surface* sdlSurface = TTF_RenderText_Blended_Wrapped(font, currentText.c_str(), fontColor,  4096);
 	// Create texture
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

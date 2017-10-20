@@ -11,11 +11,15 @@
 #include "door.h"
 #include "weapon.h"
 #include "healthPotion.h"
+#include "damagePotion.h"
+#include "speedPotion.h"
 #include "showCase.h"
 #include "text.h"
 
 #include <math.h>
 #include <string.h>
+#include <iomanip> // setprecision
+#include <sstream> // stringstream
 #include <glm-0.9.8.4/glm/gtx/rotate_vector.hpp>
 
 class Player : public Person {
@@ -34,14 +38,21 @@ private:
     ResourceManager* rm;
     Weapon* sword;
     ShowCase* showCase;
-
-    std::vector<Hud*> hudHealth;
-    int lastHealth;
-    Potion* potion;
     Text* textGold;
-    int gold;
+    Text* textStats;
+    std::vector<Hud*> hudHealth;
+    Potion* potion;
+    DamageBoost damageBoost;
+    SpeedBoost speedBoost;
 
+    int lastHealth;
+    int gold;
+    float currentDamage;
+    float currentAttackSpeed;
+    float currentSpeed;
     int currentRoom;
+
+    void UpdateStats();
 };
 
 #endif // !PLAYER_H

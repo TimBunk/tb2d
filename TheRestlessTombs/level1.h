@@ -11,7 +11,10 @@
 #include "door.h"
 #include "crate.h"
 #include "healthPotion.h"
+#include "damagePotion.h"
+#include "speedPotion.h"
 #include "lootChest.h"
+#include "babyOrc.h"
 
 #include <Box2D/Box2D.h>
 
@@ -47,7 +50,10 @@ private:
 	Door* door2;
 	Crate* crate1;
 	HealthPotion* healthPotion1;
+	DamagePotion* damagePotion1;
+	SpeedPotion* speedPotion1;
 	LootChest* lootChest1;
+	BabyOrc* babyOrc1;
 
 };
 

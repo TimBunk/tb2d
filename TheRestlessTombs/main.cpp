@@ -39,6 +39,7 @@ int main() {
 	input = window->GetInput();
 	rm = window->GetResourceManager();
 	rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
+	rm->CreateShader("debugRenderer", "shaders//debugRenderer.vs", "shaders//debugRenderer.fs");
 	rm->CreateShader("hud", "shaders//hud.vs", "shaders//hud.fs");
 	rm->CreateShader("text", "shaders//text.vs", "shaders//text.fs");
 	rm->CreateShader("textHud", "shaders//textHUD.vs", "shaders//textHUD.fs");
@@ -65,6 +66,7 @@ int main() {
 	rm->CreateTexture("silverLootChestOpened", "textures/SilverLootChestOpened.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("heartEmpty", "textures/HeartEmpty.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("heartFilled", "textures/HeartFilled.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("babyOrc", "textures/BabyOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	contactListener = new ContactListener();
 	world->SetContactListener(contactListener);

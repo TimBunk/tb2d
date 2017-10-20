@@ -45,6 +45,12 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	healthPotion1 = new HealthPotion(1, camera, rm->GetShader("shader"));
 	healthPotion1->CreateBody(450, 150, 30, 36, false, true, world);
 	healthPotion1->GiveTexture(rm->GetTexture("healthPotion"));
+	damagePotion1 = new DamagePotion(1.0f, 5.0f, camera, rm->GetShader("shader"));
+	damagePotion1->CreateBody(100, 300, 30, 36, false, true, world);
+	damagePotion1->GiveTexture(rm->GetTexture("damagePotion"));
+	speedPotion1 = new SpeedPotion(2.0f, -0.15f, 4.0f, camera, rm->GetShader("shader"));
+	speedPotion1->CreateBody(150, 300, 30, 36, false, true, world);
+	speedPotion1->GiveTexture(rm->GetTexture("speedPotion"));
 	crate1 = new Crate(camera, rm->GetShader("shader"));
 	crate1->CreateBody(450, 150, 50, 60, false, false, world);
 	crate1->GiveTexture(rm->GetTexture("crate"));
@@ -52,6 +58,9 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	lootChest1 = new LootChest(100, player, camera, rm->GetShader("shader"), rm->GetShader("text"));
 	lootChest1->CreateBody(400, 500, 75, 75, false, false, world);
 	lootChest1->GiveTexture(rm->GetTexture("goldLootChestClosed"), rm->GetTexture("goldLootChestOpened"));
+	babyOrc1 = new BabyOrc(player, camera, rm->GetShader("shader"), rm->GetShader("debugRenderer"));
+	babyOrc1->CreateBody(400, -300, 50, 50, world);
+	babyOrc1->GiveTexture(rm->GetTexture("babyOrc"));
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -71,7 +80,10 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	room1->AddChild(door2);
 	room1->AddChild(crate1);
 	room1->AddChild(healthPotion1);
+	room1->AddChild(damagePotion1);
+	room1->AddChild(speedPotion1);
 	room1->AddChild(lootChest1);
+	room1->AddChild(babyOrc1);
 	room1->SetActive(true);
 	rooms.push_back(room1);
 
@@ -102,7 +114,10 @@ Level1::~Level1() {
 	delete stair1;
 	delete crate1;
 	delete healthPotion1;
+	delete damagePotion1;
+	delete speedPotion1;
 	delete lootChest1;
+	delete babyOrc1;
 }
 
 void Level1::Update(float deltaTime) {
@@ -118,6 +133,8 @@ void Level1::Update(float deltaTime) {
 	// RESET
 	if (input->KeyPress(SDL_SCANCODE_R)) {
 		crate1->Reset();
+		damagePotion1->Reset();
+		speedPotion1->Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

@@ -10,7 +10,6 @@
 #include "camera.h"
 #include "entity.h"
 #include "resourceManager.h"
-#include "circle.h"
 #include "input.h"
 
 #include <GL/glew.h>
