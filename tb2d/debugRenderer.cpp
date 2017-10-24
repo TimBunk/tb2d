@@ -1,10 +1,11 @@
 #include "debugRenderer.h"
 
-DebugRenderer::DebugRenderer(Camera* camera, Shader* debug, glm::vec4 color)
+DebugRenderer::DebugRenderer(glm::mat4 projection, glm::vec4 color)
 {
-	this->camera = camera;
-	this->shader = debug;
-	this->color = color;
+	shader = new Shader("shaders//debugRenderer.vs", "shaders//debugRenderer.fs");
+	shader->Use();
+	shader->SetMatrix4("projection", projection);
+	shader->SetVec4Float("color", color);
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -49,7 +50,6 @@ void DebugRenderer::DrawBox(b2Vec2* points)
 
 	indices.push_back(3);
 	indices.push_back(0);
-	Init();
 }
 
 void DebugRenderer::DrawCircle(const glm::vec3 & center, float radius)
@@ -68,7 +68,6 @@ void DebugRenderer::DrawCircle(const glm::vec3 & center, float radius)
 	}
 	indices.push_back(numVerts - 1);
 	indices.push_back(0);
-	Init();
 }
 
 void DebugRenderer::Init()
@@ -90,13 +89,11 @@ void DebugRenderer::Init()
 	verts.clear();
 }
 
-void DebugRenderer::Render(glm::mat4 model, float lineWidth)
+void DebugRenderer::Render(glm::mat4 view, glm::mat4 model, float lineWidth)
 {
 	shader->Use();
-	shader->SetVec4Float("color", color);
-	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("model", model);
-	shader->SetMatrix4("view", camera->GetViewMatrix());
+	shader->SetMatrix4("view", view);
 	glLineWidth(lineWidth);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_LINES, numElements, GL_UNSIGNED_INT, 0);

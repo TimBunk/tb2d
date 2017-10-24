@@ -13,7 +13,7 @@ public:
 
 	virtual void Destroy();
 	virtual void Reset();
-	bool IsAlive();
+	virtual bool IsAlive();
 
 	virtual void SetActive(bool active);
 protected:

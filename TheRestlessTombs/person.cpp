@@ -1,9 +1,10 @@
 #include "person.h"
 
-Person::Person(Camera* camera, Shader* shader) : B2Entity::B2Entity(camera, shader) {
+Person::Person(Camera* camera, Shader* shader) : Destructable::Destructable(camera, shader) {
 	this->camera = camera;
 	this->shader = shader;
     health = 0;
+    currentHealth = health;
     damage = 0;
     attackSpeed = 0;
     speed = 0;
@@ -17,6 +18,33 @@ Person::~Person() {
 
 void Person::Update(float deltaTime) {
 
+}
+
+void Person::Draw() {
+	if (IsAlive()) {
+		shader->Use();
+		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(GetPositionInPixels(), this->GetGlobalPosition().z));
+		model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
+		shader->SetMatrix4("model", model);
+		glActiveTexture(GL_TEXTURE0 + texture.id);
+		shader->SetInt("ourTexture", texture.id);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(0);
+	}
+}
+
+bool Person::IsAlive() {
+	if (currentHealth <= 0) {
+		return false;
+	}
+	return true;
 }
 
 void Person::TakeDamage(int damage) {
@@ -35,18 +63,6 @@ void Person::ApplyHealing(int healing) {
 	else {
 		currentHealth += healing;
 	}
-}
-
-void Person::FlipTextureAutomatic() {
-	if (!flippedTexture && currentX > this->localPosition.x) {
-		FlipTexture();
-		std::cout << "originial texture" << std::endl;
-	}
-	else if (flippedTexture && currentX < this->localPosition.x){
-		FlipTexture();
-		std::cout << "flipped texture" << std::endl;
-	}
-	currentX = this->localPosition.x;
 }
 
 void Person::FlipTexture() {

@@ -49,6 +49,7 @@ bool Destructable::IsAlive() {
 void Destructable::SetActive(bool active) {
 	if (body != NULL) {
 		if (alive || !active) {
+			body->SetAwake(active);
 			body->SetActive(active);
 		}
 	}

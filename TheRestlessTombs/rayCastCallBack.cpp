@@ -4,8 +4,6 @@ RayCastCallBack::RayCastCallBack() : b2RayCastCallback::b2RayCastCallback() {
 	Camera* camera = nullptr;
 	Shader* shader = nullptr;
 	glm::vec4 color = glm::vec4(0.0f);
-	p1 = b2Vec2(0.0f, 0.0f);
-	p2 = b2Vec2(0.0f, 0.0f);
 }
 
 RayCastCallBack::~RayCastCallBack() {
@@ -52,6 +50,10 @@ void RayCastCallBack::Draw(glm::vec2 position, float angle) {
 }
 
 float32 RayCastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
+	// THE RAYCAST IGNORES SENSORS
+	if (fixture->IsSensor()) {
+		return -1;
+	}
 	ro.fixture = fixture;
 	ro.point = point;
 	ro.normal = normal;

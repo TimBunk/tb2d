@@ -33,7 +33,6 @@ public:
 private:
 	RaycastOutput ro;
 	float lineWidth;
-	b2Vec2 p1, p2;
 	Camera* camera;
 	Shader* shader;
 	glm::vec4 color;

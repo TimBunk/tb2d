@@ -1,23 +1,25 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include "b2entity.h"
+#include "destructable.h"
 #include "camera.h"
 #include "texture.h"
 #include "shader.h"
 #include <Box2D/Box2D.h>
 
-class Person : public B2Entity {
+class Person : public Destructable {
 public:
     Person(Camera* camera, Shader* shader);
     virtual ~Person();
 
     virtual void Update(float deltaTime);
+    virtual void Draw();
 
-    void TakeDamage(int damage);
+    bool IsAlive();
+
+    virtual void TakeDamage(int damage);
     void ApplyHealing(int healing);
 
-    virtual void FlipTextureAutomatic();
     // if it is already flipped set to true
     void FlipTexture();
     bool IsTextureFlipped();

@@ -19,7 +19,7 @@
 #include <math.h>
 #include <string.h>
 #include <iomanip> // setprecision
-#include <sstream> // stringstream
+#include <sstream>
 #include <glm-0.9.8.4/glm/gtx/rotate_vector.hpp>
 
 class Player : public Person {

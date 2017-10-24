@@ -66,7 +66,14 @@ int main() {
 	rm->CreateTexture("silverLootChestOpened", "textures/SilverLootChestOpened.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("heartEmpty", "textures/HeartEmpty.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("heartFilled", "textures/HeartFilled.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("orcWeapon", "textures/OrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("babyOrc", "textures/BabyOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("psychoOrc", "textures/PsyhcoOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("psychoOrcWeapon", "textures/PsyhcoOrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("orc", "textures/Orc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("armoredOrc", "textures/ArmoredOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("necromancerOrc", "textures/NecromancerOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	contactListener = new ContactListener();
 	world->SetContactListener(contactListener);
@@ -89,6 +96,7 @@ int main() {
     // DELETE ALL VARIABLES CREATED WITH THE KEYWORD "new"
 	delete window;
     delete level1;
+    delete contactListener;
     delete world;
 
     std::cout << "Program succeeded" << std::endl;

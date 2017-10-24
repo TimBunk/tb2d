@@ -1,4 +1,6 @@
 #include "weapon.h"
+#include "player.h"
+#include "enemy.h"
 
 Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader) : B2Entity::B2Entity(camera, shader) {
 	this->damage = damage;
@@ -10,6 +12,7 @@ Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belong
 	angle = glm::vec2(0.0f);
 	timer = 0.0f;
 	attacking = false;
+	hit = false;
 	flippedBody = true;
 	w = 0;
 	h = 0;
@@ -36,10 +39,27 @@ void Weapon::Update(float deltaTime) {
 		if (currentSwingAngle > swingAngle) {
 			currentSwingAngle = swingAngle;
 		}
-		// TODO DETECT COLLISION ON ENEMY OR PLAYER
 		for (int i=0;i<contacts.size();i++) {
-			if (belongsToPlayer && dynamic_cast<Destructable*>(contacts[i]) != 0) {
-				dynamic_cast<Destructable*>(contacts[i])->Destroy();
+			if (dynamic_cast<Player*>(contacts[i]) != 0) {
+				if (!hit && !belongsToPlayer) {
+					hit = true;
+					dynamic_cast<Player*>(contacts[i])->TakeDamage(damage);
+					break;
+				}
+			}
+			else if (dynamic_cast<Enemy*>(contacts[i]) != 0) {
+				if (!hit && belongsToPlayer) {
+					hit = true;
+					dynamic_cast<Enemy*>(contacts[i])->TakeDamage(damage);
+					break;
+				}
+			}
+			else if (dynamic_cast<Destructable*>(contacts[i]) != 0) {
+				if (!hit && belongsToPlayer) {
+					hit = true;
+					dynamic_cast<Destructable*>(contacts[i])->Destroy();
+					break;
+				}
 			}
 		}
 	}
@@ -92,7 +112,7 @@ void Weapon::CreateBody(int x, int y, int w, int h, b2World* world) {
 	bodydef.type = b2_dynamicBody;
 
 	// Step 2 create a body
-	body = world->CreateBody(&bodydef);
+	body = this->world->CreateBody(&bodydef);
 
 	// Step 3 create shape
 	b2PolygonShape shape;
@@ -248,12 +268,26 @@ void Weapon::FlipBody() {
 	glBindVertexArray(0);
 }
 
+bool Weapon::IsFlipped() {
+	return flippedBody;
+}
+
 void Weapon::SetAngle(glm::vec2 angle) {
 	this->angle = angle;
 }
 
+void Weapon::SetDamage(float damage) {
+	this->damage = damage;
+}
+void Weapon::SetAttackDuration(float attackDuration) {
+	this->attackDuration = attackDuration;
+}
+
 void Weapon::Attack() {
-	attacking = true;
+	if (!attacking) {
+		hit = false;
+		attacking = true;
+	}
 }
 
 bool Weapon::IsAttacking() {
@@ -261,5 +295,5 @@ bool Weapon::IsAttacking() {
 }
 
 bool Weapon::Hit() {
-	return false;
+	return hit;
 }

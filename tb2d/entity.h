@@ -19,6 +19,7 @@ public:
 	glm::vec2 localScale;
 
 	virtual void Update(float deltaTime);
+	virtual void UpdateChilderen(Entity* parent, float deltaTime);
 	virtual void Draw();
 
 	// You only have to add a child one, otherwise it might cause unexpected behaviour
@@ -31,8 +32,6 @@ public:
 
 protected:
 	std::vector<Entity*> entities;
-
-	virtual void UpdateChilderen(Entity* parent, float deltaTime);
 private:
 	// global values
 	glm::vec3 position;

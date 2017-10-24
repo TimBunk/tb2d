@@ -7,15 +7,23 @@
 
 class Enemy : public Person {
 public:
-	Enemy(Player* player, Camera* camera, Shader* shader, Shader* lineRenderer);
+	Enemy(Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
 	~Enemy();
 
-	void Update(float deltaTime);
+	virtual void CreateBody(int x, int y, int w, int h);
+protected:
+	Player* player;
+	glm::vec3 playerLastLocation;
+	float distancePlayer;
 
-	void CreateBody(int x, int y, int w, int h, b2World* world);
+	glm::vec3 spawnPosition;
+	float minimalRange;
+
+	bool LookForPlayer(float deltaTime);
+	bool ShootRaycast();
 private:
 	RayCastCallBack* raycast;
-	Player* player;
+	float lineOfSight;
 };
 
 #endif // !ENEMY_H

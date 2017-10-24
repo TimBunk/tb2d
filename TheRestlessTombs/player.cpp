@@ -3,10 +3,6 @@
 Player::Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader, b2World* world) : Person::Person(camera, shader) {
 	this->input =  input;
 	this->rm = rm;
-	sword = new Weapon(1.0f, 135.0f, 0.25f, true, camera, shader);
-	sword->GiveTexture(rm->GetTexture("playerSword"));
-	sword->CreateBody(0, 0, 30, 60, world);
-	this->AddChild(sword);
 	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("showCase"));
 	this->AddChild(showCase);
 	potion = nullptr;
@@ -24,6 +20,10 @@ Player::Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader
 	currentSpeed = speed;
 	attackSpeed = 0.333f;
 	currentAttackSpeed = attackSpeed;
+	sword = new Weapon(currentDamage, 135.0f, currentAttackSpeed, true, camera, shader);
+	sword->GiveTexture(rm->GetTexture("playerSword"));
+	sword->CreateBody(0, 0, 30, 60, world);
+	this->AddChild(sword);
 	health = 4;
 	currentHealth = health;
 	lastHealth = health;
@@ -51,6 +51,7 @@ Player::~Player() {
 }
 
 void Player::Update(float deltaTime) {
+	// TODO Stop updating player when it is not alive anymore
 
 	// Set the player's movement
 	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
@@ -140,18 +141,22 @@ void Player::Update(float deltaTime) {
 		damageBoost.lifeTime -= deltaTime;
 		damageBoost.active = true;
 		UpdateStats();
+		sword->SetDamage(currentDamage);
 		if (damageBoost.lifeTime <= 0.0f) {
 			damageBoost.active = false;
 			UpdateStats();
+			sword->SetDamage(currentDamage);
 		}
 	}
 	if (speedBoost.lifeTime > 0.0f) {
 		speedBoost.lifeTime -= deltaTime;
 		speedBoost.active = true;
 		UpdateStats();
+		sword->SetAttackDuration(currentAttackSpeed);
 		if (speedBoost.lifeTime <= 0.0f) {
 			speedBoost.active = false;
 			UpdateStats();
+			sword->SetAttackDuration(currentAttackSpeed);
 		}
 	}
 

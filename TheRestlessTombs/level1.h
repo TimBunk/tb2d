@@ -15,6 +15,10 @@
 #include "speedPotion.h"
 #include "lootChest.h"
 #include "babyOrc.h"
+#include "psychoOrc.h"
+#include "orc.h"
+#include "armoredOrc.h"
+#include "necromancerOrc.h"
 
 #include <Box2D/Box2D.h>
 
@@ -54,6 +58,10 @@ private:
 	SpeedPotion* speedPotion1;
 	LootChest* lootChest1;
 	BabyOrc* babyOrc1;
+	PsychoOrc* psychoOrc1;
+	Orc* orc1;
+	ArmoredOrc* armoredOrc1;
+	NecromancerOrc* necromancerOrc1;
 
 };
 

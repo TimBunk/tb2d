@@ -1,46 +1,75 @@
 #include "enemy.h"
 
-Enemy::Enemy(Player* player, Camera* camera, Shader* shader, Shader* lineRenderer) : Person::Person(camera, shader) {
+Enemy::Enemy(Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Person::Person(camera, shader) {
 	this->player = player;
+	this->lineOfSight = lineOfSight;
+	this->world = world;
 	raycast = new RayCastCallBack();
-	raycast->CreateLine(500.0f, 25.0f, camera, lineRenderer, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	raycast->CreateLine(lineOfSight, 25.0f, camera, lineRenderer, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	playerLastLocation = this->localPosition;
+	distancePlayer = 10000.0f;
+	minimalRange = 0.0f;
 }
 
 Enemy::~Enemy() {
 	delete raycast;
 }
 
-void Enemy::Update(float deltaTime) {
-	/*b2RayCastOutput output;
-	b2RayCastInput input;
-	input.p1 = this->GetPositionInPixels().x;
-	input.p2 = this->GetPositionInPixels().y;
-	input.maxFraction = 1;
-	if (fixture->RayCast(&output, input, 1)) {
-
-	}
-	b2RayCastCallback callBack;*/
+bool Enemy::LookForPlayer(float deltaTime) {
 	this->localPosition = glm::vec3(this->GetPositionInPixels().x, this->GetPositionInPixels().y, 1.0f);
-	world->RayCast(raycast, b2Vec2(0.0f, 0.0f), b2Vec2(800.0f * Window::p2m, 600.0f * Window::p2m));
+	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
+	if (this->ShootRaycast()) {
+		vel = b2Vec2(player->localPosition.x - this->localPosition.x, player->localPosition.y - this->localPosition.y);
+		vel.Normalize();
+		vel *= (speed * 500.0f * deltaTime);
+		body->SetLinearVelocity(vel);
+		if (IsTextureFlipped() && vel.x < 0.0f) {
+			FlipTexture();
+		}
+		else if (!IsTextureFlipped() && vel.x > 0.0f) {
+			FlipTexture();
+		}
+		return true;
+	}
+	else if (glm::distance(this->localPosition, playerLastLocation) > minimalRange) {
+		vel = b2Vec2(playerLastLocation.x - this->localPosition.x, playerLastLocation.y - this->localPosition.y);
+		vel.Normalize();
+		vel *= (speed * 500.0f * deltaTime);
+		body->SetLinearVelocity(vel);
+		return false;
+	}
+	body->SetLinearVelocity(vel);
+	return false;
+}
+
+bool Enemy::ShootRaycast() {
+	// DRAW
 	glm::vec2 angle = this->localPosition - player->localPosition;
 	angle = glm::normalize(angle);
 	angle *= (((float)M_PI) * 180.0f);
 	float newAngle = glm::atan(angle.y, angle.x);
-	//std::cout << "Angle in radius between player and enemy = " << newAngle << std::endl;
 	raycast->Draw(glm::vec2(this->localPosition.x, this->localPosition.y), newAngle);
-	RaycastOutput ro = raycast->GetOutput();
-	if (static_cast<B2Entity*>(ro.fixture->GetUserData()) == NULL) { return; }
-	B2Entity* b2entity = static_cast<B2Entity*>(ro.fixture->GetUserData());
-	if (dynamic_cast<Player*>(b2entity) != NULL) {
-		//std::cout << "PLAYER HAS BEEN HIT" << std::endl;
-	}
 
+	// UPDATE
+	distancePlayer = glm::distance(this->localPosition, player->localPosition);
+	if (distancePlayer < lineOfSight) {
+		world->RayCast(raycast, b2Vec2(this->localPosition.x * Window::p2m, this->localPosition.y * Window::p2m), b2Vec2(player->localPosition.x * Window::p2m, player->localPosition.y * Window::p2m));
+		RaycastOutput ro = raycast->GetOutput();
+		if (static_cast<B2Entity*>(ro.fixture->GetUserData()) == NULL) { return false; }
+		B2Entity* b2entity = static_cast<B2Entity*>(ro.fixture->GetUserData());
+		if (dynamic_cast<Player*>(b2entity) != NULL) {
+			playerLastLocation = player->localPosition;
+			return true;
+		}
+	}
+	return false;
 }
 
-void Enemy::CreateBody(int x, int y, int w, int h, b2World* world) {
-	// Create a pointer to the world the body will be connected to
+void Enemy::CreateBody(int x, int y, int w, int h) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
-	this->world = world;
+	spawnPosition = this->localPosition;
+	playerLastLocation = this->localPosition;
+	minimalRange = glm::length(glm::vec2(w, h));
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);
@@ -60,9 +89,6 @@ void Enemy::CreateBody(int x, int y, int w, int h, b2World* world) {
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.3f;
 	fixtureDef.restitution = 0.5f;
-	// Set the collision filters
-	//fixtureDef.filter.categoryBits = 0x0002;
-	//fixtureDef.filter.maskBits = 0x0004;
 	fixture = body->CreateFixture(&fixtureDef);
 	fixture->SetUserData(this);
 	for (int i = 0; i < 4; i++) {

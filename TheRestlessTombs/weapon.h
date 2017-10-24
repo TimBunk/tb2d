@@ -17,8 +17,11 @@ public:
 
 	void CreateBody(int x, int y, int w, int h, b2World* world);
 	void FlipBody();
+	bool IsFlipped();
 
 	void SetAngle(glm::vec2 angle);
+	void SetDamage(float damage);
+	void SetAttackDuration(float attackDuration);
 
 	virtual void Attack();
 	virtual bool IsAttacking();
@@ -32,6 +35,7 @@ private:
 
 	float timer;
 	bool attacking;
+	bool hit;
 
 	float damage;
 	float attackDuration;
