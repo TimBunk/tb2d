@@ -69,10 +69,12 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	orc1->GiveTexture(this->rm->GetTexture("orc"));
 	armoredOrc1 = new ArmoredOrc(this->player, 350.0f, this->rm->GetTexture("orcWeapon"), this->camera, this->rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
 	armoredOrc1->CreateBody(500, 500, 50, 75);
-	armoredOrc1->GiveTexture(this->rm->GetTexture("armoredOrc"));*/
+	armoredOrc1->GiveTexture(this->rm->GetTexture("armoredOrc"));
 	necromancerOrc1 = new NecromancerOrc(1.5f, this->rm, this->player, 250.0f, this->camera, rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
 	necromancerOrc1->CreateBody(555, 500, 50, 75);
-	necromancerOrc1->GiveTexture(this->rm->GetTexture("necromancerOrc"));
+	necromancerOrc1->GiveTexture(this->rm->GetTexture("necromancerOrc"));*/
+	bomb1 = new Bomb(30.0f, 4.5f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"));
+	bomb1->CreateBody(500, 500, 30, this->world);
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -99,7 +101,8 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	//room1->AddChild(psychoOrc1);
 	//room1->AddChild(orc1);
 	//room1->AddChild(armoredOrc1);
-	room1->AddChild(necromancerOrc1);
+	//room1->AddChild(necromancerOrc1);
+	room1->AddChild(bomb1);
 	room1->SetActive(true);
 	rooms.push_back(room1);
 
@@ -136,8 +139,9 @@ Level1::~Level1() {
 	delete babyOrc1;
 	/*delete psychoOrc1;
 	delete orc1;
-	delete armoredOrc1;*/
-	delete necromancerOrc1;
+	delete armoredOrc1;
+	delete necromancerOrc1;*/
+	delete bomb1;
 }
 
 void Level1::Update(float deltaTime) {
@@ -159,7 +163,8 @@ void Level1::Update(float deltaTime) {
 		//psychoOrc1->Reset();
 		//orc1->Reset();
 		//armoredOrc1->Reset();
-		necromancerOrc1->Reset();
+		//necromancerOrc1->Reset();
+		bomb1->Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

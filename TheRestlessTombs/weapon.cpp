@@ -54,7 +54,7 @@ void Weapon::Update(float deltaTime) {
 					break;
 				}
 			}
-			else if (dynamic_cast<Destructable*>(contacts[i]) != 0) {
+			else if (dynamic_cast<Crate*>(contacts[i]) != 0 || dynamic_cast<LootChest*>(contacts[i]) != 0) {
 				if (!hit && belongsToPlayer) {
 					hit = true;
 					dynamic_cast<Destructable*>(contacts[i])->Destroy();

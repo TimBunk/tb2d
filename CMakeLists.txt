@@ -242,6 +242,10 @@ file(
   COPY TheRestlessTombs/textures
   DESTINATION ${CMAKE_BINARY_DIR}
 )
+file(
+  COPY TheRestlessTombs/shaders
+  DESTINATION ${CMAKE_BINARY_DIR}
+)
 ENDIF()
 
 ####################################################################

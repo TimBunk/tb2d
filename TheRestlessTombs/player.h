@@ -15,6 +15,7 @@
 #include "speedPotion.h"
 #include "showCase.h"
 #include "text.h"
+#include "bomb.h"
 
 #include <math.h>
 #include <string.h>

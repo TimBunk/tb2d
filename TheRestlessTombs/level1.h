@@ -14,6 +14,7 @@
 #include "damagePotion.h"
 #include "speedPotion.h"
 #include "lootChest.h"
+#include "bomb.h"
 #include "babyOrc.h"
 #include "psychoOrc.h"
 #include "orc.h"
@@ -62,6 +63,7 @@ private:
 	Orc* orc1;
 	ArmoredOrc* armoredOrc1;
 	NecromancerOrc* necromancerOrc1;
+	Bomb* bomb1;
 
 };
 

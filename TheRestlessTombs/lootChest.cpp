@@ -1,4 +1,5 @@
 #include "lootChest.h"
+#include "player.h"
 
 LootChest::LootChest(int gold, Player* player, Camera* camera, Shader* shader, Shader* text) : Destructable::Destructable(camera, shader) {
 	this->gold = gold;

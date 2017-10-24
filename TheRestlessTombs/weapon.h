@@ -5,7 +5,9 @@
 #include "camera.h"
 #include "shader.h"
 #include "debugRenderer.h"
-#include "destructable.h"
+//#include "destructable.h"
+#include "crate.h"
+#include "lootChest.h"
 
 class Weapon : public B2Entity {
 public:

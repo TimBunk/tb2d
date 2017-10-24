@@ -2,10 +2,11 @@
 #define LOOTCHEST_H
 
 #include "destructable.h"
-#include "player.h"
 #include "text.h"
 
 #include <string.h>
+
+class Player;
 
 class LootChest : public Destructable {
 public:

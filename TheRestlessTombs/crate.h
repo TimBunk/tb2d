@@ -2,8 +2,6 @@
 #define CRATE_H
 
 #include "destructable.h"
-#include "weapon.h"
-#include "player.h"
 #include "healthPotion.h"
 
 class Crate : public Destructable{

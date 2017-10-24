@@ -2,7 +2,6 @@
 #define HEALTHPOTION_H
 
 #include "potion.h"
-#include "player.h"
 
 class HealthPotion : public Potion {
 public:

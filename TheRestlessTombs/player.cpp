@@ -169,6 +169,12 @@ void Player::Update(float deltaTime) {
 				potion->Destroy();
 				showCase->Give(potion->PickUp());
 			}
+			else if (dynamic_cast<Bomb*>(contacts[i]) != NULL) {
+				if (dynamic_cast<Bomb*>(contacts[i])->Impact()) {
+					this->TakeDamage(1);
+				}
+				std::cout << "collided with bomb" << std::endl;
+			}
 		}
 
 	}
