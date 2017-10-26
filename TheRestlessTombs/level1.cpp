@@ -81,6 +81,9 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	bossOrc = new BossOrc("BossOrc", this->rm, this->player, 350.0f, this->camera, this->rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
 	bossOrc->CreateBody(500, 500, 75, 100);
 	bossOrc->GiveTexture(this->rm->GetTexture("bossOrc"));
+	gold1 = new Gold(30, this->camera, this->rm->GetShader("shader"));
+	gold1->CreateBody(500, 400, 15, 15, true, true, this->world);
+	gold1->GiveTexture(this->rm->GetTexture("gold"));
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -110,6 +113,7 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	//room1->AddChild(necromancerOrc1);
 	//room1->AddChild(bomb1);
 	//room1->AddChild(bomberOrc1);
+	room1->AddChild(gold1);
 	room1->AddChild(bossOrc);
 	room1->SetActive(true);
 	rooms.push_back(room1);
@@ -152,6 +156,7 @@ Level1::~Level1() {
 	delete bomb1;
 	delete bomberOrc1;*/
 	delete bossOrc;
+	delete gold1;
 }
 
 void Level1::Update(float deltaTime) {
@@ -177,6 +182,7 @@ void Level1::Update(float deltaTime) {
 		//bomb1->Reset();
 		//bomberOrc1->Reset();
 		bossOrc->Reset();
+		gold1->Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

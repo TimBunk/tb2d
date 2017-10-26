@@ -79,6 +79,7 @@ int main() {
 	rm->CreateTexture("bomberOrc", "textures/BomberOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("bossOrc", "textures/BossOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("bossOrcWeapon", "textures/BossOrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("gold", "textures/Gold.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	contactListener = new ContactListener();

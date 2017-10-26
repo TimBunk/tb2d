@@ -22,6 +22,7 @@
 #include "necromancerOrc.h"
 #include "bomberOrc.h"
 #include "bossOrc.h"
+#include "gold.h"
 
 #include <Box2D/Box2D.h>
 
@@ -68,6 +69,7 @@ private:
 	Bomb* bomb1;
 	BomberOrc* bomberOrc1;
 	BossOrc* bossOrc;
+	Gold* gold1;
 
 };
 

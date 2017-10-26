@@ -169,14 +169,15 @@ void Player::Update(float deltaTime) {
 				potion->Destroy();
 				showCase->Give(potion->PickUp());
 			}
-			else if (dynamic_cast<Bomb*>(contacts[i]) != NULL) {
-				if (dynamic_cast<Bomb*>(contacts[i])->Impact()) {
-					this->TakeDamage(1);
-				}
-				std::cout << "collided with bomb" << std::endl;
+		}
+		if (dynamic_cast<Bomb*>(contacts[i]) != NULL) {
+			if (dynamic_cast<Bomb*>(contacts[i])->Impact()) {
+				this->TakeDamage(1);
 			}
 		}
-
+		else if (dynamic_cast<Gold*>(contacts[i]) != NULL) {
+			AddGold(dynamic_cast<Gold*>(contacts[i])->GetGold());
+		}
 	}
 }
 
@@ -190,7 +191,7 @@ int Player::GetRoom() {
 
 void Player::AddGold(int gold) {
 	this->gold += gold;
-	std::string s = std::to_string(gold);
+	std::string s = std::to_string(this->gold);
 	std::string ss = "Gold: " + s;
 	textGold->SetText(ss);
 }
