@@ -12,7 +12,7 @@ struct SpeedBoost {
 
 class SpeedPotion : public Potion {
 public:
-	SpeedPotion(float speedBoost, float attackSpeedBoost, float lifeTime, Camera* camera, Shader* shader);
+	SpeedPotion(float speedBoost, float attackSpeedBoost, float lifeTime, Camera* camera, Shader* shader, b2World* world);
 	~SpeedPotion();
 
 	SpeedBoost Use();

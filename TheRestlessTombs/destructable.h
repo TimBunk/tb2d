@@ -5,7 +5,7 @@
 
 class Destructable : public B2Entity {
 public:
-	Destructable(Camera* camera, Shader* shader);
+	Destructable(Camera* camera, Shader* shader, b2World* world);
 	~Destructable();
 
 	virtual void Update(float deltaTime);

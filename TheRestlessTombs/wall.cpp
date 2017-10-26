@@ -1,11 +1,14 @@
 #include "wall.h"
 
-Wall::Wall(Camera* camera, Shader* shader, bool visible) : B2Entity::B2Entity(camera, shader) {
+Wall::Wall(bool visible, Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
 	this->visible = visible;
+	dr = nullptr;
 }
 
 Wall::~Wall() {
-	delete dr;
+	if (dr != nullptr) {
+		delete dr;
+	}
 }
 
 void Wall::Update(float deltaTime) {
@@ -36,20 +39,15 @@ void Wall::Draw() {
 	}
 }
 
-void Wall::CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world) {
-	// Create a pointer to the world the body will be connected to
+void Wall::CreateBody(int x, int y, int w, int h) {
+	width = w;
+	height = h;
 	dr = new DebugRenderer(camera->GetProjectionMatrix(), glm::vec4(1.0f));
-	this->world = world;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);
 	bodydef.fixedRotation = true;
-	if (dynamic) {
-		bodydef.type = b2_dynamicBody;
-	}
-	else {
-		bodydef.type = b2_staticBody;
-	}
+	bodydef.type = b2_staticBody;
 
 	// Step 2 create a body
 	body = world->CreateBody(&bodydef);

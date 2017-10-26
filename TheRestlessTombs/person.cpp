@@ -1,8 +1,7 @@
 #include "person.h"
 
-Person::Person(Camera* camera, Shader* shader) : Destructable::Destructable(camera, shader) {
-	this->camera = camera;
-	this->shader = shader;
+Person::Person(ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
+	this->rm = rm;
     health = 0;
     currentHealth = health;
     damage = 0;
@@ -13,10 +12,6 @@ Person::Person(Camera* camera, Shader* shader) : Destructable::Destructable(came
 }
 
 Person::~Person() {
-
-}
-
-void Person::Update(float deltaTime) {
 
 }
 
@@ -73,7 +68,6 @@ void Person::FlipTexture() {
 		vertices[4] = point[1].x; vertices[5] = point[1].y; vertices[6] = 1.0f; vertices[7] = 0.0f;  // lower-right corner
 		vertices[8] = point[2].x; vertices[9] = point[2].y; vertices[10] = 1.0f; vertices[11] = 1.0f;  // upper-right corner
 		vertices[12] = point[3].x; vertices[13] = point[3].y; vertices[14] = 0.0f; vertices[15] = 1.0f;  // uper left corner
-
 	}
 	else {
 		flippedTexture = true;

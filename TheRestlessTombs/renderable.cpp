@@ -1,8 +1,12 @@
 #include "renderable.h"
 
-Renderable::Renderable(Camera* camera, Shader* shader) : Entity::Entity() {
+Renderable::Renderable(Texture texture, Camera* camera, Shader* shader) : Entity::Entity() {
+	this->texture = texture;
 	this->camera = camera;
 	this->shader = shader;
+	VAO = 0;
+	VBO = 0;
+	EBO = 0;
 }
 
 Renderable::~Renderable() {
@@ -11,10 +15,6 @@ Renderable::~Renderable() {
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
 	}
-}
-
-void Renderable::Update(float deltaTime) {
-
 }
 
 void Renderable::Draw() {
@@ -33,10 +33,6 @@ void Renderable::Draw() {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
-}
-
-void Renderable::GiveTexture(Texture texture) {
-	this->texture = texture;
 }
 
 void Renderable::CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight) {

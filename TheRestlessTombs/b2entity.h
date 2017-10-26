@@ -11,13 +11,13 @@
 
 class B2Entity : public Entity {
 public:
-	B2Entity(Camera* camera, Shader* shader);
+	B2Entity(Camera* camera, Shader* shader, b2World* world);
 	virtual ~B2Entity();
 
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
-	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world);
+	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor);
 	virtual void GiveTexture(Texture texture);
 
 	glm::vec2 GetPositionInPixels();
@@ -32,15 +32,16 @@ public:
 protected:
 	Camera* camera;
 	Shader* shader;
+	b2World* world;
 	Texture texture;
 
 	GLuint VBO, VAO, EBO;
-	b2World* world;
 	b2Body* body;
 	b2Fixture* fixture;
 	b2Vec2 point[4];
 
 	std::vector<B2Entity*> contacts;
+	int width, height;
 private:
 
 };

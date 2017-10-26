@@ -10,7 +10,7 @@ class Player;
 
 class LootChest : public Destructable {
 public:
-	LootChest(int gold, Player* player, Camera* camera, Shader* shader, Shader* text);
+	LootChest(int gold, Player* player, Shader* text, Camera* camera, Shader* shader, b2World* world);
 	~LootChest();
 
 	void Update(float deltaTime);

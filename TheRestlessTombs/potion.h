@@ -2,9 +2,6 @@
 #define POTION_H
 
 #include "b2entity.h"
-//#include "player.h"
-
-class Player;
 
 struct ShowCasePotion {
 	int w;
@@ -12,13 +9,15 @@ struct ShowCasePotion {
 	Texture texture;
 };
 
+class Player;
+
 class Potion : public B2Entity {
 public:
-	Potion(Camera* camera, Shader* shader);
+	Potion(Camera* camera, Shader* shader, b2World* world);
 	~Potion();
 
 	void Draw();
-	void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world);
+	void CreateBody(int x, int y, int w, int h);
 
 	virtual void Destroy();
 	virtual void Reset();

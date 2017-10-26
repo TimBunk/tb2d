@@ -5,7 +5,7 @@
 
 class ArmoredOrc : public Enemy {
 public:
-	ArmoredOrc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	ArmoredOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~ArmoredOrc();
 
 	void Update(float deltaTime);

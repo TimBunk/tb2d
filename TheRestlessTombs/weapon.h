@@ -11,13 +11,13 @@
 
 class Weapon : public B2Entity {
 public:
-	Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader);
+	Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader, b2World* world);
 	~Weapon();
 
 	void Update(float deltaTime);
 	void Draw();
 
-	void CreateBody(int x, int y, int w, int h, b2World* world);
+	void CreateBody(int x, int y, int w, int h);
 	void FlipBody();
 	bool IsFlipped();
 

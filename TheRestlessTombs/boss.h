@@ -6,13 +6,12 @@
 
 class Boss : public Enemy {
 public:
-	Boss(std::string nameBoss, ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	Boss(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~Boss();
 
 	void Draw();
 protected:
 	Text* textBoss;
-	ResourceManager* rm;
 private:
 	GLuint HealthVBO, HealthVAO, HealthEBO;
 	Shader* healthbar;

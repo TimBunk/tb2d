@@ -1,14 +1,10 @@
 #include "crate.h"
 
-Crate::Crate(Camera* camera, Shader* shader) : Destructable::Destructable(camera, shader) {
+Crate::Crate(Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
 	potion = nullptr;
 }
 
 Crate::~Crate() {
-
-}
-
-void Crate::Update(float deltaTime) {
 
 }
 

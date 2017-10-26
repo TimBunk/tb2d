@@ -1,15 +1,15 @@
 #include "psychoOrc.h"
 
-PsychoOrc::PsychoOrc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Enemy::Enemy(player, lineOfSight, camera, shader, lineRenderer, world) {
+PsychoOrc::PsychoOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	// stats of the psychoorc
 	damage = 1;
 	speed = 6.0f;
 	attackSpeed = 0.75f;
 	health = 1;
 	currentHealth = health;
-	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader);
-	sword->GiveTexture(_sword);
-	sword->CreateBody(0, 0, 18, 36, world);
+	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
+	sword->GiveTexture(this->rm->GetTexture("psychoOrcWeapon"));
+	sword->CreateBody(0, 0, 18, 36);
 	sword->SetAngle(glm::vec2(0.0f, 0.0f));
 	sword->localPosition.x = 40.0f;
 	this->AddChild(sword);

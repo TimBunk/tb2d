@@ -4,12 +4,10 @@
 #include "destructable.h"
 #include "healthPotion.h"
 
-class Crate : public Destructable{
+class Crate : public Destructable {
 public:
-	Crate(Camera* camera, Shader* shader);
+	Crate(Camera* camera, Shader* shader, b2World* world);
 	~Crate();
-
-	void Update(float deltaTime);
 
 	void Store(Potion* potion);
 	void Destroy();

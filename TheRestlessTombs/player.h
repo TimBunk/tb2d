@@ -26,7 +26,7 @@
 
 class Player : public Person {
 public:
-    Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader, b2World* world);
+    Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
     ~Player();
 
     void Update(float deltaTime);
@@ -37,7 +37,6 @@ public:
 
 private:
     Input* input;
-    ResourceManager* rm;
     Weapon* sword;
     ShowCase* showCase;
     Text* textGold;

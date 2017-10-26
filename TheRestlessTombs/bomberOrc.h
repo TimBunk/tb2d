@@ -6,7 +6,7 @@
 
 class BomberOrc : public Enemy {
 public:
-	BomberOrc(ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	BomberOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BomberOrc();
 
 	void Update(float deltaTime);

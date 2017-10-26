@@ -1,4 +1,4 @@
-#include "hand.h"
+/*#include "hand.h"
 
 Hand::Hand(Camera* camera, Shader* shader, float radius) : Renderable(camera, shader) {
 	this->radius = radius;
@@ -39,3 +39,4 @@ void Hand::SetAngle(glm::vec2 angle) {
 float Hand::GetAngle() {
 	return rotation;
 }
+*/

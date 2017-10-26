@@ -1,7 +1,7 @@
 #include "lootChest.h"
 #include "player.h"
 
-LootChest::LootChest(int gold, Player* player, Camera* camera, Shader* shader, Shader* text) : Destructable::Destructable(camera, shader) {
+LootChest::LootChest(int gold, Player* player, Shader* text, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
 	this->gold = gold;
 	this->player = player;
 	std::string s = std::to_string(gold);

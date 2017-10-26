@@ -1,6 +1,6 @@
 #include "bomberOrc.h"
 
-BomberOrc::BomberOrc(ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Enemy::Enemy(player, lineOfSight, camera, shader, lineRenderer, world) {
+BomberOrc::BomberOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	this->rm = rm;
 	timer = 0.0f;
 	// stats of the bomberOrc
@@ -24,9 +24,9 @@ void BomberOrc::Update(float deltaTime) {
 		if (LookForPlayer(deltaTime)) {
 			timer += deltaTime;
 			if (timer >= attackSpeed) {
-				Bomb* b = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"));
+				Bomb* b = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"), this->world);
 				glm::vec3 bombPos = ((player->localPosition - this->localPosition) /= 2) + this->localPosition;
-				b->CreateBody(bombPos.x, bombPos.y, 30, this->world);
+				b->CreateBody(bombPos.x, bombPos.y, 30);
 				bombs.push_back(b);
 				timer = 0.0f;
 			}

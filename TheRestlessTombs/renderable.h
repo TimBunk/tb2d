@@ -8,21 +8,18 @@
 
 class Renderable : public Entity {
 public:
-	Renderable(Camera* camera, Shader* shader);
+	Renderable(Texture texture, Camera* camera, Shader* shader);
 	~Renderable();
 
-	void Update(float deltaTime);
 	virtual void Draw();
-
-	void GiveTexture(Texture texture);
-	// repeat means how many times the texture should repeat this goes by the amount of pixels
+	// Example textureWidth: Lets say your w = 50 but your textureWidth is 25 that means your texture will fit in 2 times
 	virtual void CreateBody(int x, int y, int w, int h, float textureWidth, float textureHeight);
+
 protected:
 	GLuint VBO, VAO, EBO;
 	Camera* camera;
 	Shader* shader;
 	Texture texture;
-private:
 
 };
 

@@ -1,8 +1,7 @@
 #include "player.h"
 
-Player::Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader, b2World* world) : Person::Person(camera, shader) {
+Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
 	this->input =  input;
-	this->rm = rm;
 	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("showCase"));
 	this->AddChild(showCase);
 	potion = nullptr;
@@ -20,9 +19,9 @@ Player::Player(Input* input, Camera* camera, ResourceManager* rm, Shader* shader
 	currentSpeed = speed;
 	attackSpeed = 0.333f;
 	currentAttackSpeed = attackSpeed;
-	sword = new Weapon(currentDamage, 135.0f, currentAttackSpeed, true, camera, shader);
+	sword = new Weapon(currentDamage, 135.0f, currentAttackSpeed, true, camera, shader, this->world);
 	sword->GiveTexture(rm->GetTexture("playerSword"));
-	sword->CreateBody(0, 0, 30, 60, world);
+	sword->CreateBody(0, 0, 30, 60);
 	this->AddChild(sword);
 	health = 4;
 	currentHealth = health;

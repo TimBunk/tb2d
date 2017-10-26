@@ -5,7 +5,7 @@
 
 class Bomb : public Destructable {
 public:
-	Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader);
+	Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world);
 	~Bomb();
 
 	void Update(float deltaTime);
@@ -13,7 +13,7 @@ public:
 
 	bool Impact();
 	void Reset();
-	void CreateBody(int x, int y, int w, b2World* world);
+	void CreateBody(int x, int y, int w);
 private:
 	float explosionTime;
 	float explosionRadius;

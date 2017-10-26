@@ -7,12 +7,12 @@
 class Wall : public B2Entity {
 public:
 	// Visible means if the wall should be rendered
-	Wall(Camera* camera, Shader* shader, bool visible);
+	Wall(bool visible, Camera* camera, Shader* shader, b2World* world);
 	~Wall();
 
 	void Update(float deltaTime);
 	void Draw();
-	void CreateBody(int x, int y, int w, int h, bool dynamic, b2World* world);
+	void CreateBody(int x, int y, int w, int h);
 
 	bool visible;
 private:

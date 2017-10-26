@@ -1,6 +1,6 @@
 #include "babyOrc.h"
 
-BabyOrc::BabyOrc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Enemy::Enemy(player, lineOfSight, camera, shader, lineRenderer, world) {
+BabyOrc::BabyOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	// stats of the babyorc
 	damage = 1;
 	speed = 3.0f;
@@ -8,9 +8,9 @@ BabyOrc::BabyOrc(Player* player, float lineOfSight, Texture _sword, Camera* came
 	health = 2;
 	currentHealth = health;
 
-	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader);
-	sword->GiveTexture(_sword);
-	sword->CreateBody(0, 0, 18, 36, world);
+	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
+	sword->GiveTexture(this->rm->GetTexture("orcWeapon"));
+	sword->CreateBody(0, 0, 18, 36);
 	sword->SetAngle(glm::vec2(0.0f, 0.0f));
 	sword->localPosition.x = 30.0f;
 	this->AddChild(sword);

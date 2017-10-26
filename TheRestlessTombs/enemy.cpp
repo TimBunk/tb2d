@@ -1,11 +1,10 @@
 #include "enemy.h"
 
-Enemy::Enemy(Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Person::Person(camera, shader) {
+Enemy::Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
 	this->player = player;
 	this->lineOfSight = lineOfSight;
-	this->world = world;
 	raycast = new RayCastCallBack();
-	raycast->CreateLine(lineOfSight, 25.0f, camera, lineRenderer, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	raycast->CreateLine(lineOfSight, 25.0f, camera, this->rm->GetShader("debugRenderer"), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	playerLastLocation = this->localPosition;
 	distancePlayer = 10000.0f;
 	minimalRange = 0.0f;
@@ -67,6 +66,8 @@ bool Enemy::ShootRaycast() {
 
 void Enemy::CreateBody(int x, int y, int w, int h) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
+	width = w;
+	height = h;
 	spawnPosition = this->localPosition;
 	playerLastLocation = this->localPosition;
 	minimalRange = glm::length(glm::vec2(w, h));

@@ -1,8 +1,7 @@
 #include "boss.h"
 
-Boss::Boss(std::string nameBoss, ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Enemy::Enemy(player, lineOfSight, camera, shader, lineRenderer, world) {
-	this->rm = rm;
-	this->healthbar = rm->GetShader("healthbar");
+Boss::Boss(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
+	healthbar = rm->GetShader("healthbar");
 	textBoss = new Text("fonts/OpenSans-Regular.ttf", nameBoss, 60, glm::vec4(0.5f, 1.0f, 0.5f, 1.0f), true, camera, rm->GetShader("textHud"));
 	textBoss->localPosition = glm::vec3(camera->screenWidth/2 - (textBoss->GetWidth()/4), 25, 1);
 	this->AddChild(textBoss);

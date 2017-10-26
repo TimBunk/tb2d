@@ -5,7 +5,7 @@
 
 class HealthPotion : public Potion {
 public:
-	HealthPotion(int healing, Camera* camera, Shader* shader);
+	HealthPotion(int healing, Camera* camera, Shader* shader, b2World* world);
 	~HealthPotion();
 
 	float Use();

@@ -5,7 +5,7 @@
 
 class BossOrc : public Boss {
 public:
-	BossOrc(std::string nameBoss, ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	BossOrc(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BossOrc();
 
 	void Update(float deltaTime);
@@ -14,6 +14,7 @@ public:
 	void Reset();
 private:
 	Weapon* hammer;
+
 	float timer;
 	float specialAbilityCooldown;
 	float specialAbilityTimer;

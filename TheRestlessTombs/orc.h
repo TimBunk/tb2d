@@ -5,7 +5,7 @@
 
 class Orc : public Enemy {
 public:
-	Orc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	Orc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~Orc();
 
 	void Update(float deltaTime);

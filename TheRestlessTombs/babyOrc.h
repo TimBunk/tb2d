@@ -6,7 +6,7 @@
 
 class BabyOrc : public Enemy {
 public:
-	BabyOrc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	BabyOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BabyOrc();
 
 	void Update(float deltaTime);

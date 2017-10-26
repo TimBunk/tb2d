@@ -1,6 +1,6 @@
 #include "bomb.h"
 
-Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader) : Destructable::Destructable(camera, shader) {
+Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
 	this->explosionTime = explosionTime;
 	this->explosionRadius = explosionRadius;
 	this->impactTime = impactTime;
@@ -34,7 +34,7 @@ void Bomb::Update(float deltaTime) {
 				glDeleteBuffers(1, &VBO);
 				glDeleteBuffers(1, &EBO);
 			}
-			CreateBody(this->localPosition.x, this->localPosition.y, explosionRadius, this->world);
+			CreateBody(this->localPosition.x, this->localPosition.y, explosionRadius);
 			GiveTexture(explosionTexture);
 		}
 		if (explode) {
@@ -88,14 +88,12 @@ void Bomb::Reset() {
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
 	}
-	CreateBody(this->localPosition.x, this->localPosition.y, w, this->world);
+	CreateBody(this->localPosition.x, this->localPosition.y, w);
 	currentImpactTime = 0.0f;
 }
 
-void Bomb::CreateBody(int x, int y, int w, b2World* world) {
-	// Create a pointer to the world the body will be connected to
+void Bomb::CreateBody(int x, int y, int w) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
-	this->world = world;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);

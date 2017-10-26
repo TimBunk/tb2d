@@ -5,7 +5,7 @@
 
 class Gold : public Destructable {
 public:
-	Gold(int value, Camera* camera, Shader* shader);
+	Gold(int value, Camera* camera, Shader* shader, b2World* world);
 	~Gold();
 
 	int GetGold();

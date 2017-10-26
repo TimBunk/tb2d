@@ -1,8 +1,16 @@
 #include "b2entity.h"
 
-B2Entity::B2Entity(Camera* camera, Shader* shader) : Entity::Entity() {
+B2Entity::B2Entity(Camera* camera, Shader* shader, b2World* world) : Entity::Entity() {
 	this->camera = camera;
 	this->shader = shader;
+	this->world = world;
+	fixture = nullptr;
+	body = nullptr;
+	VBO = 0;
+	VAO = 0;
+	EBO = 0;
+	width = 0;
+	height = 0;
 }
 
 B2Entity::~B2Entity() {
@@ -37,10 +45,10 @@ void B2Entity::Draw() {
 	glBindVertexArray(0);
 }
 
-void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world) {
-	// Create a pointer to the world the body will be connected to
+void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
-	this->world = world;
+	width = w;
+	height = h;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);

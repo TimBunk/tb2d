@@ -11,7 +11,7 @@ struct DamageBoost {
 
 class DamagePotion : public Potion {
 public:
-	DamagePotion(int damageBoost, float lifeTime, Camera* camera, Shader* shader);
+	DamagePotion(int damageBoost, float lifeTime, Camera* camera, Shader* shader, b2World* world);
 	~DamagePotion();
 
 	DamageBoost Use();

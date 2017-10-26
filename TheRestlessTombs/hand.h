@@ -1,4 +1,4 @@
-#ifndef HAND_H
+/*#ifndef HAND_H
 #define HAND_H
 
 #define _USE_MATH_DEFINES
@@ -29,3 +29,4 @@ private:
 };
 
 #endif // !HAND_H
+*/

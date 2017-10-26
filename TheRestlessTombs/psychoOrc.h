@@ -5,7 +5,7 @@
 
 class PsychoOrc : public Enemy {
 public:
-	PsychoOrc(Player* player, float lineOfSight, Texture _sword, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	PsychoOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~PsychoOrc();
 
 	void Update(float deltaTime);

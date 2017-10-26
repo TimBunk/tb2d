@@ -1,6 +1,6 @@
 #include "necromancerOrc.h"
 
-NecromancerOrc::NecromancerOrc(float spawnCooldown, ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Enemy::Enemy(player, lineOfSight, camera, shader, lineRenderer, world) {
+NecromancerOrc::NecromancerOrc(float spawnCooldown, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	damage = 0;
 	speed = 0.0f;
 	attackSpeed = 0.0f;
@@ -8,7 +8,6 @@ NecromancerOrc::NecromancerOrc(float spawnCooldown, ResourceManager* rm, Player*
 	currentHealth = health;
 
 	this->spawnCooldown = spawnCooldown;
-	this->rm = rm;
 	currentCooldown = 0.0f;
 	babyOrcsHolder = new Entity();
 }
@@ -37,7 +36,7 @@ void NecromancerOrc::Update(float deltaTime) {
 			}
 			if (currentCooldown <= 0.0f && babyOrcs.size() < 4) {
 				BabyOrc* bo;
-				bo = new BabyOrc(this->player, 350.0f, this->rm->GetTexture("orcWeapon"), this->camera, this->rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
+				bo = new BabyOrc(this->player, 350.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 				bo->CreateBody(this->localPosition.x + anglePlayerEnemy.x, this->localPosition.y + anglePlayerEnemy.y, 50, 50);
 				bo->GiveTexture(this->rm->GetTexture("babyOrc"));
 				babyOrcs.push_back(bo);
@@ -93,6 +92,8 @@ void NecromancerOrc::Reset() {
 
 void NecromancerOrc::CreateBody(int x, int y, int w, int h) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
+	width = w;
+	height = h;
 	spawnPosition = this->localPosition;
 	playerLastLocation = this->localPosition;
 	minimalRange = glm::length(glm::vec2(w, h));

@@ -1,6 +1,6 @@
 #include "bossOrc.h"
 
-BossOrc::BossOrc(std::string nameBoss, ResourceManager* rm, Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world) : Boss::Boss(nameBoss, rm, player, lineOfSight, camera, shader, lineRenderer, world) {
+BossOrc::BossOrc(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Boss::Boss(nameBoss, player, lineOfSight, rm, camera, shader, world) {
 	// stats of the babyorc
 	damage = 1;
 	speed = 2.0f;
@@ -13,9 +13,9 @@ BossOrc::BossOrc(std::string nameBoss, ResourceManager* rm, Player* player, floa
 	specialAbilityDuration = 2.0f;
 	specialAbility = false;
 
-	hammer = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader);
+	hammer = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
 	hammer->GiveTexture(rm->GetTexture("bossOrcWeapon"));
-	hammer->CreateBody(0, 0, 30, 120, world);
+	hammer->CreateBody(0, 0, 30, 120);
 	hammer->SetAngle(glm::vec2(0.0f, 0.0f));
 	hammer->localPosition.x = 40.0f;
 	this->AddChild(hammer);

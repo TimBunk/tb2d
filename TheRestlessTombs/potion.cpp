@@ -1,7 +1,7 @@
 #include "potion.h"
 #include "player.h"
 
-Potion::Potion(Camera* camera, Shader* shader) : B2Entity::B2Entity(camera, shader) {
+Potion::Potion(Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
 	alive = true;
 	w = 0;
 	h = 0;
@@ -31,21 +31,15 @@ void Potion::Draw() {
 	}
 }
 
-void Potion::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b2World* world) {
+void Potion::CreateBody(int x, int y, int w, int h) {
 	this->w = w;
 	this->h = h;
-	// Create a pointer to the world the body will be connected to
-	this->world = world;
+
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);
 	bodydef.fixedRotation = true;
-	if (dynamic) {
-		bodydef.type = b2_dynamicBody;
-	}
-	else {
-		bodydef.type = b2_staticBody;
-	}
+	bodydef.type = b2_staticBody;
 
 	// Step 2 create a body
 	body = world->CreateBody(&bodydef);
@@ -60,13 +54,9 @@ void Potion::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, b
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.3f;
 	fixtureDef.restitution = 0.5f;
-	// Set the collision filters
-	//fixtureDef.filter.categoryBits = 0x0002;
-	//fixtureDef.filter.maskBits = 0x0004;
+
 	fixture = body->CreateFixture(&fixtureDef);
-	if (sensor) {
-		fixture->SetSensor(true);
-	}
+	fixture->SetSensor(true);
 	fixture->SetUserData(this);
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];

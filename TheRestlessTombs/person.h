@@ -9,10 +9,9 @@
 
 class Person : public Destructable {
 public:
-    Person(Camera* camera, Shader* shader);
+    Person(ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
     virtual ~Person();
 
-    virtual void Update(float deltaTime);
     virtual void Draw();
 
     bool IsAlive();
@@ -25,6 +24,7 @@ public:
     bool IsTextureFlipped();
 
 protected:
+    ResourceManager* rm;
 
 	int health;
 	int currentHealth;

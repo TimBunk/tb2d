@@ -1,6 +1,6 @@
 #include "destructable.h"
 
-Destructable::Destructable(Camera* camera, Shader* shader) : B2Entity::B2Entity(camera, shader) {
+Destructable::Destructable(Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
 	alive = true;
 }
 

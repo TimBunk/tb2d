@@ -2,7 +2,7 @@
 #include "player.h"
 #include "enemy.h"
 
-Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader) : B2Entity::B2Entity(camera, shader) {
+Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
 	this->damage = damage;
 	this->swingAngle = swingAngle;
 	currentSwingAngle = 0.0f;
@@ -100,9 +100,8 @@ void Weapon::Draw() {
 	glBindVertexArray(0);
 }
 
-void Weapon::CreateBody(int x, int y, int w, int h, b2World* world) {
+void Weapon::CreateBody(int x, int y, int w, int h) {
 	// Create a pointer to the world the body will be connected to
-	this->world = world;
 	this->w = w;
 	this->h = h;
 	// Step 1 defina a body

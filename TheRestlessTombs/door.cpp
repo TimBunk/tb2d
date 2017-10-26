@@ -1,7 +1,8 @@
 #include "door.h"
 
-Door::Door(Camera* camera, Shader* shader, int roomNumber) : B2Entity::B2Entity(camera, shader) {
+Door::Door(int roomNumber, Direction direction, Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
 	this->roomNumber = roomNumber;
+	this->direction = direction;
 }
 
 Door::~Door() {
@@ -40,10 +41,7 @@ void Door::Update(float deltaTime) {
 	}
 }
 
-void Door::CreateBody(int x, int y, Direction direction, float width, b2World* world) {
-	this->direction = direction;
-	// Create a pointer to the world the body will be connected to
-	this->world = world;
+void Door::CreateBody(int x, int y, float width) {
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);

@@ -7,7 +7,7 @@
 
 class Enemy : public Person {
 public:
-	Enemy(Player* player, float lineOfSight, Camera* camera, Shader* shader, Shader* lineRenderer, b2World* world);
+	Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~Enemy();
 
 	virtual void CreateBody(int x, int y, int w, int h);
