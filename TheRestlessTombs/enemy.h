@@ -15,15 +15,15 @@ protected:
 	Player* player;
 	glm::vec3 playerLastLocation;
 	float distancePlayer;
+	float lineOfSight;
 
 	glm::vec3 spawnPosition;
 	float minimalRange;
 
-	bool LookForPlayer(float deltaTime);
+	virtual bool LookForPlayer(float deltaTime);
 	bool ShootRaycast();
 private:
 	RayCastCallBack* raycast;
-	float lineOfSight;
 };
 
 #endif // !ENEMY_H

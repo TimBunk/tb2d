@@ -72,9 +72,15 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	armoredOrc1->GiveTexture(this->rm->GetTexture("armoredOrc"));
 	necromancerOrc1 = new NecromancerOrc(1.5f, this->rm, this->player, 250.0f, this->camera, rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
 	necromancerOrc1->CreateBody(555, 500, 50, 75);
-	necromancerOrc1->GiveTexture(this->rm->GetTexture("necromancerOrc"));*/
-	bomb1 = new Bomb(30.0f, 4.5f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"));
+	necromancerOrc1->GiveTexture(this->rm->GetTexture("necromancerOrc"));
+	bomb1 = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"));
 	bomb1->CreateBody(500, 500, 30, this->world);
+	bomberOrc1 = new BomberOrc(this->rm, this->player, 350.0f, this->camera, this->rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
+	bomberOrc1->CreateBody(500, 500, 50, 57);
+	bomberOrc1->GiveTexture(this->rm->GetTexture("bomberOrc"));*/
+	bossOrc = new BossOrc("BossOrc", this->rm, this->player, 350.0f, this->camera, this->rm->GetShader("shader"), this->rm->GetShader("debugRenderer"), this->world);
+	bossOrc->CreateBody(500, 500, 75, 100);
+	bossOrc->GiveTexture(this->rm->GetTexture("bossOrc"));
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -102,7 +108,9 @@ Level1::Level1(b2World* world, ResourceManager* rm, Input* input, Camera* camera
 	//room1->AddChild(orc1);
 	//room1->AddChild(armoredOrc1);
 	//room1->AddChild(necromancerOrc1);
-	room1->AddChild(bomb1);
+	//room1->AddChild(bomb1);
+	//room1->AddChild(bomberOrc1);
+	room1->AddChild(bossOrc);
 	room1->SetActive(true);
 	rooms.push_back(room1);
 
@@ -140,8 +148,10 @@ Level1::~Level1() {
 	/*delete psychoOrc1;
 	delete orc1;
 	delete armoredOrc1;
-	delete necromancerOrc1;*/
+	delete necromancerOrc1;
 	delete bomb1;
+	delete bomberOrc1;*/
+	delete bossOrc;
 }
 
 void Level1::Update(float deltaTime) {
@@ -164,7 +174,9 @@ void Level1::Update(float deltaTime) {
 		//orc1->Reset();
 		//armoredOrc1->Reset();
 		//necromancerOrc1->Reset();
-		bomb1->Reset();
+		//bomb1->Reset();
+		//bomberOrc1->Reset();
+		bossOrc->Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

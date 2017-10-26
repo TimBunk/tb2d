@@ -44,6 +44,7 @@ int main() {
 	rm->CreateShader("text", "shaders//text.vs", "shaders//text.fs");
 	rm->CreateShader("textHud", "shaders//textHUD.vs", "shaders//textHUD.fs");
 	rm->CreateShader("bomb", "shaders//bomb.vs", "shaders//bomb.fs");
+	rm->CreateShader("healthbar", "shaders//healthbar.vs", "shaders//healthbar.fs");
 
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerHand", "textures/PlayerHand.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -75,6 +76,9 @@ int main() {
 	rm->CreateTexture("armoredOrc", "textures/ArmoredOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("necromancerOrc", "textures/NecromancerOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("bomb", "textures/Bomb.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("bomberOrc", "textures/BomberOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("bossOrc", "textures/BossOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("bossOrcWeapon", "textures/BossOrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	contactListener = new ContactListener();

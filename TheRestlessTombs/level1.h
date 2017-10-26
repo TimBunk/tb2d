@@ -20,6 +20,8 @@
 #include "orc.h"
 #include "armoredOrc.h"
 #include "necromancerOrc.h"
+#include "bomberOrc.h"
+#include "bossOrc.h"
 
 #include <Box2D/Box2D.h>
 
@@ -64,6 +66,8 @@ private:
 	ArmoredOrc* armoredOrc1;
 	NecromancerOrc* necromancerOrc1;
 	Bomb* bomb1;
+	BomberOrc* bomberOrc1;
+	BossOrc* bossOrc;
 
 };
 

@@ -1,4 +1,5 @@
 #include "rayCastCallBack.h"
+#include "enemy.h"
 
 RayCastCallBack::RayCastCallBack() : b2RayCastCallback::b2RayCastCallback() {
 	Camera* camera = nullptr;
@@ -50,10 +51,14 @@ void RayCastCallBack::Draw(glm::vec2 position, float angle) {
 }
 
 float32 RayCastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
-	// THE RAYCAST IGNORES SENSORS
+	// THE RAYCAST IGNORES SENSORS AND ENEMY'S
 	if (fixture->IsSensor()) {
 		return -1;
 	}
+	/*else if (static_cast<Enemy*>(fixture->GetUserData()) != NULL) {
+		std::cout << "fraction = " << fraction << std::endl;
+		return 2;
+	}*/
 	ro.fixture = fixture;
 	ro.point = point;
 	ro.normal = normal;
