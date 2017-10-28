@@ -224,6 +224,8 @@ add_executable(trt
   TheRestlessTombs/showCase.h 
   TheRestlessTombs/rayCastCallBack.h
   TheRestlessTombs/rayCastCallBack.cpp
+  TheRestlessTombs/item.h 
+  TheRestlessTombs/item.cpp 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
@@ -233,7 +235,7 @@ target_link_libraries(trt
   ${SDL2_MIXER_LIBRARIES}
   ${SDL2_TTF_LIBRARY}
 )
-# Copy shaders to the build directory
+# Copy shaders and textures to the build directory
 file(
   COPY tb2d/shaders
   DESTINATION ${CMAKE_BINARY_DIR}

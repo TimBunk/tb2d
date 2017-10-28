@@ -42,7 +42,7 @@ private:
     Text* textGold;
     Text* textStats;
     std::vector<Hud*> hudHealth;
-    Potion* potion;
+    Item* item;
     DamageBoost damageBoost;
     SpeedBoost speedBoost;
 

@@ -4,7 +4,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 	this->input =  input;
 	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("showCase"));
 	this->AddChild(showCase);
-	potion = nullptr;
+	item = nullptr;
 	currentRoom = 0;
 	gold = 0;
 	std::string s = std::to_string(gold);
@@ -15,7 +15,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 
 	damage = 2.0f;
 	currentDamage = damage;
-	speed = 4.0f;
+	speed = 10.0f;
 	currentSpeed = speed;
 	attackSpeed = 0.333f;
 	currentAttackSpeed = attackSpeed;
@@ -70,22 +70,21 @@ void Player::Update(float deltaTime) {
 	if (input->MousePress(1)) {
 		if (!sword->IsAttacking()) {
 			sword->Attack();
-			std::cout << "Mouse clicked" << std::endl;
 		}
 	}
 	// If spacebar is pressed drink the potion and remove it from the showCase
 	if (showCase->IsFull() && input->KeyPress(SDL_SCANCODE_SPACE)) {
-		if (dynamic_cast<HealthPotion*>(potion) != NULL) {
-			this->ApplyHealing(dynamic_cast<HealthPotion*>(potion)->Use());
+		if (dynamic_cast<HealthPotion*>(item) != NULL) {
+			this->ApplyHealing(dynamic_cast<HealthPotion*>(item)->Use());
 		}
-		else if (dynamic_cast<DamagePotion*>(potion) != NULL) {
-			this->damageBoost = dynamic_cast<DamagePotion*>(potion)->Use();
+		else if (dynamic_cast<DamagePotion*>(item) != NULL) {
+			this->damageBoost = dynamic_cast<DamagePotion*>(item)->Use();
 		}
-		else if (dynamic_cast<SpeedPotion*>(potion) != NULL) {
-			this->speedBoost = dynamic_cast<SpeedPotion*>(potion)->Use();
+		else if (dynamic_cast<SpeedPotion*>(item) != NULL) {
+			this->speedBoost = dynamic_cast<SpeedPotion*>(item)->Use();
 		}
 		showCase->Clear();
-		potion = nullptr;
+		item = nullptr;
 	}
 	if (input->KeyPress(SDL_SCANCODE_K)) {
 		this->TakeDamage(1);
@@ -164,18 +163,21 @@ void Player::Update(float deltaTime) {
 		// Search for potions if there are none in the showCase already
 		if (!showCase->IsFull()) {
 			if (dynamic_cast<Potion*>(contacts[i]) != NULL) {
-				this->potion = dynamic_cast<Potion*>(contacts[i]);
-				potion->Destroy();
-				showCase->Give(potion->PickUp());
+				this->item = dynamic_cast<Potion*>(contacts[i]);
+				item->Destroy();
+				showCase->Give(item->PickUp());
 			}
 		}
-		if (dynamic_cast<Bomb*>(contacts[i]) != NULL) {
-			if (dynamic_cast<Bomb*>(contacts[i])->Impact()) {
-				this->TakeDamage(1);
+		// If the contact is a item check if it is one of the below
+		if (dynamic_cast<Item*>(contacts[i]) != NULL) {
+			if (dynamic_cast<Bomb*>(contacts[i]) != NULL) {
+				if (dynamic_cast<Bomb*>(contacts[i])->Impact()) {
+					this->TakeDamage(1);
+				}
 			}
-		}
-		else if (dynamic_cast<Gold*>(contacts[i]) != NULL) {
-			AddGold(dynamic_cast<Gold*>(contacts[i])->GetGold());
+			else if (dynamic_cast<Gold*>(contacts[i]) != NULL) {
+				AddGold(dynamic_cast<Gold*>(contacts[i])->GetGold());
+			}
 		}
 	}
 }

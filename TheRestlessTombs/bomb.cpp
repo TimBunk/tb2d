@@ -1,6 +1,6 @@
 #include "bomb.h"
 
-Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
+Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world) : Item::Item(camera, shader, world) {
 	this->explosionTime = explosionTime;
 	this->explosionRadius = explosionRadius;
 	this->impactTime = impactTime;
@@ -94,6 +94,7 @@ void Bomb::Reset() {
 
 void Bomb::CreateBody(int x, int y, int w) {
 	this->localPosition = glm::vec3(x, y, 1.0f);
+	width = w;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);

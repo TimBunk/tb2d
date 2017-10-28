@@ -13,6 +13,7 @@ public:
 	void Reset();
 
 	void CreateBody(int x, int y, int w, int h);
+	void SetActive(bool active);
 private:
 	float spawnCooldown;
 	float currentCooldown;

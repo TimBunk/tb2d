@@ -130,3 +130,18 @@ void Enemy::CreateBody(int x, int y, int w, int h) {
 
 	glBindVertexArray(0);
 }
+
+
+void Enemy::SetActive(bool active) {
+	if (body != NULL) {
+		if (alive || !active) {
+			if (alive) {
+				currentHealth = health;
+			}
+			body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
+			playerLastLocation = spawnPosition;
+			body->SetAwake(active);
+			body->SetActive(active);
+		}
+	}
+}

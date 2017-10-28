@@ -31,9 +31,9 @@ void ShowCase::Draw() {
 		model2 = glm::rotate(model2, glm::radians(this->GetGlobalAngle()), glm::vec3(0.0f, 0.0f, 1.0f));
 		model2 = glm::scale(model2, glm::vec3(this->GetGlobalScale(), 1.0f));
 		shader->SetMatrix4("model", model2);
-		glActiveTexture(GL_TEXTURE0 + scp.texture.id);
-		shader->SetInt("ourTexture", scp.texture.id);
-		glBindTexture(GL_TEXTURE_2D, scp.texture.id);
+		glActiveTexture(GL_TEXTURE0 + sci.texture.id);
+		shader->SetInt("ourTexture", sci.texture.id);
+		glBindTexture(GL_TEXTURE_2D, sci.texture.id);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glActiveTexture(GL_TEXTURE0);
@@ -41,9 +41,9 @@ void ShowCase::Draw() {
 	}
 }
 
-void ShowCase::Give(ShowCasePotion scp) {
+void ShowCase::Give(ShowCaseItem sci) {
 	item = true;
-	this->scp = scp;
+	this->sci = sci;
 }
 
 bool ShowCase::IsFull() {

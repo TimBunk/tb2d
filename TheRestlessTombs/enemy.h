@@ -22,6 +22,8 @@ protected:
 
 	virtual bool LookForPlayer(float deltaTime);
 	bool ShootRaycast();
+
+	virtual void SetActive(bool active);
 private:
 	RayCastCallBack* raycast;
 };

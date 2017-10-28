@@ -1,9 +1,9 @@
 #ifndef BOMB_H
 #define BOMB_H
 
-#include "destructable.h"
+#include "item.h"
 
-class Bomb : public Destructable {
+class Bomb : public Item {
 public:
 	Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world);
 	~Bomb();

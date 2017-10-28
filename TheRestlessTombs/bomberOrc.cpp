@@ -24,8 +24,8 @@ void BomberOrc::Update(float deltaTime) {
 		if (LookForPlayer(deltaTime)) {
 			timer += deltaTime;
 			if (timer >= attackSpeed) {
-				Bomb* b = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("showCase"), this->camera, this->rm->GetShader("bomb"), this->world);
-				glm::vec3 bombPos = ((player->localPosition - this->localPosition) /= 2) + this->localPosition;
+				Bomb* b = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("explosion"), this->camera, this->rm->GetShader("bomb"), this->world);
+				glm::vec3 bombPos = ((player->localPosition - this->localPosition) *= 0.75f) + this->localPosition;
 				b->CreateBody(bombPos.x, bombPos.y, 30);
 				bombs.push_back(b);
 				timer = 0.0f;

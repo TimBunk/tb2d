@@ -2,7 +2,7 @@
 #define SHOWCASE_H
 
 #include "hud.h"
-#include "potion.h"
+#include "item.h"
 #include "window.h"
 
 class ShowCase : public Hud {
@@ -12,12 +12,12 @@ public:
 
 	void Draw();
 
-	void Give(ShowCasePotion scp);
+	void Give(ShowCaseItem sci);
 	bool IsFull();
 	void Clear();
 private:
 	bool item;
-	ShowCasePotion scp;
+	ShowCaseItem sci;
 };
 
 #endif // !SHOWCASE_H

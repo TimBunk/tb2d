@@ -1,9 +1,9 @@
 #ifndef GOLD_H
 #define GOLD_H
 
-#include "destructable.h"
+#include "item.h"
 
-class Gold : public Destructable {
+class Gold : public Item {
 public:
 	Gold(int value, Camera* camera, Shader* shader, b2World* world);
 	~Gold();

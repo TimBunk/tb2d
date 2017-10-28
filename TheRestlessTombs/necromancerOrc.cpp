@@ -36,7 +36,7 @@ void NecromancerOrc::Update(float deltaTime) {
 			}
 			if (currentCooldown <= 0.0f && babyOrcs.size() < 4) {
 				BabyOrc* bo;
-				bo = new BabyOrc(this->player, 350.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
+				bo = new BabyOrc(this->player, this->lineOfSight, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 				bo->CreateBody(this->localPosition.x + anglePlayerEnemy.x, this->localPosition.y + anglePlayerEnemy.y, 50, 50);
 				bo->GiveTexture(this->rm->GetTexture("babyOrc"));
 				babyOrcs.push_back(bo);
@@ -83,6 +83,7 @@ void NecromancerOrc::Reset() {
 	}
 	currentHealth = health;
 	std::vector<BabyOrc*>::iterator it = babyOrcs.begin();
+	std::cout << "test"<< std::endl;
 	while (it != babyOrcs.end()) {
 		babyOrcsHolder->RemoveChild((*it));
 		delete (*it);
@@ -155,4 +156,24 @@ void NecromancerOrc::CreateBody(int x, int y, int w, int h) {
 	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
+}
+
+void NecromancerOrc::SetActive(bool active) {
+	if (body != NULL) {
+		if (alive || !active) {
+			if (alive) {
+				currentHealth = health;
+			}
+			body->SetAwake(active);
+			body->SetActive(active);
+			body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
+			playerLastLocation = spawnPosition;
+			std::vector<BabyOrc*>::iterator it = babyOrcs.begin();
+			while (it != babyOrcs.end()) {
+				babyOrcsHolder->RemoveChild((*it));
+				delete (*it);
+				it = babyOrcs.erase(it);
+			}
+		}
+	}
 }

@@ -18,8 +18,6 @@
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 
-bool quit;
-
 Window* window;
 
 Camera* camera;
@@ -28,16 +26,18 @@ ResourceManager* rm;
 b2World* world;
 ContactListener* contactListener;
 
+Player* player;
 Level1* level1;
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
 
 int main() {
-	quit = false;
 	window = new Window(800, 600, "TheRestlessTombs", false);
 	camera = window->GetCamera();
 	input = window->GetInput();
 	rm = window->GetResourceManager();
+
+	// Load shaders
 	rm->CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
 	rm->CreateShader("debugRenderer", "shaders//debugRenderer.vs", "shaders//debugRenderer.fs");
 	rm->CreateShader("hud", "shaders//hud.vs", "shaders//hud.fs");
@@ -46,10 +46,11 @@ int main() {
 	rm->CreateShader("bomb", "shaders//bomb.vs", "shaders//bomb.fs");
 	rm->CreateShader("healthbar", "shaders//healthbar.vs", "shaders//healthbar.fs");
 
+	// Load textures
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerHand", "textures/PlayerHand.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("wall", "textures/Wallx3.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("floorStandard", "textures/FloorStandard.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("floor", "textures/FloorStandard.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("floorDetailed", "textures/Floor2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("stairs", "textures/Stairs.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("doorNorth", "textures/DoorNorth.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -58,6 +59,7 @@ int main() {
 	rm->CreateTexture("doorWest", "textures/DoorWest.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerSword", "textures/PlayerSword.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("crate", "textures/Crate.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("doubleCrate", "textures/DoubleCrate.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("healthPotion", "textures/HealthPotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("speedPotion", "textures/SpeedPotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("damagePotion", "textures/DamagePotion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -80,14 +82,21 @@ int main() {
 	rm->CreateTexture("bossOrc", "textures/BossOrc.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("bossOrcWeapon", "textures/BossOrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("gold", "textures/Gold.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("explosion", "textures/Explosion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
+
+	// Create the world, player and level
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	contactListener = new ContactListener();
 	world->SetContactListener(contactListener);
-	level1 = new Level1(world, rm, input, camera);
-	//glViewport(0, 0, 700, 500);
+	player = new Player(input, rm, camera, rm->GetShader("shader"), world);
+	player->GiveTexture(rm->GetTexture("player"));
+	player->CreateBody(0, 0, 50, 75, true, false);
+	level1 = new Level1(player, world, rm, input, camera);
+
+
 	// THE GAME LOOP
-	while (!input->Quit()) {
+	while (!input->Quit() || input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();
@@ -103,9 +112,11 @@ int main() {
     // DELETE ALL VARIABLES CREATED WITH THE KEYWORD "new"
 	delete window;
     delete level1;
+    delete player;
     delete contactListener;
     delete world;
 
+    // end of the program
     std::cout << "Program succeeded" << std::endl;
 	return 0;
 }
