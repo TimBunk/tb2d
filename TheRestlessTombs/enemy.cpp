@@ -8,10 +8,17 @@ Enemy::Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* cam
 	playerLastLocation = this->localPosition;
 	distancePlayer = 10000.0f;
 	minimalRange = 0.0f;
+	item = nullptr;
 }
 
 Enemy::~Enemy() {
 	delete raycast;
+}
+
+void Enemy::GiveItem(Item* item) {
+	this->item = item;
+	this->AddChild(item);
+	item->Destroy();
 }
 
 bool Enemy::LookForPlayer(float deltaTime) {
@@ -138,8 +145,6 @@ void Enemy::SetActive(bool active) {
 			if (alive) {
 				currentHealth = health;
 			}
-			body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
-			playerLastLocation = spawnPosition;
 			body->SetAwake(active);
 			body->SetActive(active);
 		}

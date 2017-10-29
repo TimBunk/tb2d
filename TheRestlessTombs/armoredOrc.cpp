@@ -51,6 +51,9 @@ void ArmoredOrc::TakeDamage(int damage) {
 		this->Destroy();
 		sword->SetActive(false);
 		this->RemoveChild(sword);
+		if (item != nullptr) {
+			item->Reset();
+		}
 	}
 }
 
@@ -63,6 +66,9 @@ void ArmoredOrc::Reset() {
 		this->AddChild(sword);
 		currentHealth = health;
 		SetActive(true);
+		if (item != nullptr) {
+			item->Destroy();
+		}
 	}
 	currentHealth = health;
 }

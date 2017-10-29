@@ -72,6 +72,7 @@ private:
 	Door* door2_2;
 	Door* door2_3;
 	Door* door2_4;
+	Gold* gold2_1;
 	HealthPotion* healthPotion2_1;
 	NecromancerOrc* necromancerOrc2_1;
 	Wall* wall2_1;
@@ -87,6 +88,9 @@ private:
 	Renderable* floor3_1;
 	Renderable* floor3_2;
 	Door* door3_1;
+	Gold* gold3_1;
+	Gold* gold3_2;
+	Gold* gold3_3;
 	Crate* crate3_1;
 	Crate* crate3_2;
 	LootChest* lootChest3_1;
@@ -106,6 +110,8 @@ private:
 	Renderable* floor4_4;
 	Renderable* stair4_1;
 	Door* door4_1;
+	Bomb* bomb4_1;
+	Bomb* bomb4_2;
 	SpeedPotion* speedPotion4_1;
 	LootChest* lootChest4_1;
 	LootChest* lootChest4_2;
@@ -139,6 +145,8 @@ private:
 	Door* door5_1;
 	Door* door5_2;
 	Door* door5_3;
+	Gold* gold5_1;
+	Gold* gold5_2;
 	DamagePotion* damagePotion5_1;
 	ArmoredOrc* armoredOrc5_1;
 	ArmoredOrc* armoredOrc5_2;
@@ -156,6 +164,8 @@ private:
 	Renderable* floor6_3;
 	Door* door6_1;
 	Door* door6_2;
+	Gold* gold6_1;
+	Bomb* bomb6_1;
 	HealthPotion* healthPotion6_1;
 	LootChest* lootChest6_1;
 	Crate* crate6_1;

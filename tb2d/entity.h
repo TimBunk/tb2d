@@ -32,11 +32,12 @@ public:
 
 protected:
 	std::vector<Entity*> entities;
-private:
 	// global values
 	glm::vec3 position;
 	float angle;
 	glm::vec2 scale;
+private:
+
 };
 
 #endif // !ENTITY_H

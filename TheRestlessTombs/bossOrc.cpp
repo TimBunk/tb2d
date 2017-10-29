@@ -3,7 +3,7 @@
 BossOrc::BossOrc(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Boss::Boss(nameBoss, player, lineOfSight, rm, camera, shader, world) {
 	// stats of the babyorc
 	damage = 1;
-	speed = 2.0f;
+	speed = 4.0f;
 	originalSpeed = speed;
 	attackSpeed = 1.40f;
 	health = 10;
@@ -122,6 +122,9 @@ void BossOrc::TakeDamage(int damage) {
 		this->Destroy();
 		hammer->SetActive(false);
 		this->RemoveChild(hammer);
+		if (item != nullptr) {
+			item->Reset();
+		}
 	}
 }
 
@@ -134,6 +137,9 @@ void BossOrc::Reset() {
 		this->AddChild(hammer);
 		currentHealth = health;
 		SetActive(true);
+		if (item != nullptr) {
+			item->Destroy();
+		}
 	}
 	specialAbilityTimer = 0.0f;
 	specialAbility = false;

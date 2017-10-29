@@ -1,20 +1,19 @@
 #ifndef CRATE_H
 #define CRATE_H
 
-#include "destructable.h"
-#include "healthPotion.h"
+#include "item.h"
 
 class Crate : public Destructable {
 public:
 	Crate(Camera* camera, Shader* shader, b2World* world);
 	~Crate();
 
-	void Store(Potion* potion);
+	void Store(Item* item);
 	void Destroy();
 	void Reset();
 
 private:
-	Potion* potion;
+	Item* item;
 };
 
 #endif // !CRATE_H

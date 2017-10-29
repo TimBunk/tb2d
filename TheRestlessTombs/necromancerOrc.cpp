@@ -4,7 +4,7 @@ NecromancerOrc::NecromancerOrc(float spawnCooldown, Player* player, float lineOf
 	damage = 0;
 	speed = 0.0f;
 	attackSpeed = 0.0f;
-	health = 3;
+	health = 2;
 	currentHealth = health;
 
 	this->spawnCooldown = spawnCooldown;
@@ -70,6 +70,9 @@ void NecromancerOrc::TakeDamage(int damage) {
 	else {
 		currentHealth = 0;
 		this->Destroy();
+		if (item != nullptr) {
+			item->Reset();
+		}
 	}
 }
 
@@ -80,10 +83,12 @@ void NecromancerOrc::Reset() {
 		alive = true;
 		currentHealth = health;
 		SetActive(true);
+		if (item != nullptr) {
+			item->Destroy();
+		}
 	}
 	currentHealth = health;
 	std::vector<BabyOrc*>::iterator it = babyOrcs.begin();
-	std::cout << "test"<< std::endl;
 	while (it != babyOrcs.end()) {
 		babyOrcsHolder->RemoveChild((*it));
 		delete (*it);

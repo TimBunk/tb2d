@@ -15,6 +15,7 @@ public:
 	virtual ~B2Entity();
 
 	virtual void Update(float deltaTime);
+	virtual void UpdateChilderen(Entity* parent, float deltaTime);
 	virtual void Draw();
 
 	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor);
@@ -32,11 +33,11 @@ public:
 protected:
 	Camera* camera;
 	Shader* shader;
+	b2Body* body;
 	b2World* world;
 	Texture texture;
 
 	GLuint VBO, VAO, EBO;
-	b2Body* body;
 	b2Fixture* fixture;
 	b2Vec2 point[4];
 

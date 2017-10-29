@@ -96,7 +96,7 @@ int main() {
 
 
 	// THE GAME LOOP
-	while (!input->Quit() || input->KeyPress(SDL_SCANCODE_ESCAPE)) {
+	while (!input->Quit()) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();

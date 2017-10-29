@@ -3,7 +3,7 @@
 PsychoOrc::PsychoOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	// stats of the psychoorc
 	damage = 1;
-	speed = 6.0f;
+	speed = 9.0f;
 	attackSpeed = 0.75f;
 	health = 1;
 	currentHealth = health;
@@ -51,6 +51,9 @@ void PsychoOrc::TakeDamage(int damage) {
 		this->Destroy();
 		sword->SetActive(false);
 		this->RemoveChild(sword);
+		if (item != nullptr) {
+			item->Reset();
+		}
 	}
 }
 
@@ -63,6 +66,9 @@ void PsychoOrc::Reset() {
 		this->AddChild(sword);
 		currentHealth = health;
 		SetActive(true);
+		if (item != nullptr) {
+			item->Destroy();
+		}
 	}
 	currentHealth = health;
 }

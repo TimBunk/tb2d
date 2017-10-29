@@ -40,6 +40,7 @@ void Wall::Draw() {
 }
 
 void Wall::CreateBody(int x, int y, int w, int h) {
+	this->localPosition = glm::vec3(x, y, 1.0f);
 	width = w;
 	height = h;
 	dr = new DebugRenderer(camera->GetProjectionMatrix(), glm::vec4(1.0f));

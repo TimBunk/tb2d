@@ -27,6 +27,38 @@ void B2Entity::Update(float deltaTime) {
 
 }
 
+void B2Entity::UpdateChilderen(Entity * parent, float deltaTime)
+{
+	if (parent != NULL) {
+		this->position = this->localPosition + parent->GetGlobalPosition();
+		this->angle = this->localAngle + parent->GetGlobalAngle();
+		this->scale = this->localScale * parent->GetGlobalScale();
+		if (dynamic_cast<B2Entity*>(this) != NULL && this->body != nullptr) {
+			// Check whether the parent is a b2entity as well and if it's body is already initialized
+			if (dynamic_cast<B2Entity*>(parent) != NULL && dynamic_cast<B2Entity*>(parent)->body != nullptr) {
+				body->SetTransform(b2Vec2(this->GetGlobalPosition().x * Window::p2m, this->GetGlobalPosition().y * Window::p2m), this->angle + dynamic_cast<B2Entity*>(parent)->GetGlobalAngle());
+			}
+			else {
+				body->SetTransform(b2Vec2(this->GetGlobalPosition().x * Window::p2m, this->GetGlobalPosition().y * Window::p2m), this->angle);
+			}
+		}
+	}
+	else {
+		this->position = this->localPosition;
+		this->angle = this->localAngle;
+		this->scale = this->localScale;
+		if (dynamic_cast<B2Entity*>(this) != NULL && this->body != nullptr) {
+			this->angle = body->GetAngle();
+			body->SetTransform(b2Vec2(this->GetGlobalPosition().x * Window::p2m, this->GetGlobalPosition().y * Window::p2m), this->angle);
+		}
+	}
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->Draw();
+		entities[i]->Update(deltaTime);
+		entities[i]->UpdateChilderen(this, deltaTime);
+	}
+}
+
 void B2Entity::Draw() {
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());

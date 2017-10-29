@@ -9,7 +9,7 @@ Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belong
 	this->attackDuration = attackDuration;
 	this->belongsToPlayer = belongsToPlayer;
 	rotation = 0.0f;
-	angle = glm::vec2(0.0f);
+	angle2 = glm::vec2(0.0f);
 	timer = 0.0f;
 	attacking = false;
 	hit = false;
@@ -25,7 +25,7 @@ Weapon::~Weapon() {
 
 void Weapon::Update(float deltaTime) {
 	body->SetAwake(true);
-	body->SetTransform(b2Vec2(this->GetGlobalPosition().x * Window::p2m, this->GetGlobalPosition().y * Window::p2m), rotation + currentSwingAngle);
+	this->localAngle = rotation + currentSwingAngle;
 	if (attacking && timer <= attackDuration) {
 		timer += deltaTime;
 		currentSwingAngle = timer/attackDuration * swingAngle;
@@ -39,7 +39,7 @@ void Weapon::Update(float deltaTime) {
 		if (currentSwingAngle > swingAngle) {
 			currentSwingAngle = swingAngle;
 		}
-		for (int i=0;i<contacts.size();i++) {
+		for (unsigned int i=0;i<contacts.size();i++) {
 			if (dynamic_cast<Player*>(contacts[i]) != 0) {
 				if (!hit && !belongsToPlayer) {
 					hit = true;
@@ -74,9 +74,6 @@ void Weapon::Update(float deltaTime) {
 	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
 	dr->Render(camera->GetViewMatrix(), model, 3.0f);
-	if (body == NULL) {
-		std::cout << "Is body " << this->body << std::endl;
-	}
 }
 
 void Weapon::Draw() {
@@ -84,10 +81,8 @@ void Weapon::Draw() {
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(this->GetPositionInPixels().x, this->GetPositionInPixels().y, this->GetGlobalPosition().z));
-	//std::cout << "Box2d.x = " << this->GetPositionInPixels().x << " globalPosition.x" << this->GetGlobalPosition().x << std::endl;
-	//std::cout << "Box2d rotation = " << this->GetAngle() << " globalAngle = " << rotation + currentSwingAngle << std::endl;
-	rotation = (float)atan2(angle.y, angle.x);
+	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, this->GetGlobalPosition().z));
+	rotation = (float)atan2(angle2.y, angle2.x);
 	model = glm::rotate(model, this->GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 1.0f));
 	shader->SetMatrix4("model", model);
@@ -104,6 +99,7 @@ void Weapon::CreateBody(int x, int y, int w, int h) {
 	// Create a pointer to the world the body will be connected to
 	this->w = w;
 	this->h = h;
+	this->localPosition = glm::vec3(x, y, 1.0f);
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(x*Window::p2m, y*Window::p2m);
@@ -272,7 +268,7 @@ bool Weapon::IsFlipped() {
 }
 
 void Weapon::SetAngle(glm::vec2 angle) {
-	this->angle = angle;
+	this->angle2 = angle;
 }
 
 void Weapon::SetDamage(float damage) {

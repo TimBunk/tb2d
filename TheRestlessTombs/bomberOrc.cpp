@@ -5,8 +5,8 @@ BomberOrc::BomberOrc(Player* player, float lineOfSight, ResourceManager* rm, Cam
 	timer = 0.0f;
 	// stats of the bomberOrc
 	damage = 1;
-	speed = 3.5f;
-	attackSpeed = 1.5f;
+	speed = 4.5f;
+	attackSpeed = 1.25f;
 	health = 3;
 	currentHealth = health;
 }
@@ -85,6 +85,9 @@ void BomberOrc::TakeDamage(int damage) {
 	else {
 		currentHealth = 0;
 		this->Destroy();
+		if (item != nullptr) {
+			item->Reset();
+		}
 	}
 }
 
@@ -95,6 +98,9 @@ void BomberOrc::Reset() {
 		alive = true;
 		currentHealth = health;
 		SetActive(true);
+		if (item != nullptr) {
+			item->Destroy();
+		}
 	}
 	currentHealth = health;
 }

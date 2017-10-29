@@ -13,9 +13,9 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 	textGold->localPosition = glm::vec3(20, 100, 1.0f);
 	this->AddChild(textGold);
 
-	damage = 2.0f;
+	damage = 1.0f;
 	currentDamage = damage;
-	speed = 10.0f;
+	speed = 6.0f;
 	currentSpeed = speed;
 	attackSpeed = 0.333f;
 	currentAttackSpeed = attackSpeed;
@@ -86,9 +86,6 @@ void Player::Update(float deltaTime) {
 		showCase->Clear();
 		item = nullptr;
 	}
-	if (input->KeyPress(SDL_SCANCODE_K)) {
-		this->TakeDamage(1);
-	}
 	// Set the velocity and the camera's position
 	vel.Normalize();
 	vel *= (currentSpeed * 500.0f * deltaTime);
@@ -138,25 +135,20 @@ void Player::Update(float deltaTime) {
 	if (damageBoost.lifeTime > 0.0f) {
 		damageBoost.lifeTime -= deltaTime;
 		damageBoost.active = true;
-		UpdateStats();
-		sword->SetDamage(currentDamage);
 		if (damageBoost.lifeTime <= 0.0f) {
 			damageBoost.active = false;
-			UpdateStats();
-			sword->SetDamage(currentDamage);
 		}
+		sword->SetDamage(currentDamage);
 	}
 	if (speedBoost.lifeTime > 0.0f) {
 		speedBoost.lifeTime -= deltaTime;
 		speedBoost.active = true;
-		UpdateStats();
-		sword->SetAttackDuration(currentAttackSpeed);
 		if (speedBoost.lifeTime <= 0.0f) {
 			speedBoost.active = false;
-			UpdateStats();
-			sword->SetAttackDuration(currentAttackSpeed);
 		}
+		sword->SetAttackDuration(currentAttackSpeed);
 	}
+	UpdateStats();
 
 	// Pick up items
 	for (int i=0;i<contacts.size();i++) {

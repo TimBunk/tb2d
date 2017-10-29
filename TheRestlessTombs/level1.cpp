@@ -22,7 +22,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door1_2->CreateBody(449, -800, 200);
 	door1_2->GiveTexture(this->rm->GetTexture("doorEast"));
 	healthPotion1_1 = new HealthPotion(1, this->camera, this->rm->GetShader("shader"), this->world);
-	healthPotion1_1->CreateBody(-200, -150, 30, 36, false, true);
+	healthPotion1_1->CreateBody(0, 0, 30, 36, false, true);
 	healthPotion1_1->GiveTexture(this->rm->GetTexture("healthPotion"));
 	crate1_1 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate1_1->CreateBody(375, -250, 50, 100, false, false);
@@ -30,6 +30,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	crate1_2 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate1_2->CreateBody(325, -231, 50, 62, false, false);
 	crate1_2->GiveTexture(this->rm->GetTexture("crate"));
+	crate1_2->Store(healthPotion1_1);
 	wall1_1 = new Wall(true, this->camera, this->rm->GetShader("shader"), this->world);
 	wall1_1->GiveTexture(this->rm->GetTexture("wall"));
 	wall1_1->CreateBody(-250, -337, 300, 74);
@@ -73,12 +74,16 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door2_4 = new Door(4, Direction::west, camera, rm->GetShader("shader"), this->world);
 	door2_4->CreateBody(449, -1400, 200);
 	door2_4->GiveTexture(this->rm->GetTexture("doorWest"));
+	gold2_1 = new Gold(32, this->camera, this->rm->GetShader("shader"), this->world);
+	gold2_1->CreateBody(0, 0, 15, 15, true, true);
+	gold2_1->GiveTexture(this->rm->GetTexture("gold"));
 	healthPotion2_1 = new HealthPotion(1, this->camera, this->rm->GetShader("shader"), this->world);
 	healthPotion2_1->CreateBody(1249, -1425, 30, 36, false, true);
 	healthPotion2_1->GiveTexture(this->rm->GetTexture("healthPotion"));
-	necromancerOrc2_1 = new NecromancerOrc(1.0f, this->player, 900.0f, this->rm, this->camera, rm->GetShader("shader"), this->world);
+	necromancerOrc2_1 = new NecromancerOrc(1.5f, this->player, 900.0f, this->rm, this->camera, rm->GetShader("shader"), this->world);
 	necromancerOrc2_1->CreateBody(1174, -1350, 50, 75);
 	necromancerOrc2_1->GiveTexture(this->rm->GetTexture("necromancerOrc"));
+	necromancerOrc2_1->GiveItem(gold2_1);
 	wall2_1 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
 	wall2_1->CreateBody(449, -1100, 50, 400);
 	wall2_2 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
@@ -103,9 +108,19 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door3_1 = new Door(1, Direction::north, camera, rm->GetShader("shader"), this->world);
 	door3_1->CreateBody(774, -525, 200);
 	door3_1->GiveTexture(this->rm->GetTexture("doorNorth"));
+	gold3_1 = new Gold(21, this->camera, this->rm->GetShader("shader"), this->world);
+	gold3_1->CreateBody(0, 0, 15, 15, true, true);
+	gold3_1->GiveTexture(this->rm->GetTexture("gold"));
+	gold3_2 = new Gold(19, this->camera, this->rm->GetShader("shader"), this->world);
+	gold3_2->CreateBody(0, 0, 15, 15, true, true);
+	gold3_2->GiveTexture(this->rm->GetTexture("gold"));
+	gold3_3 = new Gold(11, this->camera, this->rm->GetShader("shader"), this->world);
+	gold3_3->CreateBody(0, 0, 15, 15, true, true);
+	gold3_3->GiveTexture(this->rm->GetTexture("gold"));
 	crate3_1 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate3_1->CreateBody(499, -450, 50, 100, false, false);
 	crate3_1->GiveTexture(this->rm->GetTexture("doubleCrate"));
+	crate3_1->Store(gold3_3);
 	crate3_2 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate3_2->CreateBody(549, -469, 50, 62, false, false);
 	crate3_2->GiveTexture(this->rm->GetTexture("crate"));
@@ -115,9 +130,11 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	orc3_1 = new Orc(this->player, 600.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	orc3_1->CreateBody(692, -50, 50, 75);
 	orc3_1->GiveTexture(this->rm->GetTexture("orc"));
+	orc3_1->GiveItem(gold3_1);
 	orc3_2 = new Orc(this->player, 600.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	orc3_2->CreateBody(992, -50, 50, 75);
 	orc3_2->GiveTexture(this->rm->GetTexture("orc"));
+	orc3_2->GiveItem(gold3_2);
 	wall3_1 = new Wall(true, this->camera, this->rm->GetShader("shader"), this->world);
 	wall3_1->GiveTexture(this->rm->GetTexture("wall"));
 	wall3_1->CreateBody(574, -537, 200, 74);
@@ -146,6 +163,10 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door4_1 = new Door(1, Direction::west, camera, rm->GetShader("shader"), this->world);
 	door4_1->CreateBody(1299, -800, 200);
 	door4_1->GiveTexture(this->rm->GetTexture("doorWest"));
+	bomb4_1 = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("explosion"), this->camera, this->rm->GetShader("bomb"), this->world);
+	bomb4_1->CreateBody(0, 0, 30);
+	bomb4_2 = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("explosion"), this->camera, this->rm->GetShader("bomb"), this->world);
+	bomb4_2->CreateBody(0, 0, 30);
 	speedPotion4_1 = new SpeedPotion(2.0f, -0.15f, 4.0f, this->camera, this->rm->GetShader("shader"), this->world);
 	speedPotion4_1->CreateBody(1847, -1200, 30, 36, false, true);
 	speedPotion4_1->GiveTexture(this->rm->GetTexture("speedPotion"));
@@ -161,9 +182,11 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	bomberOrc4_1 = new BomberOrc(this->player, 450.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	bomberOrc4_1->CreateBody(2774, -825, 50, 57);
 	bomberOrc4_1->GiveTexture(this->rm->GetTexture("bomberOrc"));
+	bomberOrc4_1->GiveItem(bomb4_1);
 	bomberOrc4_2 = new BomberOrc(this->player, 450.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	bomberOrc4_2->CreateBody(2774, -1225, 50, 57);
 	bomberOrc4_2->GiveTexture(this->rm->GetTexture("bomberOrc"));
+	bomberOrc4_2->GiveItem(bomb4_2);
 	psychoOrc4_1 = new PsychoOrc(this->player, 550.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	psychoOrc4_1->CreateBody(1674, -2350, 50, 62);
 	psychoOrc4_1->GiveTexture(this->rm->GetTexture("psychoOrc"));
@@ -221,15 +244,23 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door5_3 = new Door(6, Direction::east, camera, rm->GetShader("shader"), this->world);
 	door5_3->CreateBody(449, -1900, 200);
 	door5_3->GiveTexture(this->rm->GetTexture("doorEast"));
+	gold5_1 = new Gold(39, this->camera, this->rm->GetShader("shader"), this->world);
+	gold5_1->CreateBody(0, 0, 15, 15, true, true);
+	gold5_1->GiveTexture(this->rm->GetTexture("gold"));
+	gold5_2 = new Gold(42, this->camera, this->rm->GetShader("shader"), this->world);
+	gold5_2->CreateBody(0, 0, 15, 15, true, true);
+	gold5_2->GiveTexture(this->rm->GetTexture("gold"));
 	damagePotion5_1 = new DamagePotion(1.0f, 5.0f, this->camera, this->rm->GetShader("shader"), this->world);
 	damagePotion5_1->CreateBody(-126, -2000, 30, 36, false, true);
 	damagePotion5_1->GiveTexture(this->rm->GetTexture("damagePotion"));
 	armoredOrc5_1 = new ArmoredOrc(this->player, 500.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	armoredOrc5_1->CreateBody(-26, -1700, 50, 75);
 	armoredOrc5_1->GiveTexture(this->rm->GetTexture("armoredOrc"));
+	armoredOrc5_1->GiveItem(gold5_1);
 	armoredOrc5_2 = new ArmoredOrc(this->player, 500.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	armoredOrc5_2->CreateBody(274, -1700, 50, 75);
 	armoredOrc5_2->GiveTexture(this->rm->GetTexture("armoredOrc"));
+	armoredOrc5_2->GiveItem(gold5_2);
 	wall5_1 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
 	wall5_1->CreateBody(124, -1275, 700, 50);
 	wall5_2 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
@@ -257,8 +288,13 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	door6_2 = new Door(4, Direction::east, camera, rm->GetShader("shader"), this->world);
 	door6_2->CreateBody(-201, -1400, 200);
 	door6_2->GiveTexture(this->rm->GetTexture("doorEast"));
+	gold6_1 = new Gold(61, this->camera, this->rm->GetShader("shader"), this->world);
+	gold6_1->CreateBody(0, 0, 15, 15, true, true);
+	gold6_1->GiveTexture(this->rm->GetTexture("gold"));
+	bomb6_1 = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("explosion"), this->camera, this->rm->GetShader("bomb"), this->world);
+	bomb6_1->CreateBody(0, 0, 30);
 	healthPotion6_1 = new HealthPotion(1, this->camera, this->rm->GetShader("shader"), this->world);
-	healthPotion6_1->CreateBody(-949, -1850, 30, 36, false, true);
+	healthPotion6_1->CreateBody(0, 0, 30, 36, false, true);
 	healthPotion6_1->GiveTexture(this->rm->GetTexture("healthPotion"));
 	lootChest6_1 = new LootChest(198, this->player, this->rm->GetShader("text"), camera, this->rm->GetShader("shader"), this->world);
 	lootChest6_1->CreateBody(-624, -1850, 75, 75, false, false);
@@ -269,15 +305,18 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	crate6_2 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate6_2->CreateBody(-999, -731, 50, 62, false, false);
 	crate6_2->GiveTexture(this->rm->GetTexture("crate"));
+	crate6_2->Store(bomb6_1);
 	crate6_3 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate6_3->CreateBody(-1049, -1850, 50, 100, false, false);
 	crate6_3->GiveTexture(this->rm->GetTexture("doubleCrate"));
+	crate6_3->Store(healthPotion6_1);
 	crate6_4 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
 	crate6_4->CreateBody(-999, -1869, 50, 62, false, false);
 	crate6_4->GiveTexture(this->rm->GetTexture("crate"));
-	necromancerOrc6_1 = new NecromancerOrc(1.0f, this->player, 1200.0f, this->rm, this->camera, rm->GetShader("shader"), this->world);
+	necromancerOrc6_1 = new NecromancerOrc(1.5f, this->player, 1200.0f, this->rm, this->camera, rm->GetShader("shader"), this->world);
 	necromancerOrc6_1->CreateBody(-878, -1680, 50, 75);
 	necromancerOrc6_1->GiveTexture(this->rm->GetTexture("necromancerOrc"));
+	necromancerOrc6_1->GiveItem(gold6_1);
 	babyOrc6_1 = new BabyOrc(this->player, 1200.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	babyOrc6_1->CreateBody(-998, -1700, 50, 50);
 	babyOrc6_1->GiveTexture(this->rm->GetTexture("babyOrc"));
@@ -323,15 +362,6 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	wall7_4->GiveTexture(this->rm->GetTexture("wall"));
 	wall7_4->CreateBody(849, -2561, 750, 74);
 
-	/*crate1 = new Crate(this->camera, this->rm->GetShader("shader"), this->world);
-	crate1->CreateBody(450, 150, 50, 60, false, false);
-	crate1->GiveTexture(this->rm->GetTexture("crate"));
-	crate1->Store(healthPotion1);
-	bomb1 = new Bomb(30.0f, 3.0f, 150.0f, 0.2f, this->rm->GetTexture("bomb"), this->rm->GetTexture("explosion"), this->camera, this->rm->GetShader("bomb"));
-	bomb1->CreateBody(500, 500, 30, this->world);
-	gold1 = new Gold(30, this->camera, this->rm->GetShader("shader"), this->world);
-	gold1->CreateBody(500, 400, 15, 15, true, true);
-	gold1->GiveTexture(this->rm->GetTexture("gold"));*/
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -341,7 +371,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	room1->AddChild(stair1_1);
 	room1->AddChild(door1_1);
 	room1->AddChild(door1_2);
-	room1->AddChild(healthPotion1_1);
+	//room1->AddChild(healthPotion1_1);
 	room1->AddChild(crate1_1);
 	room1->AddChild(crate1_2);
 	room1->AddChild(wall1_1);
@@ -356,7 +386,6 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	rooms.push_back(room1);
 
 	room2 = new Room(camera);
-	//this->AddChild(room2);
 	room2->AddChild(floor2_1);
 	room2->AddChild(floor2_2);
 	room2->AddChild(floor2_3);
@@ -444,6 +473,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	room5->AddChild(wall5_5);
 	room5->AddChild(armoredOrc5_1);
 	room5->AddChild(armoredOrc5_2);
+	room5->AddChild(bossRoomWarning);
 	room5->SetActive(false);
 	rooms.push_back(room5);
 
@@ -453,7 +483,6 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	room6->AddChild(floor6_3);
 	room6->AddChild(door6_1);
 	room6->AddChild(door6_2);
-	room6->AddChild(healthPotion6_1);
 	room6->AddChild(lootChest6_1);
 	room6->AddChild(crate6_1);
 	room6->AddChild(crate6_2);
@@ -485,7 +514,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	rooms.push_back(room7);
 
 
-	this->AddChild(bossRoomWarning);
+
 	this->AddChild(player);
 }
 
@@ -519,6 +548,7 @@ Level1::~Level1() {
 	delete door2_2;
 	delete door2_3;
 	delete door2_4;
+	delete gold2_1;
 	delete healthPotion2_1;
 	delete necromancerOrc2_1;
 	delete wall2_1;
@@ -533,6 +563,9 @@ Level1::~Level1() {
 	delete floor3_1;
 	delete floor3_2;
 	delete door3_1;
+	delete gold3_1;
+	delete gold3_2;
+	delete gold3_3;
 	delete crate3_1;
 	delete crate3_2;
 	delete lootChest3_1;
@@ -550,6 +583,8 @@ Level1::~Level1() {
 	delete floor4_3;
 	delete stair4_1;
 	delete door4_1;
+	delete bomb4_1;
+	delete bomb4_2;
 	delete speedPotion4_1;
 	delete lootChest4_1;
 	delete lootChest4_2;
@@ -579,6 +614,8 @@ Level1::~Level1() {
 	delete door5_1;
 	delete door5_2;
 	delete door5_3;
+	delete gold5_1;
+	delete gold5_2;
 	delete damagePotion5_1;
 	delete armoredOrc5_1;
 	delete armoredOrc5_2;
@@ -595,6 +632,8 @@ Level1::~Level1() {
 	delete floor6_3;
 	delete door6_1;
 	delete door6_2;
+	delete gold6_1;
+	delete bomb6_1;
 	delete healthPotion6_1;
 	delete lootChest6_1;
 	delete crate6_1;
@@ -632,25 +671,13 @@ void Level1::Update(float deltaTime) {
 		currentRoom = playerRoom;
 		rooms[currentRoom]->SetActive(true);
 		this->AddChild(rooms[currentRoom]);
-		this->RemoveChild(bossRoomWarning);
-		this->AddChild(bossRoomWarning);
+		// remove and add the player so that the player will be drawn on top of everything else
 		this->RemoveChild(player);
 		this->AddChild(player);
 	}
 	// RESET
 	if (input->KeyPress(SDL_SCANCODE_R)) {
-		/*crate1->Reset();
-		damagePotion1->Reset();
-		speedPotion1->Reset();
-		babyOrc1->Reset();
-		//psychoOrc1->Reset();
-		//orc1->Reset();
-		//armoredOrc1->Reset();
-		//necromancerOrc1->Reset();
-		//bomb1->Reset();
-		bomberOrc1->Reset();
-		//bossOrc->Reset();
-		gold1->Reset();*/
+
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

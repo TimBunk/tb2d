@@ -3,9 +3,9 @@
 BabyOrc::BabyOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
 	// stats of the babyorc
 	damage = 1;
-	speed = 3.0f;
+	speed = 5.0f;
 	attackSpeed = 1.0f;
-	health = 2;
+	health = 1;
 	currentHealth = health;
 
 	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);

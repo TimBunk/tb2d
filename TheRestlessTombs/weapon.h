@@ -32,7 +32,7 @@ private:
 	bool belongsToPlayer;
 	bool flippedBody;
 	int w, h;
-	glm::vec2 angle;
+	glm::vec2 angle2;
 	float rotation;
 
 	float timer;
