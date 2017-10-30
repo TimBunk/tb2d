@@ -2,6 +2,7 @@
 #define ROOM_H
 
 #include "b2entity.h"
+#include "destructable.h"
 #include "scene.h"
 
 class Room : public Scene {
@@ -10,6 +11,7 @@ public:
 	~Room();
 
 	void Update(float deltaTime);
+	void Reset();
 	void SetActive(bool active);
 private:
 

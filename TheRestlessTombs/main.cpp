@@ -14,6 +14,7 @@
 #include "level1.h"
 #include "window.h"
 #include "contactListener.h"
+#include "button.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -31,8 +32,19 @@ Level1* level1;
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
 
+bool quit;
+GameState gameState;
+Scene* menu;
+bool initMenu;
+Text* titleGame;
+Button* startButton;
+Button* restartButton;
+Button* quitButton;
+Text* credits;
+
 int main() {
-	window = new Window(800, 600, "TheRestlessTombs", false);
+	window = new Window(800, 600, "TheRestlessTombs", true);
+	window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
 	camera = window->GetCamera();
 	input = window->GetInput();
 	rm = window->GetResourceManager();
@@ -43,6 +55,7 @@ int main() {
 	rm->CreateShader("hud", "shaders//hud.vs", "shaders//hud.fs");
 	rm->CreateShader("text", "shaders//text.vs", "shaders//text.fs");
 	rm->CreateShader("textHud", "shaders//textHUD.vs", "shaders//textHUD.fs");
+	rm->CreateShader("color", "shaders//color.vs", "shaders//color.fs");
 	rm->CreateShader("bomb", "shaders//bomb.vs", "shaders//bomb.fs");
 	rm->CreateShader("healthbar", "shaders//healthbar.vs", "shaders//healthbar.fs");
 
@@ -50,6 +63,7 @@ int main() {
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("playerHand", "textures/PlayerHand.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("wall", "textures/Wallx3.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("secretWall", "textures/SecretWall.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("floor", "textures/FloorStandard.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("floorDetailed", "textures/Floor2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("stairs", "textures/Stairs.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -94,15 +108,89 @@ int main() {
 	player->CreateBody(0, 0, 50, 75, true, false);
 	level1 = new Level1(player, world, rm, input, camera);
 
+	quit = false;
+	gameState = GameState::_menu;
+	menu = new Scene(camera);
+	initMenu = false;
+	titleGame = new Text("fonts/OpenSans-Regular.ttf", "The Restless Tombs", 90, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
+	titleGame->localPosition = glm::vec3(camera->screenWidth/2 - titleGame->GetWidth()/4, 100, 1.0f);
+	menu->AddChild(titleGame);
+	startButton = new Button(camera->screenWidth/2, 200, 125, 75, true, "start", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
+	menu->AddChild(startButton);
+	restartButton = new Button(camera->screenWidth/2, 300, 125, 75, true, "restart", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
+	quitButton = new Button(camera->screenWidth/2, 400, 125, 75, true, "quit", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
+	menu->AddChild(quitButton);
+	credits = new Text("fonts/OpenSans-Regular.ttf", "Credits\nProgrammed by Tim Bunk\nArt done by https://0x72.itch.io", 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
+	credits->localPosition = glm::vec3(0.0f, camera->screenHeight - credits->GetHeight()/2, 1.0f);
+	menu->AddChild(credits);
+
 
 	// THE GAME LOOP
-	while (!input->Quit()) {
+	while (!input->Quit() && !quit) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();
 
-		level1->Update(window->GetDeltaTime());
+		switch (gameState) {
+		case _game:
+			level1->Update(window->GetDeltaTime());
+			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
+				gameState =  GameState::_menu;
+				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
+				if (!initMenu) {
+					startButton->SetText("continue");
+					menu->AddChild(restartButton);
+					initMenu = true;
+				}
+			}
+			break;
 
+		case _menu:
+			// Update the menu
+			menu->Update(window->GetDeltaTime());
+			// If escape key is down or the start button is pressed switch to game state
+			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
+				gameState =  GameState::_game;
+				window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
+			}
+			if (startButton->Hover()) {
+				startButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
+				if (startButton->Down()) {
+					gameState =  GameState::_game;
+					window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
+				}
+			}
+			else {
+				startButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
+			}
+			// If the restart button is pressed restart the game and launch the game
+			if (restartButton->Hover()) {
+				restartButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
+				if (restartButton->Down()) {
+					level1->Reset();
+					gameState =  GameState::_game;
+					window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
+				}
+			}
+			else {
+				restartButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
+			}
+			// If the quit button is pressed exit the application
+			if (quitButton->Hover()) {
+				quitButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
+				if (quitButton->Down()) {
+					quit = true;
+				}
+			}
+			else {
+				quitButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
+			}
+			break;
+
+		case _shop:
+			break;
+
+		}
 		// Update the box2d world
 		world->Step(window->GetDeltaTime(), 8, 3);
 		// Update window with OpenGL rendering
@@ -115,6 +203,11 @@ int main() {
     delete player;
     delete contactListener;
     delete world;
+
+    delete menu;
+    delete titleGame;
+    delete startButton;
+    delete quitButton;
 
     // end of the program
     std::cout << "Program succeeded" << std::endl;

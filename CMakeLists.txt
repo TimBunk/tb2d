@@ -92,6 +92,8 @@ set(TB2DSOURCE
   tb2d/window.cpp 
   tb2d/hud.h 
   tb2d/hud.cpp 
+  tb2d/button.h 
+  tb2d/button.cpp 
 )
 
 set(SOILSOURCE

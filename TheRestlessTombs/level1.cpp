@@ -190,7 +190,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	psychoOrc4_1 = new PsychoOrc(this->player, 550.0f, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
 	psychoOrc4_1->CreateBody(1674, -2350, 50, 62);
 	psychoOrc4_1->GiveTexture(this->rm->GetTexture("psychoOrc"));
-	secretWall4_1 = new Renderable(this->rm->GetTexture("wall"), this->camera, this->rm->GetShader("shader"));
+	secretWall4_1 = new Renderable(this->rm->GetTexture("secretWall"), this->camera, this->rm->GetShader("shader"));
 	secretWall4_1->CreateBody(1674, -1537, 300, 74, 300, 74);
 	wall4_1 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
 	wall4_1->CreateBody(1299, -600, 50, 200);
@@ -677,7 +677,13 @@ void Level1::Update(float deltaTime) {
 	}
 	// RESET
 	if (input->KeyPress(SDL_SCANCODE_R)) {
-
+		Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
+}
+
+void Level1::Reset() {
+	for (int i=0;i<rooms.size();i++) {
+		rooms[i]->Reset();
+	}
 }

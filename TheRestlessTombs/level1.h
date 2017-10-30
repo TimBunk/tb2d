@@ -26,12 +26,19 @@
 
 #include <Box2D/Box2D.h>
 
+enum GameState {
+	_game,
+	_menu,
+	_shop
+};
+
 class Level1 : public Scene {
 public:
 	Level1(Player* player, b2World* world, ResourceManager* rm, Input* input, Camera* camera);
 	~Level1();
 
 	void Update(float deltaTime);
+	void Reset();
 private:
 	ResourceManager* rm;
 	Input* input;
