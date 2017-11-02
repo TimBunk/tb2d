@@ -1,8 +1,10 @@
 #include "level1.h"
 
-Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input, Camera* camera) : Scene::Scene(camera) {
+Level1::Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, Input* input, Camera* camera) : Scene::Scene(camera) {
 	// Set all of the variables
 	this->player = player;
+	this->shop = shop;
+	shop->localPosition = glm::vec3(124, -2065, 1.0f);
 	this->rm = rm;
 	this->input = input;
 	this->world = world;
@@ -474,6 +476,7 @@ Level1::Level1(Player* player, b2World* world, ResourceManager* rm, Input* input
 	room5->AddChild(armoredOrc5_1);
 	room5->AddChild(armoredOrc5_2);
 	room5->AddChild(bossRoomWarning);
+	room5->AddChild(this->shop);
 	room5->SetActive(false);
 	rooms.push_back(room5);
 

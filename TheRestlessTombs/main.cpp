@@ -28,6 +28,7 @@ b2World* world;
 ContactListener* contactListener;
 
 Player* player;
+Shop* shop;
 Level1* level1;
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
@@ -97,16 +98,22 @@ int main() {
 	rm->CreateTexture("bossOrcWeapon", "textures/BossOrcWeapon.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("gold", "textures/Gold.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("explosion", "textures/Explosion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("shop", "textures/Shopkeeper.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 
-	// Create the world, player and level
+	// Create the world, player, shop and level
 	world = new b2World(b2Vec2(0.0f, 0.0f));
-	contactListener = new ContactListener();
-	world->SetContactListener(contactListener);
 	player = new Player(input, rm, camera, rm->GetShader("shader"), world);
 	player->GiveTexture(rm->GetTexture("player"));
 	player->CreateBody(0, 0, 50, 75, true, false);
-	level1 = new Level1(player, world, rm, input, camera);
+	shop = new Shop(player, rm, input, camera, rm->GetShader("shader"), world);
+	shop->GiveTexture(rm->GetTexture("shop"));
+	shop->CreateBody(0, 0, 70 , 70, false, false);
+	level1 = new Level1(player, shop, world, rm, input, camera);
+	level1->Update(window->GetDeltaTime());
+	// Set the contactListener after all of the bodies are intialized and in place
+	contactListener = new ContactListener();
+	world->SetContactListener(contactListener);
 
 	quit = false;
 	gameState = GameState::_menu;
@@ -125,15 +132,34 @@ int main() {
 	menu->AddChild(credits);
 
 
+	// TMP
+	//gameState = GameState::_shop;
+	//shop->_SetActive(true);
+
+
 	// THE GAME LOOP
 	while (!input->Quit() && !quit) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();
+		if (input->KeyPress(SDL_SCANCODE_1)) {
+			shop->_SetActive(true);
+		}
+		else if (input->KeyPress(SDL_SCANCODE_2)) {
+			shop->_SetActive(false);
+		}
 
 		switch (gameState) {
 		case _game:
+			// Check if the shop is active, if so switch to that state instead
+			if (shop->IsActive()) {
+				gameState = GameState::_shop;
+				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
+				continue;
+			}
+			// Update level1
 			level1->Update(window->GetDeltaTime());
+			// Press escape to switch to the menu
 			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 				gameState =  GameState::_menu;
 				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
@@ -188,8 +214,20 @@ int main() {
 			break;
 
 		case _shop:
+			// Update and draw shop
+			//std::cout << "SHOP" << std::endl;
+			shop->Update(window->GetDeltaTime());
+			shop->Draw();
+			if (!shop->IsActive()) {
+				gameState = GameState::_game;
+				window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
+			}
+			// If escape is pressed go to the menu
+			else if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
+				gameState =  GameState::_menu;
+				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
+			}
 			break;
-
 		}
 		// Update the box2d world
 		world->Step(window->GetDeltaTime(), 8, 3);

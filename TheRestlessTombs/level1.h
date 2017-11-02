@@ -23,6 +23,7 @@
 #include "bomberOrc.h"
 #include "bossOrc.h"
 #include "gold.h"
+#include "shop.h"
 
 #include <Box2D/Box2D.h>
 
@@ -34,7 +35,7 @@ enum GameState {
 
 class Level1 : public Scene {
 public:
-	Level1(Player* player, b2World* world, ResourceManager* rm, Input* input, Camera* camera);
+	Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, Input* input, Camera* camera);
 	~Level1();
 
 	void Update(float deltaTime);
@@ -48,6 +49,7 @@ private:
 	int currentRoom;
 
 	Player* player;
+	Shop* shop;
 
 	// room1
 	Room* room1;

@@ -64,7 +64,7 @@ void Button::Update(float deltaTime) {
 	}
 	if (mouseX >= (this->localPosition.x - (this->width/2)) && mouseX <= (this->localPosition.x + (this->width/2)) && mouseY >= (this->localPosition.y - (this->height/2)) && mouseY <= (this->localPosition.y + (this->height/2))) {
 		hover = true;
-		if (input->MouseDown(1)) {
+		if (input->MousePress(1)) {
 			down = true;
 		}
 		else {
@@ -109,10 +109,14 @@ void Button::SetText(std::string text) {
 }
 
 void Button::SetTextFontSize(int fontSize) {
+	this->text->localPosition = glm::vec3(this->text->localPosition.x + this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
 	text->SetFontSize(fontSize);
+	this->text->localPosition = glm::vec3(this->text->localPosition.x - this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
 }
 void Button::SetTextColor(glm::vec4 color) {
+	this->text->localPosition = glm::vec3(this->text->localPosition.x + this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
 	text->SetColor(color);
+	this->text->localPosition = glm::vec3(this->text->localPosition.x - this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
 }
 
 bool Button::Hover() {

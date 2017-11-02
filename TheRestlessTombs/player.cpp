@@ -6,7 +6,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 	this->AddChild(showCase);
 	item = nullptr;
 	currentRoom = 0;
-	gold = 0;
+	gold = 1450;
 	std::string s = std::to_string(gold);
 	std::string ss = "Gold: " + s;
 	textGold = new Text("fonts/OpenSans-Regular.ttf", ss, 60, glm::vec4(0.62f, 0.62f, 0.62f, 1.0f), true, camera, rm->GetShader("textHud"));
@@ -26,13 +26,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 	health = 4;
 	currentHealth = health;
 	lastHealth = health;
-	// Create the health hearts
-	int xHealth = 30;
-	for (int i=0;i<health;i++) {
-		hudHealth.push_back(new Hud(xHealth, 30, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("heartFilled")));
-		this->AddChild(hudHealth[i]);
-		xHealth += 60;
-	}
+	CreateLives(health);
 	textStats = new Text("fonts/OpenSans-Regular.ttf", "No stats available", 22, glm::vec4(0.62f, 0.62f, 0.62f, 1.0f), true, camera, rm->GetShader("textHud"));
 	textStats->localPosition = glm::vec3(20, 500, 1.0f);
 	UpdateStats();
@@ -189,6 +183,25 @@ void Player::AddGold(int gold) {
 	textGold->SetText(ss);
 }
 
+int Player::GetGold() {
+	return gold;
+}
+
+void Player::UpgradeHealth(int newHealth) {
+	this->health = newHealth;
+	currentHealth++;
+	this->CreateLives(health);
+}
+
+void Player::UpgradeSpeed(float newSpeed) {
+	this->speed = newSpeed;
+}
+
+void Player::UpgradeDamage(int newDamage) {
+	this->damage = newDamage;
+	sword->SetDamage(this->damage);
+}
+
 void Player::UpdateStats() {
 	// Create a text from the player's stats
 	std::string stats = "PLAYER STATS \n";
@@ -241,4 +254,24 @@ void Player::UpdateStats() {
 	stats += "Speed: " + stringSpeed + "\n";
 
 	textStats->SetText(stats);
+}
+
+void Player::CreateLives(int amount) {
+	// Delete the old hearts
+	std::vector<Hud*>::iterator it = hudHealth.begin();
+	while (it != hudHealth.end()) {
+		this->RemoveChild((*it));
+		delete (*it);
+		it = hudHealth.erase(it);
+	}
+	// Create the health hearts
+	int xHealth = 30;
+	for (int i=0;i<amount;i++) {
+		hudHealth.push_back(new Hud(xHealth, 30, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("heartFilled")));
+		if (currentHealth-1 < i) {
+			hudHealth[i]->SetTexture(rm->GetTexture("heartEmpty"));
+		}
+		this->AddChild(hudHealth[i]);
+		xHealth += 60;
+	}
 }

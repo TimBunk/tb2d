@@ -14,8 +14,8 @@ void Room::Update(float deltaTime) {
 
 void Room::Reset() {
 	for (int i=0;i<entities.size();i++) {
-		if (dynamic_cast<Destructable*>(entities[i]) != NULL) {
-			dynamic_cast<Destructable*>(entities[i])->Reset();
+		if (dynamic_cast<B2Entity*>(entities[i]) != NULL) {
+			dynamic_cast<B2Entity*>(entities[i])->Reset();
 		}
 	}
 }

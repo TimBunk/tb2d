@@ -191,3 +191,7 @@ void B2Entity::SetActive(bool active) {
 		body->SetActive(active);
 	}
 }
+
+void B2Entity::Reset() {
+
+}

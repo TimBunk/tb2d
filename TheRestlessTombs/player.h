@@ -34,6 +34,11 @@ public:
     int GetRoom();
 
     void AddGold(int gold);
+    int GetGold();
+
+    void UpgradeHealth(int newHealth);
+    void UpgradeSpeed(float newSpeed);
+    void UpgradeDamage(int newDamage);
 
 private:
     Input* input;
@@ -54,6 +59,7 @@ private:
     int currentRoom;
 
     void UpdateStats();
+    void CreateLives(int amount);
 };
 
 #endif // !PLAYER_H

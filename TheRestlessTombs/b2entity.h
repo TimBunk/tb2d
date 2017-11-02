@@ -29,6 +29,7 @@ public:
 	void RemoveContact(B2Entity* contact);
 
 	virtual void SetActive(bool active);
+	virtual void Reset();
 
 protected:
 	Camera* camera;

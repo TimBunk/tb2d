@@ -8,6 +8,7 @@
 //#include "destructable.h"
 #include "crate.h"
 #include "lootChest.h"
+#include "shop.h"
 
 class Weapon : public B2Entity {
 public:
