@@ -363,7 +363,8 @@ Level1::Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, 
 	wall7_4 = new Wall(true, this->camera, this->rm->GetShader("shader"), this->world);
 	wall7_4->GiveTexture(this->rm->GetTexture("wall"));
 	wall7_4->CreateBody(849, -2561, 750, 74);
-
+	wall7_5 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
+	wall7_5->CreateBody(399, -1900, 50, 200);
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -512,6 +513,7 @@ Level1::Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, 
 	room7->AddChild(wall7_2);
 	room7->AddChild(wall7_3);
 	room7->AddChild(wall7_4);
+	room7->AddChild(wall7_5);
 	room7->AddChild(bossOrc7_1);
 	room7->SetActive(false);
 	rooms.push_back(room7);
@@ -519,6 +521,10 @@ Level1::Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, 
 
 
 	this->AddChild(player);
+	// Set all of the rooms except for the first one to not active
+	for (int i=1;i<rooms.size();i++) {
+		rooms[i]->SetActive(false);
+	}
 }
 
 Level1::~Level1() {
@@ -663,6 +669,7 @@ Level1::~Level1() {
 	delete wall7_2;
 	delete wall7_3;
 	delete wall7_4;
+	delete wall7_5;
 }
 
 void Level1::Update(float deltaTime) {
@@ -686,6 +693,7 @@ void Level1::Update(float deltaTime) {
 }
 
 void Level1::Reset() {
+	player->Reset();
 	for (int i=0;i<rooms.size();i++) {
 		rooms[i]->Reset();
 	}

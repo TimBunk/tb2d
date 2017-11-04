@@ -3,6 +3,7 @@
 DamagePotion::DamagePotion(int damageBoost, float lifeTime, Camera* camera, Shader* shader, b2World* world) : Potion::Potion(camera, shader, world) {
 	this->damageBoost = damageBoost;
 	this->lifeTime = lifeTime;
+	name = "damage potion";
 }
 
 DamagePotion::~DamagePotion() {

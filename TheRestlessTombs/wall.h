@@ -13,9 +13,10 @@ public:
 	void Update(float deltaTime);
 	void Draw();
 	void CreateBody(int x, int y, int w, int h);
+	void SetActive(bool active);
 
-	bool visible;
 private:
+	bool visible;
 	DebugRenderer* dr;
 };
 

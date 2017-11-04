@@ -4,8 +4,7 @@
 #include "destructable.h"
 
 struct ShowCaseItem {
-	int w;
-	int h;
+	std::string name;
 	Texture texture;
 };
 
@@ -15,8 +14,9 @@ public:
 	~Item();
 
 	ShowCaseItem PickUp();
+	std::string GetName();
 protected:
-
+	std::string name;
 private:
 
 };

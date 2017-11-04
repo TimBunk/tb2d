@@ -36,9 +36,14 @@ public:
     void AddGold(int gold);
     int GetGold();
 
+    void GiveItem(Item* item);
+    bool IsInventoryFull();
+
     void UpgradeHealth(int newHealth);
     void UpgradeSpeed(float newSpeed);
     void UpgradeDamage(int newDamage);
+
+    void Reset();
 
 private:
     Input* input;

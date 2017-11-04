@@ -64,7 +64,6 @@ void Weapon::Update(float deltaTime) {
 			else if (dynamic_cast<Shop*>(contacts[i]) != 0) {
 				if (!hit && belongsToPlayer) {
 					hit = true;
-					std::cout << "how though?" << std::endl;
 					dynamic_cast<Shop*>(contacts[i])->_SetActive(true);
 					break;
 				}

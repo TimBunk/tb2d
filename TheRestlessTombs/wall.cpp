@@ -107,3 +107,18 @@ void Wall::CreateBody(int x, int y, int w, int h) {
 
 	glBindVertexArray(0);
 }
+
+void Wall::SetActive(bool active) {
+	if (body != NULL) {
+		// To set the sensor the body needs to be active
+		body->SetActive(true);
+		if (!active) {
+			fixture->SetSensor(true);
+		}
+		else {
+			fixture->SetSensor(false);
+		}
+		body->SetActive(active);
+		std::cout << "wall body is now not active" << std::endl;
+	}
+}

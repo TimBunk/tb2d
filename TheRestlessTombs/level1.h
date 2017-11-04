@@ -202,6 +202,7 @@ private:
 	Wall* wall7_2;
 	Wall* wall7_3;
 	Wall* wall7_4;
+	Wall* wall7_5;
 
 };
 

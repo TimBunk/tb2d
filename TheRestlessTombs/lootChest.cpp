@@ -64,7 +64,12 @@ void LootChest::Destroy() {
 }
 
 void LootChest::Reset() {
-	alive = true;
+	text->localPosition = glm::vec3(text->localPosition.x, this->localPosition.y, text->localPosition.z);
+	text->SetVisibility(1.0f);
+	if (!alive) {
+		this->RemoveChild(text);
+		alive = true;
+	}
 }
 
 void LootChest::SetActive(bool active) {

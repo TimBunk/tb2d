@@ -1,7 +1,7 @@
 #include "item.h"
 
 Item::Item(Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
-
+	name = "item";
 }
 
 Item::~Item() {
@@ -10,9 +10,11 @@ Item::~Item() {
 
 ShowCaseItem Item::PickUp() {
 	ShowCaseItem sci;
-	sci.w = width;
-	sci.h = height;
+	sci.name = name;
 	sci.texture = texture;
 	return sci;
 }
 
+std::string Item::GetName() {
+	return name;
+}

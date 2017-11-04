@@ -6,6 +6,10 @@
 #include "button.h"
 #include "resourceManager.h"
 #include "text.h"
+#include "healthPotion.h"
+#include "speedPotion.h"
+#include "damagePotion.h"
+#include "hud.h"
 
 class Player;
 
@@ -19,6 +23,8 @@ public:
 
 	void _SetActive(bool active);
 	bool IsActive();
+
+	void Reset();
 private:
 	bool active;
 	Player* player;
@@ -26,23 +32,42 @@ private:
 	Text* textShop;
 	Text* textPlayerUpgrades;
 	Text* textItems;
-	Button* healthUpgrade;
-	Button* speedUpgrade;
-	Button* damageUpgrade;
+	Text* playerGold;
+	Text* playerInventory;
 	Button* buttonContinue;
 
+	Button* healthUpgrade;
 	int health;
 	int costHealthUpgrade;
 	int currentHealthUpgrade;
 	int maxHealthUpgrades;
+
+	Button* speedUpgrade;
 	float speed;
 	int costSpeedUpgrade;
 	int currentSpeedUpgrade;
 	int maxSpeedUpgrades;
+
+	Button* damageUpgrade;
 	int damage;
 	int costDamageUpgrade;
 	int currentDamageUpgrade;
 	int maxDamageUpgrades;
+
+	Button* buttonHealthPotion;
+	HealthPotion* healthPotion;
+	Hud* healthPotionTexture;
+	int costHealthPotion;
+
+	Button* buttonSpeedPotion;
+	SpeedPotion* speedPotion;
+	Hud* speedPotionTexture;
+	int costSpeedPotion;
+
+	Button* buttonDamagePotion;
+	DamagePotion* damagePotion;
+	Hud* damagePotionTexture;
+	int costDamagePotion;
 
 	std::string CreateUpgradeText(std::string text, int currentUpgrade, int maxUpgrade, int cost);
 };

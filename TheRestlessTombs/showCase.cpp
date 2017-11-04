@@ -1,11 +1,14 @@
 #include "showCase.h"
 
-ShowCase::ShowCase(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture texture) : Hud::Hud(x, y, w, h, camera, shader, texture) {
+ShowCase::ShowCase(int x, int y, int w, int h, Camera* camera, Shader* shader, Shader* textHud, Texture texture) : Hud::Hud(x, y, w, h, camera, shader, texture) {
 	item = false;
+	nameItem = new Text("fonts/OpenSans-Regular.ttf", " ", 30, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, textHud);
+	nameItem->localPosition = glm::vec3(x - nameItem->GetWidth()/4, y - nameItem->GetHeight(), 1.0f);
+	this->AddChild(nameItem);
 }
 
 ShowCase::~ShowCase() {
-
+	delete nameItem;
 }
 
 void ShowCase::Draw() {
@@ -44,6 +47,8 @@ void ShowCase::Draw() {
 void ShowCase::Give(ShowCaseItem sci) {
 	item = true;
 	this->sci = sci;
+	nameItem->SetText(this->sci.name);
+	nameItem->localPosition = glm::vec3(this->localPosition.x - nameItem->GetWidth()/4, this->localPosition.y - nameItem->GetHeight(), 1.0f);
 }
 
 bool ShowCase::IsFull() {
@@ -52,4 +57,5 @@ bool ShowCase::IsFull() {
 
 void ShowCase::Clear() {
 	item = false;
+	nameItem->SetText(" ");
 }

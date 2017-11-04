@@ -2,6 +2,7 @@
 
 HealthPotion::HealthPotion(int healing, Camera* camera, Shader* shader, b2World* world) : Potion::Potion(camera, shader, world) {
 	this->healing = healing;
+	name = "health potion";
 }
 
 HealthPotion::~HealthPotion() {

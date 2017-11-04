@@ -4,6 +4,7 @@ SpeedPotion::SpeedPotion(float speedBoost, float attackSpeedBoost, float lifeTim
 	this->movementSpeed = speedBoost;
 	this->attackSpeed = attackSpeedBoost;
 	this->lifeTime = lifeTime;
+	name = "speed potion";
 }
 
 SpeedPotion::~SpeedPotion() {

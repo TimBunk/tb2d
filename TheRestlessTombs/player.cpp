@@ -2,11 +2,11 @@
 
 Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
 	this->input =  input;
-	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("showCase"));
+	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetShader("textHud"), rm->GetTexture("showCase"));
 	this->AddChild(showCase);
 	item = nullptr;
 	currentRoom = 0;
-	gold = 1450;
+	gold = 0;
 	std::string s = std::to_string(gold);
 	std::string ss = "Gold: " + s;
 	textGold = new Text("fonts/OpenSans-Regular.ttf", ss, 60, glm::vec4(0.62f, 0.62f, 0.62f, 1.0f), true, camera, rm->GetShader("textHud"));
@@ -67,7 +67,7 @@ void Player::Update(float deltaTime) {
 		}
 	}
 	// If spacebar is pressed drink the potion and remove it from the showCase
-	if (showCase->IsFull() && input->KeyPress(SDL_SCANCODE_SPACE)) {
+	if (IsInventoryFull() && input->KeyPress(SDL_SCANCODE_SPACE)) {
 		if (dynamic_cast<HealthPotion*>(item) != NULL) {
 			this->ApplyHealing(dynamic_cast<HealthPotion*>(item)->Use());
 		}
@@ -146,12 +146,11 @@ void Player::Update(float deltaTime) {
 
 	// Pick up items
 	for (int i=0;i<contacts.size();i++) {
-		// Search for potions if there are none in the showCase already
-		if (!showCase->IsFull()) {
+		// Check if the player already contains a item
+		if (!IsInventoryFull()) {
+			// Search for potions
 			if (dynamic_cast<Potion*>(contacts[i]) != NULL) {
-				this->item = dynamic_cast<Potion*>(contacts[i]);
-				item->Destroy();
-				showCase->Give(item->PickUp());
+				GiveItem(dynamic_cast<Potion*>(contacts[i]));
 			}
 		}
 		// If the contact is a item check if it is one of the below
@@ -185,6 +184,18 @@ void Player::AddGold(int gold) {
 
 int Player::GetGold() {
 	return gold;
+}
+
+void Player::GiveItem(Item* item) {
+	if (!IsInventoryFull()) {
+		this->item = item;
+		item->Destroy();
+		showCase->Give(item->PickUp());
+	}
+}
+
+bool Player::IsInventoryFull() {
+	return showCase->IsFull();
 }
 
 void Player::UpgradeHealth(int newHealth) {
@@ -274,4 +285,19 @@ void Player::CreateLives(int amount) {
 		this->AddChild(hudHealth[i]);
 		xHealth += 60;
 	}
+}
+
+void Player::Reset() {
+	health = 4;
+	currentHealth = 4;
+	lastHealth = currentHealth;
+	CreateLives(4);
+	UpgradeDamage(1);
+	speed = 6.0f;
+	this->localPosition = glm::vec3(0.0f, 0.0f, 1.0f);
+	body->SetTransform(b2Vec2(0.0f, 0.0f), this->angle);
+	SetRoom(0);
+	showCase->Clear();
+	item = nullptr;
+	AddGold(GetGold() * -1);
 }

@@ -132,9 +132,6 @@ int main() {
 	menu->AddChild(credits);
 
 
-	// TMP
-	//gameState = GameState::_shop;
-	//shop->_SetActive(true);
 
 
 	// THE GAME LOOP
@@ -159,6 +156,8 @@ int main() {
 			}
 			// Update level1
 			level1->Update(window->GetDeltaTime());
+			// Update the box2d world
+			world->Step(window->GetDeltaTime(), 8, 3);
 			// Press escape to switch to the menu
 			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 				gameState =  GameState::_menu;
@@ -226,11 +225,15 @@ int main() {
 			else if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 				gameState =  GameState::_menu;
 				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
+				if (!initMenu) {
+					startButton->SetText("continue");
+					menu->AddChild(restartButton);
+					initMenu = true;
+				}
 			}
 			break;
 		}
-		// Update the box2d world
-		world->Step(window->GetDeltaTime(), 8, 3);
+
 		// Update window with OpenGL rendering
 		window->SwapBuffers();
 	}// THE END OF THE GAME LOOP
