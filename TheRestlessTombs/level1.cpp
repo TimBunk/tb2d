@@ -364,7 +364,7 @@ Level1::Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, 
 	wall7_4->GiveTexture(this->rm->GetTexture("wall"));
 	wall7_4->CreateBody(849, -2561, 750, 74);
 	wall7_5 = new Wall(false, this->camera, this->rm->GetShader("shader"), this->world);
-	wall7_5->CreateBody(399, -1900, 50, 200);
+	wall7_5->CreateBody(349, -1900, 50, 200);
 
 	currentRoom = 0;
 	room1 = new Room(camera);
@@ -673,6 +673,10 @@ Level1::~Level1() {
 }
 
 void Level1::Update(float deltaTime) {
+	// Reset if either the player or the boss dies
+	if (!bossOrc7_1->IsAlive() || !player->IsAlive()) {
+		Reset();
+	}
 	// Check in which room the player is located, if the player is in a new room then load the new room
 	int playerRoom = player->GetRoom();
 	if (playerRoom != currentRoom) {

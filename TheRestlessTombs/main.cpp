@@ -44,7 +44,7 @@ Button* quitButton;
 Text* credits;
 
 int main() {
-	window = new Window(800, 600, "TheRestlessTombs", true);
+	window = new Window(800, 600, "TheRestlessTombs", false);
 	window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
 	camera = window->GetCamera();
 	input = window->GetInput();
@@ -214,7 +214,6 @@ int main() {
 
 		case _shop:
 			// Update and draw shop
-			//std::cout << "SHOP" << std::endl;
 			shop->Update(window->GetDeltaTime());
 			shop->Draw();
 			if (!shop->IsActive()) {
@@ -242,13 +241,16 @@ int main() {
 	delete window;
     delete level1;
     delete player;
+    delete shop;
     delete contactListener;
     delete world;
 
     delete menu;
     delete titleGame;
     delete startButton;
+    delete restartButton;
     delete quitButton;
+    delete credits;
 
     // end of the program
     std::cout << "Program succeeded" << std::endl;

@@ -4,7 +4,6 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
-OPTION(MAKE_START "Make TB2D start applications" OFF)
 OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
 OPTION(MAKE_BOX2DLES "Box2dLes" ON)
 OPTION(MAKE_EpicFighter "Make EpicFighter" OFF)
@@ -28,17 +27,21 @@ add_subdirectory(external)
 # Set c++11 as main language
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 
-# Find sdl2 pkg
-INCLUDE(FindPkgConfig)
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/SDL2/")
+# Look up SDL2 and add the include directory to our include path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
+find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_image REQUIRED)
 
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIR})
+# Create library from soil2 source
+set (SOIL2_INCLUDE_DIR
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src)
+
+add_subdirectory(external/SOIL2/src)
 
 include_directories(
+  ${SOIL2_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
@@ -49,7 +52,6 @@ include_directories(
 link_directories(
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
   ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
-  ${CMAKE_SOURCE_DIR}/external/SDL2_TTF
   ${CMAKE_SOURCE_DIR}/external
 )
 
@@ -96,34 +98,6 @@ set(TB2DSOURCE
   tb2d/button.cpp 
 )
 
-set(SOILSOURCE
-  ##SOIL IMAGE LOADER
-  external/SOIL2/src/SOIL2/etc1_utils.c
-  external/SOIL2/src/SOIL2/etc1_utils.h
-  external/SOIL2/src/SOIL2/image_DXT.c
-  external/SOIL2/src/SOIL2/image_DXT.h
-  external/SOIL2/src/SOIL2/image_helper.c
-  external/SOIL2/src/SOIL2/image_helper.h
-  external/SOIL2/src/SOIL2/jo_jpeg.h
-  external/SOIL2/src/SOIL2/pkm_helper.h
-  external/SOIL2/src/SOIL2/pvr_helper.h
-  external/SOIL2/src/SOIL2/SOIL2.c
-  external/SOIL2/src/SOIL2/SOIL2.h
-  external/SOIL2/src/SOIL2/stb_image_write.h
-  external/SOIL2/src/SOIL2/stb_image.h
-  external/SOIL2/src/SOIL2/stbi_DDS_c.h
-  external/SOIL2/src/SOIL2/stbi_DDS.h
-  external/SOIL2/src/SOIL2/stbi_ext_c.h
-  external/SOIL2/src/SOIL2/stbi_ext.h
-  external/SOIL2/src/SOIL2/stbi_pkm_c.h
-  external/SOIL2/src/SOIL2/stbi_pkm.h
-  external/SOIL2/src/SOIL2/stbi_pvr_c.h
-  external/SOIL2/src/SOIL2/stbi_pvr.h
-  ##END SOIL IMAGE LOADER
-)
-
-# Create a library from the source of SOIL2
-
 ####################################################################
 # box2d.a                                                          #
 ####################################################################
@@ -159,7 +133,6 @@ ENDIF()
 ####################################################################
 IF(MAKE_THERESTLESSTOMBS)
 add_executable(trt
-  ${SOILSOURCE}
   ${TB2DSOURCE}
   TheRestlessTombs/main.cpp
   TheRestlessTombs/armoredOrc.cpp 
@@ -232,10 +205,15 @@ add_executable(trt
 target_link_libraries(trt
   ${BOX2D_LIB}
   ${ALL_GRAPHICS_LIBS}
-  ${SDL2_LIBRARIES} 
-  ${SDL2IMAGE_LIBRARIES}
-  ${SDL2_MIXER_LIBRARIES}
-  ${SDL2_TTF_LIBRARY}
+  SDL2
+	${SDL2_MIXER_LIBRARIES}
+	${SDL2_TTF_LIBRARY}
+  ${SDL2IMAGE_LIBRARY}
+  SOIL2
+)
+
+ADD_DEPENDENCIES(trt 
+  SOIL2
 )
 # Copy shaders and textures to the build directory
 file(
@@ -259,7 +237,6 @@ ENDIF()
 IF (MAKE_EpicFighter)
 
 add_executable(ef
-  ${SOILSOURCE}
   ${TB2DSOURCE}
   EpicFighter/main.cpp 
   EpicFighter/player.cpp 
@@ -270,15 +247,20 @@ add_executable(ef
   EpicFighter/ground.h 
 )
 
-
 target_link_libraries(ef
 ${BOX2D_LIB}
 ${ALL_GRAPHICS_LIBS}
-${SDL2_LIBRARIES} 
-${SDL2IMAGE_LIBRARIES}
+SDL2
 ${SDL2_MIXER_LIBRARIES}
 ${SDL2_TTF_LIBRARY}
+${SDL2IMAGE_LIBRARY}
+SOIL2
 )
+
+ADD_DEPENDENCIES(ef
+  SOIL2
+)
+
 # Copy shaders to the build directory
 file(
 COPY tb2d/shaders
@@ -297,7 +279,6 @@ ENDIF()
 IF (MAKE_BOX2DLES)
 
 add_executable(b2
-  ${SOILSOURCE}
   ${TB2DSOURCE}
   Box2dLes/main.cpp 
   Box2dLes/b2entity.h 
@@ -312,10 +293,15 @@ add_executable(b2
 target_link_libraries(b2
 ${BOX2D_LIB}
 ${ALL_GRAPHICS_LIBS}
-${SDL2_LIBRARIES} 
-${SDL2IMAGE_LIBRARIES}
+SDL2
 ${SDL2_MIXER_LIBRARIES}
 ${SDL2_TTF_LIBRARY}
+${SDL2IMAGE_LIBRARY}
+SOIL2
+)
+
+ADD_DEPENDENCIES(b2
+  SOIL2
 )
 # Copy shaders to the build directory
 file(
@@ -331,44 +317,4 @@ file(
   DESTINATION ${CMAKE_BINARY_DIR}
 )
 
-ENDIF()
-
-####################################################################
-# start                                                            #
-####################################################################
-IF(MAKE_START)
-  add_executable(start
-    ${SOILSOURCE}
-    ${TB2DSOURCE}
-    start/main.cpp
-    start/game.h
-    start/game.cpp
-    start/player.h
-    start/player.cpp
-  )
-	target_link_libraries(start
-    ${BOX2D_LIB}
-    ${ALL_GRAPHICS_LIBS}
-    ${SDL2_LIBRARIES} 
-    ${SDL2IMAGE_LIBRARIES}
-    ${SDL2_MIXER_LIBRARIES}
-    ${SDL2_TTF_LIBRARY}
-	)
-	# Copy assets/shaders/textures to the build directory
-  file(
-		COPY tb2d/assets
-		DESTINATION ${CMAKE_BINARY_DIR}
-	)
-  file(
-		COPY tb2d/shaders
-		DESTINATION ${CMAKE_BINARY_DIR}
-	)
-  file(
-		COPY tb2d/textures
-		DESTINATION ${CMAKE_BINARY_DIR}
-  )
-  file(
-		COPY tb2d/fonts
-		DESTINATION ${CMAKE_BINARY_DIR}
-	)
 ENDIF()

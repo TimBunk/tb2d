@@ -12,11 +12,12 @@ Wall::~Wall() {
 }
 
 void Wall::Update(float deltaTime) {
-	glm::mat4 model;
+	// debugRenderer
+	/*glm::mat4 model;
 	model = glm::translate(model, glm::vec3(GetPositionInPixels(), 0.0f));
 	model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
-	dr->Render(camera->GetViewMatrix(), model, 3.0f);
+	dr->Render(camera->GetViewMatrix(), model, 3.0f);*/
 }
 
 void Wall::Draw() {
@@ -119,6 +120,5 @@ void Wall::SetActive(bool active) {
 			fixture->SetSensor(false);
 		}
 		body->SetActive(active);
-		std::cout << "wall body is now not active" << std::endl;
 	}
 }

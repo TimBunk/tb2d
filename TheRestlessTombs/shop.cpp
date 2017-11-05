@@ -269,6 +269,9 @@ void Shop::Draw() {
 }
 
 void Shop::_SetActive(bool active) {
+	std::string playerGoldString = "Gold: ";
+	playerGoldString += std::to_string(player->GetGold());
+	playerGold->SetText(playerGoldString);
 	this->active = active;
 }
 

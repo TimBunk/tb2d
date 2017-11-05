@@ -3,7 +3,7 @@
 Enemy::Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
 	this->player = player;
 	this->lineOfSight = lineOfSight;
-	raycast = new RayCastCallBack();
+	raycast = new RayCastCallBack(this);
 	raycast->CreateLine(lineOfSight, 25.0f, camera, this->rm->GetShader("debugRenderer"), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	playerLastLocation = this->localPosition;
 	distancePlayer = 10000.0f;
@@ -54,7 +54,8 @@ bool Enemy::ShootRaycast() {
 	angle = glm::normalize(angle);
 	angle *= (((float)M_PI) * 180.0f);
 	float newAngle = glm::atan(angle.y, angle.x);
-	raycast->Draw(glm::vec2(this->localPosition.x, this->localPosition.y), newAngle);
+	// Raycast drawing
+	//raycast->Draw(glm::vec2(this->localPosition.x, this->localPosition.y), newAngle);
 
 	// UPDATE
 	distancePlayer = glm::distance(this->localPosition, player->localPosition);

@@ -1,10 +1,14 @@
 #include "rayCastCallBack.h"
 #include "enemy.h"
 
-RayCastCallBack::RayCastCallBack() : b2RayCastCallback::b2RayCastCallback() {
-	Camera* camera = nullptr;
-	Shader* shader = nullptr;
-	glm::vec4 color = glm::vec4(0.0f);
+RayCastCallBack::RayCastCallBack(B2Entity* user) : b2RayCastCallback::b2RayCastCallback() {
+	this->user = user;
+	camera = nullptr;
+	shader = nullptr;
+	color = glm::vec4(0.0f);
+	lineWidth = 0;
+	VAO = NULL;
+	VBO = NULL;
 }
 
 RayCastCallBack::~RayCastCallBack() {
@@ -55,10 +59,10 @@ float32 RayCastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, 
 	if (fixture->IsSensor()) {
 		return -1;
 	}
-	/*else if (static_cast<Enemy*>(fixture->GetUserData()) != NULL) {
-		std::cout << "fraction = " << fraction << std::endl;
-		return 2;
-	}*/
+	// if the hitted target is an enemy skip that one
+	else if (dynamic_cast<Enemy*>(static_cast<B2Entity*>(fixture->GetUserData())) != NULL) {
+		return -1;
+	}
 	ro.fixture = fixture;
 	ro.point = point;
 	ro.normal = normal;
