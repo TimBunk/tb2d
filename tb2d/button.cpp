@@ -52,7 +52,7 @@ Button::~Button() {
 	delete text;
 }
 
-void Button::Update(float deltaTime) {
+void Button::Update(double deltaTime) {
 	float mouseX, mouseY;
 	if (HUD) {
 		mouseX = input->GetMousePositionScreenSpace(camera).x;

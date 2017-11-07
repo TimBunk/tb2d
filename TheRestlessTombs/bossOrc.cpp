@@ -26,7 +26,7 @@ BossOrc::~BossOrc() {
 	delete hammer;
 }
 
-void BossOrc::Update(float deltaTime) {
+void BossOrc::Update(double deltaTime) {
 	if (LookForPlayer(deltaTime)) {
 		// Calculate the angle between the player and piviot of the enemy
 		glm::vec2 angle;
@@ -55,7 +55,7 @@ void BossOrc::Update(float deltaTime) {
 	}
 }
 
-bool BossOrc::LookForPlayer(float deltaTime) {
+bool BossOrc::LookForPlayer(double deltaTime) {
 	this->localPosition = glm::vec3(this->GetPositionInPixels().x, this->GetPositionInPixels().y, 1.0f);
 	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
 	if (this->ShootRaycast()) {
@@ -84,7 +84,7 @@ bool BossOrc::LookForPlayer(float deltaTime) {
 			speed = originalSpeed;
 		}
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		if (IsTextureFlipped() && vel.x < 0.0f) {
 			FlipTexture();
@@ -101,7 +101,7 @@ bool BossOrc::LookForPlayer(float deltaTime) {
 		timer = 0.0f;
 		vel = b2Vec2(playerLastLocation.x - this->localPosition.x, playerLastLocation.y - this->localPosition.y);
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		return false;
 	}

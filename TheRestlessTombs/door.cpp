@@ -9,7 +9,7 @@ Door::~Door() {
 
 }
 
-void Door::Update(float deltaTime) {
+void Door::Update(double deltaTime) {
 	this->localPosition = glm::vec3(this->GetPositionInPixels(), 9.0f);
 	for (int i=0;i<contacts.size();i++) {
 		if (dynamic_cast<Player*>(contacts[i]) != 0) {

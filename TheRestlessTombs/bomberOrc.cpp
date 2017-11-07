@@ -19,7 +19,7 @@ BomberOrc::~BomberOrc() {
 	}
 }
 
-void BomberOrc::Update(float deltaTime) {
+void BomberOrc::Update(double deltaTime) {
 	if (IsAlive()) {
 		if (LookForPlayer(deltaTime)) {
 			timer += deltaTime;
@@ -57,7 +57,7 @@ bool BomberOrc::LookForPlayer(float deltaTime) {
 			vel = b2Vec2(this->localPosition.x - player->localPosition.x, this->localPosition.y - player->localPosition.y);
 		}
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		if (IsTextureFlipped() && vel.x < 0.0f) {
 			FlipTexture();
@@ -70,7 +70,7 @@ bool BomberOrc::LookForPlayer(float deltaTime) {
 	else if (glm::distance(this->localPosition, playerLastLocation) > minimalRange) {
 		vel = b2Vec2(playerLastLocation.x - this->localPosition.x, playerLastLocation.y - this->localPosition.y);
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		return false;
 	}

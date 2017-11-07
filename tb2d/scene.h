@@ -25,7 +25,7 @@ public:
 	Scene(Camera* camera);
 	~Scene();
 
-	virtual void Update(float deltaTime);
+	virtual void Update(double deltaTime);
 protected:
 	Camera* camera;
 private:

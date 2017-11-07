@@ -18,7 +18,7 @@ public:
 	Shop(Player* player, ResourceManager* rm, Input* input, Camera* camera, Shader* shader, b2World* world);
 	~Shop();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 
 	void _SetActive(bool active);

@@ -43,7 +43,7 @@ Player::~Player() {
 	}
 }
 
-void Player::Update(float deltaTime) {
+void Player::Update(double deltaTime) {
 	// TODO Stop updating player when it is not alive anymore
 
 	// Set the player's movement
@@ -82,7 +82,7 @@ void Player::Update(float deltaTime) {
 	}
 	// Set the velocity and the camera's position
 	vel.Normalize();
-	vel *= (currentSpeed * 500.0f * deltaTime);
+	vel *= currentSpeed;
 	body->SetLinearVelocity(vel);
 	this->camera->SetPosition(glm::vec2(-this->GetPositionInPixels().x - -camera->screenWidth/2, -this->GetPositionInPixels().y - -camera->screenHeight/2));
 

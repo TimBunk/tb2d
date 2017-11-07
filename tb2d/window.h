@@ -34,7 +34,7 @@ public:
 	Camera* GetCamera();
 	Input* GetInput();
 	ResourceManager* GetResourceManager();
-	float GetDeltaTime();
+	double GetDeltaTime();
 
 	// The color ranges from 0 to 1
 	void SetBackgroundColor(glm::vec3 backgroundColor);
@@ -50,9 +50,9 @@ private:
 	Input* input;
 	ResourceManager* rm;
 
-	float deltaTime;
-	float lastFrame;
-	float totalTime;
+	double deltaTime;
+	Uint64 lastFrame;
+	double totalTime;
 	int fpsCount;
 };
 

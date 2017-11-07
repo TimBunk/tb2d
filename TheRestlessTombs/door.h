@@ -16,7 +16,7 @@ public:
 	Door(int roomNumber, Direction direction, Camera* camera, Shader* shader, b2World* world);
 	~Door();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 
 	void CreateBody(int x, int y, float width);
 private:

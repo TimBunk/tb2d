@@ -29,7 +29,7 @@ public:
     Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
     ~Player();
 
-    void Update(float deltaTime);
+    void Update(double deltaTime);
     void SetRoom(int number);
     int GetRoom();
 

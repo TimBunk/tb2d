@@ -11,7 +11,7 @@ public:
 	Hud(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture texture);
 	~Hud();
 
-	virtual void Update(float deltaTime);
+	virtual void Update(double deltaTime);
 	virtual void Draw();
 
 	void SetTexture(Texture texture);

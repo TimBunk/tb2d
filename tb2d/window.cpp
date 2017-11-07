@@ -3,10 +3,6 @@
 Window::Window(int screenWidth, int screenHeight, const char* screenName, bool fullScreen) {
 	// Initialize all variables with a value
 	backgroundColor = glm::vec3(0.0f, 0.0f, 0.0f);
-	deltaTime = 0.0f;
-	lastFrame = 0.0f;
-	totalTime = 0.0f;
-	fpsCount = 0;
 	window = nullptr;
 	// Initialize SDL2
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -50,6 +46,11 @@ Window::Window(int screenWidth, int screenHeight, const char* screenName, bool f
 
 		}
 	}
+	// Initalize variables for deltaTime
+	deltaTime = 0.0f;
+	lastFrame = SDL_GetPerformanceCounter();
+	totalTime = 0.0f;
+	fpsCount = 0;
 }
 
 
@@ -92,7 +93,7 @@ ResourceManager* Window::GetResourceManager() {
 	return rm;
 }
 
-float Window::GetDeltaTime() {
+double Window::GetDeltaTime() {
 	return deltaTime;
 }
 
@@ -101,10 +102,14 @@ void Window::SetBackgroundColor(glm::vec3 backgroundColor) {
 }
 
 void Window::CalculateFrameRate() {
-	float currentFrame = SDL_GetTicks();
+	/*double currentFrame = SDL_GetTicks();
 	deltaTime = ((currentFrame - lastFrame) / 1000.0f);
+	lastFrame = currentFrame;*/
+	Uint64 currentFrame = SDL_GetPerformanceCounter();
+	deltaTime = ((currentFrame - lastFrame) / (double)SDL_GetPerformanceFrequency());
 	lastFrame = currentFrame;
 	fpsCount++;
+	// Print the fps once the totalTime reaches 1 second
 	totalTime += deltaTime;
 	if (totalTime >= 1.0f) {
 		totalTime -= 1.0f;

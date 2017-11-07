@@ -8,7 +8,7 @@ public:
 	ArmoredOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~ArmoredOrc();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void TakeDamage(int damage);
 	void Reset();
 private:

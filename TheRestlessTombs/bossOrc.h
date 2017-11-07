@@ -8,8 +8,8 @@ public:
 	BossOrc(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BossOrc();
 
-	void Update(float deltaTime);
-	bool LookForPlayer(float deltaTime);
+	void Update(double deltaTime);
+	bool LookForPlayer(double deltaTime);
 	void TakeDamage(int damage);
 	void Reset();
 private:

@@ -19,7 +19,7 @@ Bomb::~Bomb() {
 
 }
 
-void Bomb::Update(float deltaTime) {
+void Bomb::Update(double deltaTime) {
 	if (IsAlive()) {
 		color.r += (deltaTime/(explosionTime*2.0f));
 		if (color.r >= 0.5f && !explode) {

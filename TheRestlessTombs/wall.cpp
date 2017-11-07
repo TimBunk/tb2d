@@ -11,7 +11,7 @@ Wall::~Wall() {
 	}
 }
 
-void Wall::Update(float deltaTime) {
+void Wall::Update(double deltaTime) {
 	// debugRenderer
 	/*glm::mat4 model;
 	model = glm::translate(model, glm::vec3(GetPositionInPixels(), 0.0f));

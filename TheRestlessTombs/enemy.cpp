@@ -21,13 +21,13 @@ void Enemy::GiveItem(Item* item) {
 	item->Destroy();
 }
 
-bool Enemy::LookForPlayer(float deltaTime) {
+bool Enemy::LookForPlayer() {
 	this->localPosition = glm::vec3(this->GetPositionInPixels().x, this->GetPositionInPixels().y, 1.0f);
 	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
 	if (this->ShootRaycast()) {
 		vel = b2Vec2(player->localPosition.x - this->localPosition.x, player->localPosition.y - this->localPosition.y);
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		if (IsTextureFlipped() && vel.x < 0.0f) {
 			FlipTexture();
@@ -40,7 +40,7 @@ bool Enemy::LookForPlayer(float deltaTime) {
 	else if (glm::distance(this->localPosition, playerLastLocation) > minimalRange) {
 		vel = b2Vec2(playerLastLocation.x - this->localPosition.x, playerLastLocation.y - this->localPosition.y);
 		vel.Normalize();
-		vel *= (speed * 500.0f * deltaTime);
+		vel *= speed;
 		body->SetLinearVelocity(vel);
 		return false;
 	}

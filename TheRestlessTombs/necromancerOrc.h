@@ -8,7 +8,7 @@ public:
 	NecromancerOrc(float spawnCooldown, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~NecromancerOrc();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void TakeDamage(int damage);
 	void Reset();
 

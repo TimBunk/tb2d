@@ -47,7 +47,7 @@ Hud::~Hud() {
 
 }
 
-void Hud::Update(float deltaTime) {
+void Hud::Update(double deltaTime) {
 
 }
 

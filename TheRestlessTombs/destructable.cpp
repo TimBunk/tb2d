@@ -8,7 +8,7 @@ Destructable::~Destructable() {
 
 }
 
-void Destructable::Update(float deltaTime) {
+void Destructable::Update(double deltaTime) {
 
 }
 

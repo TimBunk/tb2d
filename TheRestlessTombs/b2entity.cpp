@@ -23,11 +23,11 @@ B2Entity::~B2Entity() {
 	}
 }
 
-void B2Entity::Update(float deltaTime) {
+void B2Entity::Update(double deltaTime) {
 
 }
 
-void B2Entity::UpdateChilderen(Entity * parent, float deltaTime)
+void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 {
 	if (parent != NULL) {
 		this->position = this->localPosition + parent->GetGlobalPosition();

@@ -109,7 +109,7 @@ Shop::~Shop() {
 	delete damagePotionTexture;
 }
 
-void Shop::Update(float deltaTime) {
+void Shop::Update(double deltaTime) {
 	if (active) {
 		shopWrapper->UpdateChilderen(shopWrapper, deltaTime);
 		// HealthUpgrade

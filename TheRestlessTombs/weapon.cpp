@@ -23,7 +23,7 @@ Weapon::~Weapon() {
 	delete dr;
 }
 
-void Weapon::Update(float deltaTime) {
+void Weapon::Update(double deltaTime) {
 	body->SetAwake(true);
 	this->localAngle = rotation + currentSwingAngle;
 	if (attacking && timer <= attackDuration) {

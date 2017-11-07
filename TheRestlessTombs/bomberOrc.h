@@ -9,7 +9,7 @@ public:
 	BomberOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BomberOrc();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	bool LookForPlayer(float deltaTime);
 	void TakeDamage(int damage);
 	void Reset();

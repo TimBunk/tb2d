@@ -8,7 +8,7 @@ public:
 	Destructable(Camera* camera, Shader* shader, b2World* world);
 	~Destructable();
 
-	virtual void Update(float deltaTime);
+	virtual void Update(double deltaTime);
 	virtual void Draw();
 
 	virtual void Destroy();

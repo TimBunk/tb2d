@@ -15,7 +15,7 @@ public:
 	Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader, b2World* world);
 	~Weapon();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 
 	void CreateBody(int x, int y, int w, int h);

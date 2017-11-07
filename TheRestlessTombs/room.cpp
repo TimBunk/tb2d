@@ -8,7 +8,7 @@ Room::~Room() {
 
 }
 
-void Room::Update(float deltaTime) {
+void Room::Update(double deltaTime) {
 	this->UpdateChilderen(this, deltaTime);
 }
 

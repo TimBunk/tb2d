@@ -23,7 +23,7 @@ protected:
 
 	Item* item;
 
-	virtual bool LookForPlayer(float deltaTime);
+	virtual bool LookForPlayer();
 	bool ShootRaycast();
 
 	virtual void SetActive(bool active);

@@ -8,7 +8,7 @@ public:
 	Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world);
 	~Bomb();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 
 	bool Impact();

@@ -38,7 +38,7 @@ public:
 	Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, Input* input, Camera* camera);
 	~Level1();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Reset();
 private:
 	ResourceManager* rm;

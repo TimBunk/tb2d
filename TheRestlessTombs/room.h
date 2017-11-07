@@ -10,7 +10,7 @@ public:
 	Room(Camera* camera);
 	~Room();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Reset();
 	void SetActive(bool active);
 private:

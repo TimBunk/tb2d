@@ -13,7 +13,7 @@ LootChest::~LootChest() {
 	delete text;
 }
 
-void LootChest::Update(float deltaTime) {
+void LootChest::Update(double deltaTime) {
 	if (text->GetVisibility() > 0.0f && !alive) {
 		// The alpha of the text goes minus the deltaTime so it takes 3 second for it to be invisible
 		text->SetVisibility(text->GetVisibility() - deltaTime * 0.333f);

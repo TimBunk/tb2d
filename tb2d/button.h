@@ -10,7 +10,7 @@ public:
 	Button(int x, int y, int width, int height, bool HUD, std::string text, glm::vec4 color, Input* input, Camera* camera, ResourceManager* rm);
 	~Button();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 
 	void SetColor(glm::vec4 color);

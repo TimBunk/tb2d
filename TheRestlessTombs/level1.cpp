@@ -672,7 +672,7 @@ Level1::~Level1() {
 	delete wall7_5;
 }
 
-void Level1::Update(float deltaTime) {
+void Level1::Update(double deltaTime) {
 	// Reset if either the player or the boss dies
 	if (!bossOrc7_1->IsAlive() || !player->IsAlive()) {
 		Reset();
@@ -688,10 +688,6 @@ void Level1::Update(float deltaTime) {
 		// remove and add the player so that the player will be drawn on top of everything else
 		this->RemoveChild(player);
 		this->AddChild(player);
-	}
-	// RESET
-	if (input->KeyPress(SDL_SCANCODE_R)) {
-		Reset();
 	}
 	this->UpdateChilderen(this, deltaTime);
 }

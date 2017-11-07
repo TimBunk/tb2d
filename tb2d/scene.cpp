@@ -9,6 +9,6 @@ Scene::~Scene()
 
 }
 
-void Scene::Update(float deltaTime) {
+void Scene::Update(double deltaTime) {
 	this->UpdateChilderen(this, deltaTime);
 }

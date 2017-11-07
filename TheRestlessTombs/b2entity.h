@@ -14,8 +14,8 @@ public:
 	B2Entity(Camera* camera, Shader* shader, b2World* world);
 	virtual ~B2Entity();
 
-	virtual void Update(float deltaTime);
-	virtual void UpdateChilderen(Entity* parent, float deltaTime);
+	virtual void Update(double deltaTime);
+	virtual void UpdateChilderen(Entity* parent, double deltaTime);
 	virtual void Draw();
 
 	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor);

@@ -22,10 +22,10 @@ NecromancerOrc::~NecromancerOrc() {
 	delete babyOrcsHolder;
 }
 
-void NecromancerOrc::Update(float deltaTime) {
+void NecromancerOrc::Update(double deltaTime) {
 	if (IsAlive()) {
 		// Look for the player and if he is in range spawn a babyorc
-		if (LookForPlayer(deltaTime)) {
+		if (LookForPlayer()) {
 			// Check where the player is and rotate towards him
 			glm::vec3 anglePlayerEnemy = glm::normalize(player->localPosition - this->localPosition) * 15.0f;
 			if (IsTextureFlipped() && anglePlayerEnemy.x < 0.0f) {

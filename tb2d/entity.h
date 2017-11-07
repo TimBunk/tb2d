@@ -18,8 +18,8 @@ public:
 	float localAngle;
 	glm::vec2 localScale;
 
-	virtual void Update(float deltaTime);
-	virtual void UpdateChilderen(Entity* parent, float deltaTime);
+	virtual void Update(double deltaTime);
+	virtual void UpdateChilderen(Entity* parent, double deltaTime);
 	virtual void Draw();
 
 	// You only have to add a child one, otherwise it might cause unexpected behaviour

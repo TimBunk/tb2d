@@ -8,7 +8,7 @@ public:
 	PsychoOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~PsychoOrc();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void TakeDamage(int damage);
 	void Reset();
 private:

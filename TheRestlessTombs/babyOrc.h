@@ -9,7 +9,7 @@ public:
 	BabyOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 	~BabyOrc();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void TakeDamage(int damage);
 	void Reset();
 private:

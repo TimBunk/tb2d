@@ -16,7 +16,7 @@ Entity::~Entity()
 
 }
 
-void Entity::Update(float deltaTime)
+void Entity::Update(double deltaTime)
 {
 
 }
@@ -55,7 +55,7 @@ void Entity::RemoveChild(Entity* child) {
 	std::cout << "You tried to remove a child, but that child could not be found!" << std::endl;
 }
 
-void Entity::UpdateChilderen(Entity * parent, float deltaTime)
+void Entity::UpdateChilderen(Entity * parent, double deltaTime)
 {
 	if (parent != NULL) {
 		this->position = this->localPosition + parent->position;

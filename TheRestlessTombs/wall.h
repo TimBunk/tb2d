@@ -10,7 +10,7 @@ public:
 	Wall(bool visible, Camera* camera, Shader* shader, b2World* world);
 	~Wall();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 	void CreateBody(int x, int y, int w, int h);
 	void SetActive(bool active);

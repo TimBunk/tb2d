@@ -13,7 +13,7 @@ public:
 	LootChest(int gold, Player* player, Shader* text, Camera* camera, Shader* shader, b2World* world);
 	~LootChest();
 
-	void Update(float deltaTime);
+	void Update(double deltaTime);
 	void Draw();
 
 	void GiveTexture(Texture chestClosed, Texture chestOpened);
