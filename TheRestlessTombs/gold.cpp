@@ -9,6 +9,7 @@ Gold::~Gold() {
 }
 
 int Gold::GetGold() {
+	// Destroy the gold automatically and returns the value of the gold
 	Destroy();
 	return value;
 }

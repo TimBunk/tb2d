@@ -1,12 +1,13 @@
 #include "orc.h"
 
 Orc::Orc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
-	// stats of the psychoorc
+	// stats of the orc
 	damage = 1;
 	speed = 5.0f;
 	attackSpeed = 1.0f;
 	health = 2;
 	currentHealth = health;
+	// Create the weapon
 	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
 	sword->GiveTexture(this->rm->GetTexture("orcWeapon"));
 	sword->CreateBody(0, 0, 27, 54);
@@ -30,12 +31,14 @@ void Orc::Update(double deltaTime) {
 		sword->SetAngle(angle);
 		sword->localPosition.x = angle.x;
 		sword->localPosition.y = angle.y;
+		// flip the texture of the sword
 		if (IsTextureFlipped() && sword->IsFlipped()) {
 			sword->FlipBody();
 		}
 		else if (!IsTextureFlipped() && !sword->IsFlipped()) {
 			sword->FlipBody();
 		}
+		// atack the player if it is in range
 		if (distancePlayer < minimalRange) {
 			sword->Attack();
 		}
@@ -58,6 +61,7 @@ void Orc::TakeDamage(int damage) {
 }
 
 void Orc::Reset() {
+	// Reset everything back to its base value
 	body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
 	playerLastLocation = spawnPosition;
 	if (!IsAlive()) {

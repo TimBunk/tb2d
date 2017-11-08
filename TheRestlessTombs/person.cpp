@@ -1,6 +1,7 @@
 #include "person.h"
 
 Person::Person(ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
+	// Initialize all of the variables
 	this->rm = rm;
     health = 0;
     currentHealth = health;
@@ -15,27 +16,8 @@ Person::~Person() {
 
 }
 
-void Person::Draw() {
-	if (IsAlive()) {
-		shader->Use();
-		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-		shader->SetMatrix4("view", camera->GetViewMatrix());
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(GetPositionInPixels(), this->GetGlobalPosition().z));
-		model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
-		shader->SetMatrix4("model", model);
-		glActiveTexture(GL_TEXTURE0 + texture.id);
-		shader->SetInt("ourTexture", texture.id);
-		glBindTexture(GL_TEXTURE_2D, texture.id);
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(0);
-	}
-}
-
 bool Person::IsAlive() {
+	// If the person has no health return false
 	if (currentHealth <= 0) {
 		return false;
 	}
@@ -43,6 +25,7 @@ bool Person::IsAlive() {
 }
 
 void Person::TakeDamage(int damage) {
+	// Make sure the health never drops below 0
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
 	}
@@ -52,6 +35,7 @@ void Person::TakeDamage(int damage) {
 }
 
 void Person::ApplyHealing(int healing) {
+	// Make sure that the person doesn't get more currentHealth then it's total health
 	if (healing + currentHealth > health) {
 		currentHealth = health;
 	}
@@ -61,6 +45,7 @@ void Person::ApplyHealing(int healing) {
 }
 
 void Person::FlipTexture() {
+	// Flip the uv coordinates and recreate the VAO
 	float vertices[16];
 	if (flippedTexture) {
 		flippedTexture = false;

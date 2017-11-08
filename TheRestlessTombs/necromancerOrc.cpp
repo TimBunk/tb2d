@@ -1,18 +1,20 @@
 #include "necromancerOrc.h"
 
 NecromancerOrc::NecromancerOrc(float spawnCooldown, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Enemy::Enemy(player, lineOfSight, rm, camera, shader, world) {
+	// Stats of the necromancerOrc
 	damage = 0;
 	speed = 0.0f;
 	attackSpeed = 0.0f;
 	health = 2;
 	currentHealth = health;
-
+	// Initialize all of the other variables
 	this->spawnCooldown = spawnCooldown;
 	currentCooldown = 0.0f;
 	babyOrcsHolder = new Entity();
 }
 
 NecromancerOrc::~NecromancerOrc() {
+	// Iterate through all of the babyOrcs and delete them
 	std::vector<BabyOrc*>::iterator it = babyOrcs.begin();
 	while (it != babyOrcs.end()) {
 		babyOrcsHolder->RemoveChild((*it));
@@ -77,6 +79,7 @@ void NecromancerOrc::TakeDamage(int damage) {
 }
 
 void NecromancerOrc::Reset() {
+	// Set all of the variables back it's origal value
 	body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
 	playerLastLocation = spawnPosition;
 	if (!IsAlive()) {

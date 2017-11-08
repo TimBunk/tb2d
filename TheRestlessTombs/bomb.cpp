@@ -1,6 +1,7 @@
 #include "bomb.h"
 
 Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float impactTime, Texture bomb, Texture explosionTexture, Camera* camera, Shader* shader, b2World* world) : Item::Item(camera, shader, world) {
+	// Initialize all of the variables
 	this->explosionTime = explosionTime;
 	this->explosionRadius = explosionRadius;
 	this->impactTime = impactTime;
@@ -8,7 +9,6 @@ Bomb::Bomb(float bombSize, float explosionTime, float explosionRadius, float imp
 	this->bomb = bomb;
 	GiveTexture(bomb);
 	color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	timer = 0.0f;
 	explode = false;
 	impact = false;
 	currentImpactTime = 0.0f;
@@ -21,11 +21,14 @@ Bomb::~Bomb() {
 
 void Bomb::Update(double deltaTime) {
 	if (IsAlive()) {
+		// Increase the red value of the color of the bomb
 		color.r += (deltaTime/(explosionTime*2.0f));
+		// When the bomb is half way red let it explode
 		if (color.r >= 0.5f && !explode) {
 			explode = true;
 			impact = true;
 			color.r = 0.0f;
+			// delete the old body
 			if (body != NULL) {
 				body->DestroyFixture(fixture);
 				world->DestroyBody(body);
@@ -33,12 +36,15 @@ void Bomb::Update(double deltaTime) {
 				glDeleteBuffers(1, &VBO);
 				glDeleteBuffers(1, &EBO);
 			}
+			// create the body of the explosion
 			CreateBody(this->localPosition.x, this->localPosition.y, explosionRadius);
 			GiveTexture(explosionTexture);
 		}
 		if (explode) {
+			// Let the bomb explode and deal possible damage to the player
 			currentImpactTime += deltaTime;
 			if (currentImpactTime >= impactTime) {
+				explode = false;
 				impact = false;
 				this->Destroy();
 			}
@@ -79,8 +85,10 @@ void Bomb::Reset() {
 	alive = true;
 	SetActive(true);
 	explode = false;
+	impact = false;
 	GiveTexture(bomb);
 	color.r = 0.0f;
+	// recreate the bomb and delete the explosion
 	if (body != NULL) {
 		body->DestroyFixture(fixture);
 		world->DestroyBody(body);

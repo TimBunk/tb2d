@@ -15,9 +15,9 @@ public:
 	virtual void Draw();
 
 	void SetTexture(Texture texture);
-
-protected:
 	int w, h;
+protected:
+	//int w, h;
 
 	Camera* camera;
 	Shader* shader;

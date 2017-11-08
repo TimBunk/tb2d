@@ -7,6 +7,7 @@ PsychoOrc::PsychoOrc(Player* player, float lineOfSight, ResourceManager* rm, Cam
 	attackSpeed = 0.75f;
 	health = 1;
 	currentHealth = health;
+	// create the weapon
 	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
 	sword->GiveTexture(this->rm->GetTexture("psychoOrcWeapon"));
 	sword->CreateBody(0, 0, 18, 36);
@@ -30,12 +31,14 @@ void PsychoOrc::Update(double deltaTime) {
 		sword->SetAngle(angle);
 		sword->localPosition.x = angle.x;
 		sword->localPosition.y = angle.y;
+		// flip the texture of the sword
 		if (IsTextureFlipped() && sword->IsFlipped()) {
 			sword->FlipBody();
 		}
 		else if (!IsTextureFlipped() && !sword->IsFlipped()) {
 			sword->FlipBody();
 		}
+		// if the player is in range attack him
 		if (distancePlayer < minimalRange) {
 			sword->Attack();
 		}
@@ -58,6 +61,7 @@ void PsychoOrc::TakeDamage(int damage) {
 }
 
 void PsychoOrc::Reset() {
+	// Set all of the variables back to their base values
 	body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
 	playerLastLocation = spawnPosition;
 	if (!IsAlive()) {

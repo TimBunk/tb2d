@@ -7,7 +7,7 @@ BabyOrc::BabyOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera*
 	attackSpeed = 1.0f;
 	health = 1;
 	currentHealth = health;
-
+	// Create the sword
 	sword = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
 	sword->GiveTexture(this->rm->GetTexture("orcWeapon"));
 	sword->CreateBody(0, 0, 18, 36);
@@ -31,12 +31,14 @@ void BabyOrc::Update(double deltaTime) {
 		sword->SetAngle(angle);
 		sword->localPosition.x = angle.x;
 		sword->localPosition.y = angle.y;
+		// Flip the textures
 		if (IsTextureFlipped() && sword->IsFlipped()) {
 			sword->FlipBody();
 		}
 		else if (!IsTextureFlipped() && !sword->IsFlipped()) {
 			sword->FlipBody();
 		}
+		// Attack the player if in range
 		if (distancePlayer < minimalRange) {
 			sword->Attack();
 		}
@@ -56,6 +58,7 @@ void BabyOrc::TakeDamage(int damage) {
 }
 
 void BabyOrc::Reset() {
+	// Set variables back to original value
 	body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
 	playerLastLocation = spawnPosition;
 	if (!IsAlive()) {

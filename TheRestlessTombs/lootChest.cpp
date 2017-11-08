@@ -2,6 +2,7 @@
 #include "player.h"
 
 LootChest::LootChest(int gold, Player* player, Shader* text, Camera* camera, Shader* shader, b2World* world) : Destructable::Destructable(camera, shader, world) {
+	// initialize all of the variables with a value
 	this->gold = gold;
 	this->player = player;
 	std::string s = std::to_string(gold);
@@ -23,6 +24,7 @@ void LootChest::Update(double deltaTime) {
 }
 
 void LootChest::Draw() {
+	// Use the shader and draw the lootChest
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
@@ -56,6 +58,7 @@ void LootChest::GiveTexture(Texture chestClosed, Texture chestOpened) {
 
 void LootChest::Destroy() {
 	if (alive) {
+		// Destroy only if alive and add the gold to the player and display the amount of gold you get on the screen
 		alive = false;
 		player->AddGold(gold);
 		text->localPosition = glm::vec3(this->localPosition.x - (text->GetWidth() * 0.25f), this->localPosition.y, this->localPosition.z);
@@ -64,6 +67,7 @@ void LootChest::Destroy() {
 }
 
 void LootChest::Reset() {
+	// Reset the text
 	text->localPosition = glm::vec3(text->localPosition.x, this->localPosition.y, text->localPosition.z);
 	text->SetVisibility(1.0f);
 	if (!alive) {

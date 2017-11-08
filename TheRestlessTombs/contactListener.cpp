@@ -9,6 +9,7 @@ ContactListener::~ContactListener() {
 }
 
 void ContactListener::BeginContact(b2Contact* contact) {
+	// Get fixture a and b from the contact
 	b2Fixture* fa = contact->GetFixtureA();
 	b2Fixture* fb = contact->GetFixtureB();
 
@@ -22,6 +23,7 @@ void ContactListener::BeginContact(b2Contact* contact) {
 }
 
 void ContactListener::EndContact(b2Contact* contact) {
+	// Get fixture a and b from the contact
 	b2Fixture* fa = contact->GetFixtureA();
 	b2Fixture* fb = contact->GetFixtureB();
 

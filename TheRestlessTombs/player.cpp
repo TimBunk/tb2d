@@ -1,6 +1,7 @@
 #include "player.h"
 
 Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
+	// Initialize all of the variables
 	this->input =  input;
 	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetShader("textHud"), rm->GetTexture("showCase"));
 	this->AddChild(showCase);
@@ -44,8 +45,6 @@ Player::~Player() {
 }
 
 void Player::Update(double deltaTime) {
-	// TODO Stop updating player when it is not alive anymore
-
 	// Set the player's movement
 	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
 	if (input->KeyDown(SDL_SCANCODE_W) || input->KeyDown(SDL_SCANCODE_UP)) {
@@ -145,7 +144,7 @@ void Player::Update(double deltaTime) {
 	UpdateStats();
 
 	// Pick up items
-	for (int i=0;i<contacts.size();i++) {
+	for (unsigned int i=0;i<contacts.size();i++) {
 		// Check if the player already contains a item
 		if (!IsInventoryFull()) {
 			// Search for potions
@@ -176,6 +175,7 @@ int Player::GetRoom() {
 }
 
 void Player::AddGold(int gold) {
+	// Add to the player's gold and update the text that displays the amount of gold
 	this->gold += gold;
 	std::string s = std::to_string(this->gold);
 	std::string ss = "Gold: " + s;
@@ -187,6 +187,7 @@ int Player::GetGold() {
 }
 
 void Player::GiveItem(Item* item) {
+	// Item will only be added if the inventory is empty
 	if (!IsInventoryFull()) {
 		this->item = item;
 		item->Destroy();
@@ -279,6 +280,8 @@ void Player::CreateLives(int amount) {
 	int xHealth = 30;
 	for (int i=0;i<amount;i++) {
 		hudHealth.push_back(new Hud(xHealth, 30, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("heartFilled")));
+		//std::cout << "hudHealth[i]->h " << hudHealth[i]->h << std::endl;
+		//std::cout << "hudHealth[i]->w " << hudHealth[i]->w << std::endl;
 		if (currentHealth-1 < i) {
 			hudHealth[i]->SetTexture(rm->GetTexture("heartEmpty"));
 		}
@@ -288,6 +291,7 @@ void Player::CreateLives(int amount) {
 }
 
 void Player::Reset() {
+	// Reset all of the player's variables
 	health = 4;
 	currentHealth = 4;
 	lastHealth = currentHealth;

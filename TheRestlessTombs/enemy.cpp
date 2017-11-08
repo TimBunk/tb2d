@@ -1,6 +1,7 @@
 #include "enemy.h"
 
 Enemy::Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
+	// Intialize all of the variables with a value
 	this->player = player;
 	this->lineOfSight = lineOfSight;
 	raycast = new RayCastCallBack(this);
@@ -16,14 +17,17 @@ Enemy::~Enemy() {
 }
 
 void Enemy::GiveItem(Item* item) {
+	// The item will be a child of the enemy also it will be destroyed but whenever the player dies it will be reseted again
 	this->item = item;
 	this->AddChild(item);
 	item->Destroy();
 }
 
 bool Enemy::LookForPlayer() {
+	// Get the position in pixels from the b2Body and make that the localPosition
 	this->localPosition = glm::vec3(this->GetPositionInPixels().x, this->GetPositionInPixels().y, 1.0f);
 	b2Vec2 vel = b2Vec2(0.0f, 0.0f);
+	// If the raycast reached the player move towards it
 	if (this->ShootRaycast()) {
 		vel = b2Vec2(player->localPosition.x - this->localPosition.x, player->localPosition.y - this->localPosition.y);
 		vel.Normalize();
@@ -49,21 +53,22 @@ bool Enemy::LookForPlayer() {
 }
 
 bool Enemy::ShootRaycast() {
-	// DRAW
-	glm::vec2 angle = this->localPosition - player->localPosition;
+	// Draw raycast
+	/*glm::vec2 angle = this->localPosition - player->localPosition;
 	angle = glm::normalize(angle);
 	angle *= (((float)M_PI) * 180.0f);
 	float newAngle = glm::atan(angle.y, angle.x);
-	// Raycast drawing
-	//raycast->Draw(glm::vec2(this->localPosition.x, this->localPosition.y), newAngle);
+	raycast->Draw(glm::vec2(this->localPosition.x, this->localPosition.y), newAngle);*/
 
-	// UPDATE
+	// Check if the player is in range
 	distancePlayer = glm::distance(this->localPosition, player->localPosition);
 	if (distancePlayer < lineOfSight) {
+		// Set the raycast
 		world->RayCast(raycast, b2Vec2(this->localPosition.x * Window::p2m, this->localPosition.y * Window::p2m), b2Vec2(player->localPosition.x * Window::p2m, player->localPosition.y * Window::p2m));
 		RaycastOutput ro = raycast->GetOutput();
 		if (static_cast<B2Entity*>(ro.fixture->GetUserData()) == NULL) { return false; }
 		B2Entity* b2entity = static_cast<B2Entity*>(ro.fixture->GetUserData());
+		// Check if the hitted b2Entity is a player if so return true
 		if (dynamic_cast<Player*>(b2entity) != NULL) {
 			playerLastLocation = player->localPosition;
 			return true;
