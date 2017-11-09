@@ -1,6 +1,7 @@
 #include "door.h"
 
 Door::Door(int roomNumber, Direction direction, Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
+	// Initialize the variables
 	this->roomNumber = roomNumber;
 	this->direction = direction;
 }
@@ -12,6 +13,7 @@ Door::~Door() {
 void Door::Update(double deltaTime) {
 	this->localPosition = glm::vec3(this->GetPositionInPixels(), 9.0f);
 	for (int i=0;i<contacts.size();i++) {
+		// Check if the player walked over the door and if so move the player to the next room
 		if (dynamic_cast<Player*>(contacts[i]) != 0) {
 			glm::vec2 playerPosition = dynamic_cast<Player*>(contacts[i])->GetGlobalPosition();
 			switch (direction) {

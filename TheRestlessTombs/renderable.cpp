@@ -1,6 +1,7 @@
 #include "renderable.h"
 
 Renderable::Renderable(Texture texture, Camera* camera, Shader* shader) : Entity::Entity() {
+	// Initialize all of the variables
 	this->texture = texture;
 	this->camera = camera;
 	this->shader = shader;
@@ -10,7 +11,7 @@ Renderable::Renderable(Texture texture, Camera* camera, Shader* shader) : Entity
 }
 
 Renderable::~Renderable() {
-	if (VAO != NULL) {
+	if (VAO != 0) {
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);

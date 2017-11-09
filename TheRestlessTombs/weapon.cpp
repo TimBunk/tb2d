@@ -3,19 +3,17 @@
 #include "enemy.h"
 
 Weapon::Weapon(float damage, float swingAngle, float attackDuration, bool belongsToPlayer, Camera* camera, Shader* shader, b2World* world) : B2Entity::B2Entity(camera, shader, world) {
+	// Initialize the variables
 	this->damage = damage;
 	this->swingAngle = swingAngle;
 	currentSwingAngle = 0.0f;
 	this->attackDuration = attackDuration;
 	this->belongsToPlayer = belongsToPlayer;
 	rotation = 0.0f;
-	angle2 = glm::vec2(0.0f);
 	timer = 0.0f;
 	attacking = false;
 	hit = false;
 	flippedBody = true;
-	w = 0;
-	h = 0;
 	dr = new DebugRenderer(camera->GetProjectionMatrix(), glm::vec4(1.0f));
 }
 
@@ -24,23 +22,25 @@ Weapon::~Weapon() {
 }
 
 void Weapon::Update(double deltaTime) {
+	// There is a bug here where the body keeps going to sleep so we have to set it to awake every time just to be sure
 	body->SetAwake(true);
+	// Set the angle of the sword
 	this->localAngle = rotation + currentSwingAngle;
+	// Check if the user is attacking
 	if (attacking && timer <= attackDuration) {
 		timer += deltaTime;
 		currentSwingAngle = timer/attackDuration * swingAngle;
+		// Calculate currentSwingAngle
 		if (flippedBody) {
 			currentSwingAngle = (currentSwingAngle * ((float)M_PI) / 180.0f) * -1;
 		}
 		else {
 			currentSwingAngle = currentSwingAngle * ((float)M_PI) / 180.0f;
 		}
-		// If the player has lag the swingAngle might go to far and this if statement limits the angle
-		if (currentSwingAngle > swingAngle) {
-			currentSwingAngle = swingAngle;
-		}
+		// Check if the weapon hitted something
 		for (unsigned int i=0;i<contacts.size();i++) {
 			if (dynamic_cast<Player*>(contacts[i]) != 0) {
+				// If the user is a enemy and it hitted a player deal damage to that player
 				if (!hit && !belongsToPlayer) {
 					hit = true;
 					dynamic_cast<Player*>(contacts[i])->TakeDamage(damage);
@@ -48,6 +48,7 @@ void Weapon::Update(double deltaTime) {
 				}
 			}
 			else if (dynamic_cast<Enemy*>(contacts[i]) != 0) {
+				// If the user is a player and it hitted a enemy deal damage to that enemy
 				if (!hit && belongsToPlayer) {
 					hit = true;
 					dynamic_cast<Enemy*>(contacts[i])->TakeDamage(damage);
@@ -55,6 +56,7 @@ void Weapon::Update(double deltaTime) {
 				}
 			}
 			else if (dynamic_cast<Crate*>(contacts[i]) != 0 || dynamic_cast<LootChest*>(contacts[i]) != 0) {
+				// If the user is player and it hitted a crate destroy that crate
 				if (!hit && belongsToPlayer) {
 					hit = true;
 					dynamic_cast<Destructable*>(contacts[i])->Destroy();
@@ -62,6 +64,7 @@ void Weapon::Update(double deltaTime) {
 				}
 			}
 			else if (dynamic_cast<Shop*>(contacts[i]) != 0) {
+				// If the player hitted the shop open the shop
 				if (!hit && belongsToPlayer) {
 					hit = true;
 					dynamic_cast<Shop*>(contacts[i])->_SetActive(true);
@@ -83,29 +86,9 @@ void Weapon::Update(double deltaTime) {
 	dr->Render(camera->GetViewMatrix(), model, 3.0f);*/
 }
 
-void Weapon::Draw() {
-	shader->Use();
-	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	shader->SetMatrix4("view", camera->GetViewMatrix());
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, this->GetGlobalPosition().z));
-	rotation = (float)atan2(angle2.y, angle2.x);
-	model = glm::rotate(model, this->GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 1.0f));
-	shader->SetMatrix4("model", model);
-	glActiveTexture(GL_TEXTURE0 + texture.id);
-	shader->SetInt("ourTexture", texture.id);
-	glBindTexture(GL_TEXTURE_2D, texture.id);
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(0);
-}
-
 void Weapon::CreateBody(int x, int y, int w, int h) {
-	// Create a pointer to the world the body will be connected to
-	this->w = w;
-	this->h = h;
+	this->width = w;
+	this->height = h;
 	this->localPosition = glm::vec3(x, y, 1.0f);
 	// Step 1 defina a body
 	b2BodyDef bodydef;
@@ -195,7 +178,7 @@ void Weapon::FlipBody() {
 	if (flippedBody) {
 		flippedBody = false;
 		// the reason for dividing by 2 is because box2D draws from the center
-		shape.SetAsBox(w / 2 * Window::p2m, h / 2 * Window::p2m, b2Vec2(0.0f, (w / 2 * Window::p2m) * -1), 0.0f);
+		shape.SetAsBox(width / 2 * Window::p2m, height / 2 * Window::p2m, b2Vec2(0.0f, (width / 2 * Window::p2m) * -1), 0.0f);
 		// step 4 create fixture
 		b2FixtureDef fixtureDef;
 		fixtureDef.shape = &shape;
@@ -220,7 +203,7 @@ void Weapon::FlipBody() {
 	else {
 		flippedBody = true;
 		// the reason for dividing by 2 is because box2D draws from the center
-		shape.SetAsBox(w / 2 * Window::p2m, h / 2 * Window::p2m, b2Vec2(0.0f, (w / 2 * Window::p2m)), 0.0f);
+		shape.SetAsBox(width / 2 * Window::p2m, height / 2 * Window::p2m, b2Vec2(0.0f, (width / 2 * Window::p2m)), 0.0f);
 		// step 4 create fixture
 		b2FixtureDef fixtureDef;
 		fixtureDef.shape = &shape;
@@ -275,7 +258,8 @@ bool Weapon::IsFlipped() {
 }
 
 void Weapon::SetAngle(glm::vec2 angle) {
-	this->angle2 = angle;
+	// Calculate the rotation of the angle to a float value
+	rotation = (float)atan2(angle.y, angle.x);
 }
 
 void Weapon::SetDamage(float damage) {

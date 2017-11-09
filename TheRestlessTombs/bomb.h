@@ -10,7 +10,7 @@
 #include "item.h"
 
 /**
- * @brief The bomb class is inherit by the item
+ * @brief The bomb class
  */
 class Bomb : public Item {
 public:

@@ -10,7 +10,7 @@
 #include "potion.h"
 
 /**
- * @brief The healthPotion class is inherit by Potion
+ * @brief The healthPotion
  */
 class HealthPotion : public Potion {
 public:

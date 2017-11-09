@@ -10,7 +10,7 @@
 #include "item.h"
 
 /**
- * @brief The gold class is inherit by Item
+ * @brief The gold class
  */
 class Gold : public Item {
 public:

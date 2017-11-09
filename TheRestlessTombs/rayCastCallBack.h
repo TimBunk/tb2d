@@ -19,7 +19,7 @@
 #include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
 #include <Box2D/Box2D.h>
 
-///< @brief RaycastOutput is a struct you will receive whenever you call GetOutput(). It will give you all of the information of the hitted B2Entity by this raycast
+/// @brief RaycastOutput is a struct you will receive whenever you call GetOutput(). It will give you all of the information of the hitted B2Entity by this raycast
 struct RaycastOutput {
 	b2Fixture* fixture = nullptr;
 	b2Vec2 point = b2Vec2(0.0f, 0.0f);

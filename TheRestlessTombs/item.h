@@ -9,7 +9,7 @@
 
 #include "destructable.h"
 
-///< @brief ShowCaseItem is a struct that can be given to the showCase class and  contains a name and a texture
+/// @brief ShowCaseItem is a struct that can be given to the showCase class and  contains a name and a texture
 struct ShowCaseItem {
 	std::string name;
 	Texture texture;

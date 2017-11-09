@@ -1,3 +1,9 @@
+/**
+ * @file level1.h
+ *
+ * @brief The b2entity header file.
+ */
+
 #ifndef LEVEL1_H
 #define LEVEL1_H
 
@@ -27,29 +33,48 @@
 
 #include <Box2D/Box2D.h>
 
+///< @brief GameState can be _game, _menu or _shop and represents the state of the game
 enum GameState {
 	_game,
 	_menu,
 	_shop
 };
 
+/**
+ * @brief The Level1 class
+ */
 class Level1 : public Scene {
 public:
+	/// @brief Constructor of Level1
+	/// @param player We need the player to make it a child of the Level1
+	/// @param shop We need the shop to make it a child of the Level1
+	/// @param world The world is needed in order to add body's to it
+	/// @param rm Is the resourceManager to get all of the shaders and textures
+	/// @param input The input is required by some of the variables
+	/// @param camera Is needed in order to draw everything correctly
 	Level1(Player* player, Shop* shop, b2World* world, ResourceManager* rm, Input* input, Camera* camera);
-	~Level1();
 
+	/// @brief Destructor of the Level1 class
+	virtual ~Level1();
+
+	/// @brief Update updates the current active room
+	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()
+	/// @return void
 	void Update(double deltaTime);
+
+	/// @brief Resets the level and all of the rooms
+	/// @return void
 	void Reset();
 private:
-	ResourceManager* rm;
-	Input* input;
-	b2World* world;
+	ResourceManager* rm; ///< @brief rm The ResourceManager is required in order to get all of the shaders and textures
+	Input* input; ///< @brief input The input is needed for some of the variables
+	b2World* world; ///< @brief world Is the world of all of the box2d bodies
 
-	std::vector<Room*> rooms;
-	int currentRoom;
+	std::vector<Room*> rooms; ///< @brief rooms Is a vector with all of the rooms in it
+	int currentRoom; ///< @brief currentRoom Is the currentRoom the player is in
 
-	Player* player;
-	Shop* shop;
+	Player* player; ///< @brief player Is the player
+	Shop* shop; ///< @brief shop Is the shop
 
 	// room1
 	Room* room1;

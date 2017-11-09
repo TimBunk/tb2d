@@ -1,6 +1,7 @@
 #include "showCase.h"
 
 ShowCase::ShowCase(int x, int y, int w, int h, Camera* camera, Shader* shader, Shader* textHud, Texture texture) : Hud::Hud(x, y, w, h, camera, shader, texture) {
+	// Initialze variables
 	item = false;
 	nameItem = new Text("fonts/OpenSans-Regular.ttf", " ", 30, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, textHud);
 	nameItem->localPosition = glm::vec3(x - nameItem->GetWidth()/4, y - nameItem->GetHeight(), 1.0f);
@@ -12,6 +13,7 @@ ShowCase::~ShowCase() {
 }
 
 void ShowCase::Draw() {
+	// Draw ShowCase
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	glm::mat4 model;
@@ -26,6 +28,7 @@ void ShowCase::Draw() {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+	// Draw Item if there is one
 	if (item) {
 		shader->Use();
 		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
@@ -45,8 +48,10 @@ void ShowCase::Draw() {
 }
 
 void ShowCase::Give(ShowCaseItem sci) {
+	// Set the sci
 	item = true;
 	this->sci = sci;
+	// Set the nameItem and display it
 	nameItem->SetText(this->sci.name);
 	nameItem->localPosition = glm::vec3(this->localPosition.x - nameItem->GetWidth()/4, this->localPosition.y - nameItem->GetHeight(), 1.0f);
 }
@@ -56,6 +61,7 @@ bool ShowCase::IsFull() {
 }
 
 void ShowCase::Clear() {
+	// Removes item and clears the text
 	item = false;
 	nameItem->SetText(" ");
 }

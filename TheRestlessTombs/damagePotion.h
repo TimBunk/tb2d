@@ -17,7 +17,7 @@ struct DamageBoost {
 };
 
 /**
- * @brief The DamagePotion class inherit by Potion
+ * @brief The DamagePotion class
  */
 class DamagePotion : public Potion {
 public:

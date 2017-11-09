@@ -10,7 +10,7 @@
 #include "item.h"
 
 /**
- * @brief The Crate class inherit from Destructable
+ * @brief The Crate class
  */
 class Crate : public Destructable {
 public:

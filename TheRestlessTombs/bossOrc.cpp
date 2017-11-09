@@ -1,7 +1,7 @@
 #include "bossOrc.h"
 
 BossOrc::BossOrc(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Boss::Boss(nameBoss, player, lineOfSight, rm, camera, shader, world) {
-	// stats of the babyorc
+	// stats of the BossOrc
 	damage = 1;
 	speed = 4.0f;
 	originalSpeed = speed;
@@ -10,9 +10,9 @@ BossOrc::BossOrc(std::string nameBoss, Player* player, float lineOfSight, Resour
 	currentHealth = health;
 	specialAbilityCooldown = 4.0f;
 	specialAbilityTimer = 0.0f;
-	specialAbilityDuration = 2.0f;
 	specialAbility = false;
 
+	// Create the Hammer
 	hammer = new Weapon(damage, 135.0f, attackSpeed, false, camera, shader, this->world);
 	hammer->GiveTexture(rm->GetTexture("bossOrcWeapon"));
 	hammer->CreateBody(0, 0, 30, 120);
@@ -38,11 +38,12 @@ void BossOrc::Update(double deltaTime) {
 		}
 		// Normalize the angle
 		angle = glm::normalize(angle);
-		// Set the length of the angle to 30 pixels away from the player's piviot
+		// Set the length of the angle to 40 pixels away from the player's piviot
 		angle *= 40.0f;
 		hammer->SetAngle(angle);
 		hammer->localPosition.x = angle.x;
 		hammer->localPosition.y = angle.y;
+		// Flip the texture hammer
 		if (IsTextureFlipped() && hammer->IsFlipped()) {
 			hammer->FlipBody();
 		}
@@ -86,6 +87,7 @@ bool BossOrc::LookForPlayer(double deltaTime) {
 		vel.Normalize();
 		vel *= speed;
 		body->SetLinearVelocity(vel);
+		// Flip texture BossOrc
 		if (IsTextureFlipped() && vel.x < 0.0f) {
 			FlipTexture();
 		}
@@ -129,6 +131,7 @@ void BossOrc::TakeDamage(int damage) {
 }
 
 void BossOrc::Reset() {
+	// Reset all of the variables to their start value
 	body->SetTransform(b2Vec2(spawnPosition.x * Window::p2m, spawnPosition.y * Window::p2m), 0.0f);
 	playerLastLocation = spawnPosition;
 	if (!IsAlive()) {

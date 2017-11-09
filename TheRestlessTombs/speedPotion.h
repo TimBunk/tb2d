@@ -18,7 +18,7 @@ struct SpeedBoost {
 };
 
 /**
- * @brief The SpeedPotion class is inherit by Potion
+ * @brief The SpeedPotion class
  */
 class SpeedPotion : public Potion {
 public:
