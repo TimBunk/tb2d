@@ -36,6 +36,7 @@ public:
 	int GetHeight();
 
 private:
+	SDL_Surface* sdlSurface;
 	const char* filePath;
 	TTF_Font* font;
 	SDL_Color fontColor;

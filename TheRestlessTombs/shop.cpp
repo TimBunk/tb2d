@@ -273,6 +273,11 @@ void Shop::_SetActive(bool active) {
 	playerGoldString += std::to_string(player->GetGold());
 	playerGold->SetText(playerGoldString);
 	this->active = active;
+	if (active) {
+		healthUpgrade->SetText(CreateUpgradeText("Extra live", currentHealthUpgrade, maxHealthUpgrades, costHealthUpgrade));
+		speedUpgrade->SetText(CreateUpgradeText("Increase speed by 1", currentSpeedUpgrade, maxSpeedUpgrades, costSpeedUpgrade));
+		damageUpgrade->SetText(CreateUpgradeText("Increase damage by 1", currentDamageUpgrade, maxDamageUpgrades, costDamageUpgrade));
+	}
 }
 
 bool Shop::IsActive() {

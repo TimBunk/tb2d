@@ -1,7 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#define GLEW_STATIC
 #define _USE_MATH_DEFINES
 
 #include <iostream>

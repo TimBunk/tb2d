@@ -1,4 +1,4 @@
-#ifndef SHAPE_H
+/*#ifndef SHAPE_H
 #define SHAPE_H
 
 #include <iostream>
@@ -31,3 +31,4 @@ private:
 };
 
 #endif // !SHAPE_H
+*/

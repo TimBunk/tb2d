@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#define GLEW_STATIC
 #define _USE_MATH_DEFINES
 
 #include <iostream>

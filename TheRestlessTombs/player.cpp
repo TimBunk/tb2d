@@ -280,8 +280,6 @@ void Player::CreateLives(int amount) {
 	int xHealth = 30;
 	for (int i=0;i<amount;i++) {
 		hudHealth.push_back(new Hud(xHealth, 30, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("heartFilled")));
-		//std::cout << "hudHealth[i]->h " << hudHealth[i]->h << std::endl;
-		//std::cout << "hudHealth[i]->w " << hudHealth[i]->w << std::endl;
 		if (currentHealth-1 < i) {
 			hudHealth[i]->SetTexture(rm->GetTexture("heartEmpty"));
 		}

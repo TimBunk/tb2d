@@ -8,22 +8,23 @@ Hud::Hud(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture tex
 	this->camera = camera;
 	this->shader = shader;
 	this->texture = texture;
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
 	float vertices[] = {
 		// position
-		w/2 * -1, h/2 * -1, 0.0f, 0.0f,  // lower-left corner
-		w/2, h/2 * -1, 1.0f, 0.0f,  // lower-right corner
-		w/2, h/2, 1.0f, 1.0f,  // upper-right corner
-		w/2 * -1, h/2, 0.0f, 1.0f  // uper left corner
+		this->w/2 * -1, this->h/2 * -1, 0.0f, 0.0f,  // lower-left corner
+		this->w/2, this->h/2 * -1, 1.0f, 0.0f,  // lower-right corner
+		this->w/2, this->h/2, 1.0f, 1.0f,  // upper-right corner
+		this->w/2 * -1, this->h/2, 0.0f, 1.0f  // uper left corner
 	};
 
 	unsigned int indices[] = {
 		0, 1, 3,
 		1, 2, 3
 	};
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 

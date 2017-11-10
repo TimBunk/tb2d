@@ -7,11 +7,17 @@ Button::Button(int x, int y, int width, int height, bool HUD, std::string text, 
 	this->HUD = HUD;
 	this->input = input;
 	this->camera = camera;
-	this->text = new Text("fonts/OpenSans-Regular.ttf", text, 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
+	if (HUD) {
+		this->text = new Text("fonts/OpenSans-Regular.ttf", text, 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
+		shader = rm->GetShader("colorHUD");
+	}
+	else {
+		this->text = new Text("fonts/OpenSans-Regular.ttf", text, 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), false, camera, rm->GetShader("text"));
+		shader = rm->GetShader("color");
+	}
 	this->text->localPosition = glm::vec3(x - this->text->GetWidth()/4, y, 1.0f);
 	this->AddChild(this->text);
 	this->color = color;
-	shader = rm->GetShader("color");
 	hover = false;
 	down = false;
 	VAO = 0;
@@ -81,11 +87,7 @@ void Button::Draw() {
 	shader->Use();
 	shader->SetVec4Float("color", color);
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	if (HUD) {
-		glm::mat4 view;
-		shader->SetMatrix4("view", view);
-	}
-	else {
+	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
 	glm::mat4 model;

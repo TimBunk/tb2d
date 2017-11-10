@@ -45,7 +45,7 @@ public:
 	/// @return void
 	void GiveTexture(Texture chestClosed, Texture chestOpened);
 
-	/// @brief Destroy the lootChest but doesn't stop drawing the lootChest and it also doesn't set the body to not active. It gives the player the money that is in the lootChest\
+	/// @brief Destroy the lootChest but doesn't stop drawing the lootChest and it also doesn't set the body to not active. It gives the player the money that is in the lootChest
 	/// @return void
 	void Destroy();
 

@@ -1,4 +1,3 @@
-#define GLEW_STATIC
 #define _USE_MATH_DEFINES
 
 #include <iostream>
@@ -52,6 +51,7 @@ int main() {
 	rm->CreateShader("text", "shaders//text.vs", "shaders//text.fs");
 	rm->CreateShader("textHud", "shaders//textHUD.vs", "shaders//textHUD.fs");
 	rm->CreateShader("color", "shaders//color.vs", "shaders//color.fs");
+	rm->CreateShader("colorHUD", "shaders//colorHUD.vs", "shaders//colorHUD.fs");
 	rm->CreateShader("bomb", "shaders//bomb.vs", "shaders//bomb.fs");
 	rm->CreateShader("healthbar", "shaders//healthbar.vs", "shaders//healthbar.fs");
 
@@ -121,6 +121,10 @@ int main() {
 
 		switch (gameState) {
 		case _game:
+			if (input->KeyPress(SDL_SCANCODE_1)) {
+				gameState = GameState::_shop;
+				shop->_SetActive(true);
+			}
 			// Check if the shop is active, if so switch to that state instead
 			if (shop->IsActive()) {
 				gameState = GameState::_shop;

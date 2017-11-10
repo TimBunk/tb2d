@@ -1,4 +1,4 @@
-#include "shape.h"
+/*#include "shape.h"
 
 Shape::Shape() {
 
@@ -15,7 +15,7 @@ void Shape::Draw() {
 }
 
 void Shape::CreateBox(int w, int h, bool dyn, b2World* world) {
-	/*b2BodyDef bodydef;
+	b2BodyDef bodydef;
 	bodydef.position.Set(0, 0);
 	if (dyn) {
 		bodydef.type = b2_dynamicBody;
@@ -80,5 +80,6 @@ void Shape::CreateBox(int w, int h, bool dyn, b2World* world) {
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glBindVertexArray(0);*/
+		glBindVertexArray(0);
 }
+*/
