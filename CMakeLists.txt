@@ -1,11 +1,11 @@
 #CMake entry point
-cmake_minimum_required (VERSION 3.5.1)
+cmake_minimum_required (VERSION 3.0.0)
 project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
 OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
-OPTION(MAKE_BOX2DLES "Box2dLes" ON)
+OPTION(MAKE_BOX2DLES "Box2dLes" OFF)
 OPTION(MAKE_EpicFighter "Make EpicFighter" OFF)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
@@ -36,12 +36,6 @@ if(UNIX)
   find_package(SDL2_image REQUIRED)
 endif(UNIX)
 
-if(WIN32)
-  # Look up SDL2 and add the include directory to our include path
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/SDL2-2.0.7/include/")
-  find_package(SDL_config.h REQUIRED)
-endif(WIN32)
-
 # Create library from soil2 source
 set (SOIL2_INCLUDE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src
@@ -53,6 +47,7 @@ add_subdirectory(
 
 include_directories(
   ${SOIL2_INCLUDE_DIR}
+  ${SDL2_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
@@ -212,8 +207,8 @@ add_executable(trt
   TheRestlessTombs/rayCastCallBack.cpp
   TheRestlessTombs/item.h
   TheRestlessTombs/item.cpp
-  TheRestlessTombs/menu.h 
-  TheRestlessTombs/menu.cpp 
+  TheRestlessTombs/menu.h
+  TheRestlessTombs/menu.cpp
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
