@@ -21,7 +21,7 @@ public:
 	Crate(Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the Crate
-	~Crate();
+	virtual ~Crate();
 
 	/// @brief The store function saves the item as a child of the crate and also Destroys the item so that it won't be drawn over the Crate
 	/// @param item The item you want to save as a child in the Crate

@@ -23,7 +23,7 @@
 class Scene : public Entity {
 public:
 	Scene(Camera* camera);
-	~Scene();
+	virtual ~Scene();
 
 	virtual void Update(double deltaTime);
 protected:

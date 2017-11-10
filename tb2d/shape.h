@@ -15,7 +15,7 @@
 class Shape {
 public:
 	Shape();
-	~Shape();
+	virtual ~Shape();
 
 	void Draw();
 	void CreateBox(int w, int h, bool dyn, b2World* world);

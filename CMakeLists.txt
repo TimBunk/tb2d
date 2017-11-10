@@ -47,7 +47,6 @@ add_subdirectory(
 
 include_directories(
   ${SOIL2_INCLUDE_DIR}
-  ${SDL2_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
@@ -226,6 +225,10 @@ ADD_DEPENDENCIES(trt
 # Copy shaders and textures to the build directory
 file(
   COPY tb2d/shaders
+  DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+  COPY tb2d/fonts
   DESTINATION ${CMAKE_BINARY_DIR}
 )
 file(

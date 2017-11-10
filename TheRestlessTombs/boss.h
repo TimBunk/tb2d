@@ -26,7 +26,7 @@ public:
 	Boss(std::string nameBoss, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the Boss
-	~Boss();
+	virtual ~Boss();
 
 	/// @brief Draw draws this Boss according to the shader and position, angle, scaling of the Entity. (Don't forgot to give it a texture)
 	/// @brief The Draw function also draws the healthBar of the Boss

@@ -27,7 +27,7 @@ public:
 	Enemy(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the Enemy
-	~Enemy();
+	virtual ~Enemy();
 
 	/// @brief Give a item to the enemy, that item will be a child of the enemy and the item will be dropped whenever the enemy dies
 	/// @param item The item you want to give

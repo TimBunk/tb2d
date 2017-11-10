@@ -32,7 +32,7 @@ public:
 	SpeedPotion(float speedBoost, float attackSpeedBoost, float lifeTime, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the SpeedPotion
-	~SpeedPotion();
+	virtual ~SpeedPotion();
 
 	/// @brief Whenever you use this SpeedPotion it will return a SpeedBoost with all the needed variables
 	/// @return SpeedBoost

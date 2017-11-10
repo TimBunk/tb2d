@@ -30,7 +30,7 @@ public:
 	DamagePotion(int damageBoost, float lifeTime, Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the DamagePotion
-	~DamagePotion();
+	virtual ~DamagePotion();
 
 	/// @brief Whenever you use the DamagePotion you will receive a struct with all of the values then it us up to the user to make sure the values are used right
 	/// @return DamageBoost

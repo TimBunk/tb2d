@@ -21,7 +21,7 @@ public:
 	Potion(Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the Potion
-	~Potion();
+	virtual ~Potion();
 
 protected:
 

@@ -28,7 +28,7 @@ public:
 	LootChest(int gold, Player* player, Shader* text, Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the LootChest
-	~LootChest();
+	virtual ~LootChest();
 
 	/// @brief Update update function is currently empty it is up to the user to deceide how to use it
 	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()

@@ -25,7 +25,7 @@ public:
 	Menu(ResourceManager* rm, Input* input, Camera* camera);
 
 	/// @brief Destructor of the Menu
-	~Menu();
+	virtual ~Menu();
 
 	/// @brief Update update function keeps track of buttons that are pressed or hovered over
 	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()

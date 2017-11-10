@@ -15,7 +15,7 @@
 class Shader {
 public:
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-	~Shader();
+	virtual ~Shader();
 
 	void Use();
 	void ReloadShaders();

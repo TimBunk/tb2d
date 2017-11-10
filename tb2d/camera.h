@@ -14,7 +14,7 @@
 class Camera {
 public:
 	Camera(int screenWidth, int screenHeight, SDL_DisplayMode dm);
-	~Camera();
+	virtual ~Camera();
 
 	// Position in pixels
 	void SetPosition(glm::vec2 position);

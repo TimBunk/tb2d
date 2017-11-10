@@ -16,7 +16,7 @@
 class ResourceManager {
 public:
 	ResourceManager();
-	~ResourceManager();
+	virtual ~ResourceManager();
 
 	Shader* GetShader(std::string name);
 	Texture GetTexture(std::string name);

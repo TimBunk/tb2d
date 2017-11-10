@@ -8,7 +8,7 @@
 class Button : public Entity {
 public:
 	Button(int x, int y, int width, int height, bool HUD, std::string text, glm::vec4 color, Input* input, Camera* camera, ResourceManager* rm);
-	~Button();
+	virtual ~Button();
 
 	void Update(double deltaTime);
 	void Draw();

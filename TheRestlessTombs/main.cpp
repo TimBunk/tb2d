@@ -95,7 +95,6 @@ int main() {
 	rm->CreateTexture("explosion", "textures/Explosion.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("shop", "textures/Shopkeeper.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
-
 	// Create the world, player, shop and level
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	player = new Player(input, rm, camera, rm->GetShader("shader"), world);
@@ -109,11 +108,9 @@ int main() {
 	// Set the contactListener after all of the bodies are intialized and in place
 	contactListener = new ContactListener();
 	world->SetContactListener(contactListener);
-
 	gameState = GameState::_menu;
 	menu = new Menu(rm, input, camera);
 	initMenu = false;
-
 
 
 	// THE GAME LOOP

@@ -44,7 +44,7 @@ public:
     Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
     /// @brief Destructor of the Player
-    ~Player();
+    virtual ~Player();
 
     /// @brief The Update function updates the player's movement, input, health check for collision in the contacts list etc..
 	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()

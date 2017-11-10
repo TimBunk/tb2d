@@ -38,7 +38,7 @@ public:
 	RayCastCallBack(B2Entity* user);
 
 	///< @brief Destructor of the RayCastCallBack
-	~RayCastCallBack();
+	virtual ~RayCastCallBack();
 
 	/// @brief CreateLine is an optional function it is used for rendering a line that can help you visualize the raycast better
 	/// @param length The length of the line

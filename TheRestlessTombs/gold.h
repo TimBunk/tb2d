@@ -21,7 +21,7 @@ public:
 	Gold(int value, Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the Gold
-	~Gold();
+	virtual ~Gold();
 
 	/// @brief returns the amount of gold and will automatically destroy the gold you can also reset it by calling Reset()
 	int GetGold();

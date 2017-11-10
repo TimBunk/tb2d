@@ -19,7 +19,7 @@ class  DebugRenderer
 {
 public:
 	DebugRenderer(glm::mat4 projection, glm::vec4 color);
-	~DebugRenderer();
+	virtual ~DebugRenderer();
 
 	void DrawBox(b2Vec2* points);
 	void DrawCircle(const glm::vec3& center, float radius);

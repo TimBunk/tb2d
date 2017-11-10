@@ -22,7 +22,7 @@ public:
 	HealthPotion(int healing, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the HealthPotion
-	~HealthPotion();
+	virtual ~HealthPotion();
 
 	/// @brief Whenever you Use the HealthPotion it will return the amount of healing
 	/// @return float

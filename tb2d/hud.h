@@ -9,7 +9,7 @@
 class Hud : public Entity {
 public:
 	Hud(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture texture);
-	~Hud();
+	virtual ~Hud();
 
 	virtual void Update(double deltaTime);
 	virtual void Draw();

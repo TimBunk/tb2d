@@ -19,7 +19,7 @@
 class Text : public Entity {
 public:
 	Text(const char* filePath, std::string text, int fontSize, glm::vec4 color, bool HUD, Camera* camera, Shader* shader);
-	~Text();
+	virtual ~Text();
 
 	void SetText(std::string text);
 	void SetFontSize(int fontSize);

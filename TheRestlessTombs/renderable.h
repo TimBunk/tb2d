@@ -24,7 +24,7 @@ public:
 	Renderable(Texture texture, Camera* camera, Shader* shader);
 
 	/// @brief Destructor of the Renderable
-	~Renderable();
+	virtual ~Renderable();
 
 	/// @brief Draw draws this B2Entity according to the shader and position, angle, scaling of the Entity. (Don't forgot to give it a texture)
 	/// @return void

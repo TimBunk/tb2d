@@ -27,7 +27,7 @@ public:
 	Item(Camera* camera, Shader* shader, b2World* world);
 
 	///< @brief Destructor of the Item
-	~Item();
+	virtual ~Item();
 
 	/// @brief This function will give you the struct ShowCaseItem of this item
 	/// @return ShowCaseItem

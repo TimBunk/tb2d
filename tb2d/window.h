@@ -22,7 +22,7 @@
 class Window {
 public:
 	Window(int screenWidth, int screenHeight, const char* screenName, bool fullScreen);
-	~Window();
+	virtual ~Window();
 
 	static float m2p;
 	static float p2m;

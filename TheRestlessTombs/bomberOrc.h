@@ -25,7 +25,7 @@ public:
 	BomberOrc(Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the BomberOrc
-	~BomberOrc();
+	virtual ~BomberOrc();
 
 	/// @brief Update makes a call to LookForPlayer and also updates and spawns Bomb the bombs will be spawned on 75% of the distance between the Player and the BomberOrc
 	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()

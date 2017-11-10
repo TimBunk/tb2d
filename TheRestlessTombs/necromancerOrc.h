@@ -25,7 +25,7 @@ public:
 	NecromancerOrc(float spawnCooldown, Player* player, float lineOfSight, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
 	/// @brief Destructor of the NecromancerOrc
-	~NecromancerOrc();
+	virtual ~NecromancerOrc();
 
 	/// @brief Update makes a call to LookForPlayer and also spawns and update babyOrcs
 	/// @param deltaTime is the time in seconds between 2 frames you can find the deltaTime in the @file window.h class by calling the function GetDeltaTime()

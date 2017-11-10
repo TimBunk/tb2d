@@ -14,7 +14,7 @@
 class Input {
 public:
 	Input(SDL_DisplayMode dm);
-	~Input();
+	virtual ~Input();
 	void Update();
 
 	glm::vec2 GetMousePositionScreenSpace(Camera* camera);

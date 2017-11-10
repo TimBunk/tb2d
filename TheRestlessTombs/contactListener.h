@@ -21,7 +21,7 @@ public:
 	///< @brief Constructor of the ContactListener
 	ContactListener();
 	///< @brief Destructor of the ContactListener
-	~ContactListener();
+	virtual ~ContactListener();
 
 	/// @brief Whenever a collision happens between two B2Entity(fixtures) both of the B2Entity's will be send the contact information of the other B2Entity
 	/// @param contact You will get this b2Contact* by the b2World. NOTE don't forget to set the contactListener for example: world->SetContactListener(contactListener);
