@@ -24,21 +24,32 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(external)
 
-# Set c++11 as main language
-set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
+if(UNIX)
+  # Set c++11 as main language
+  set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 
-# Look up SDL2 and add the include directory to our include path
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(SDL2_image REQUIRED)
+  # Look up SDL2 and add the include directory to our include path
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
+  find_package(SDL2 REQUIRED)
+  find_package(SDL2_mixer REQUIRED)
+  find_package(SDL2_ttf REQUIRED)
+  find_package(SDL2_image REQUIRED)
+endif(UNIX)
+
+if(WIN32)
+  # Look up SDL2 and add the include directory to our include path
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/SDL2-2.0.7/include/")
+  find_package(SDL_config.h REQUIRED)
+endif(WIN32)
 
 # Create library from soil2 source
 set (SOIL2_INCLUDE_DIR
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src)
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src
+)
 
-add_subdirectory(external/SOIL2/src)
+add_subdirectory(
+  external/SOIL2/src
+)
 
 include_directories(
   ${SOIL2_INCLUDE_DIR}
@@ -90,12 +101,12 @@ set(TB2DSOURCE
   tb2d/shape.cpp
   tb2d/input.h
   tb2d/input.cpp
-  tb2d/window.h 
-  tb2d/window.cpp 
-  tb2d/hud.h 
-  tb2d/hud.cpp 
-  tb2d/button.h 
-  tb2d/button.cpp 
+  tb2d/window.h
+  tb2d/window.cpp
+  tb2d/hud.h
+  tb2d/hud.cpp
+  tb2d/button.h
+  tb2d/button.cpp
 )
 
 ####################################################################
@@ -135,72 +146,74 @@ IF(MAKE_THERESTLESSTOMBS)
 add_executable(trt
   ${TB2DSOURCE}
   TheRestlessTombs/main.cpp
-  TheRestlessTombs/armoredOrc.cpp 
-  TheRestlessTombs/armoredOrc.h 
-  TheRestlessTombs/babyOrc.cpp 
-  TheRestlessTombs/babyOrc.h 
-  TheRestlessTombs/bomb.cpp 
-  TheRestlessTombs/bomb.h 
-  TheRestlessTombs/bomberOrc.cpp 
-  TheRestlessTombs/bomberOrc.h 
-  TheRestlessTombs/boss.cpp 
-  TheRestlessTombs/boss.h 
-  TheRestlessTombs/bossOrc.cpp 
-  TheRestlessTombs/bossOrc.h 
-  TheRestlessTombs/crate.cpp 
-  TheRestlessTombs/crate.h 
-  TheRestlessTombs/damagePotion.cpp 
-  TheRestlessTombs/damagePotion.h 
-  TheRestlessTombs/destructable.cpp 
+  TheRestlessTombs/armoredOrc.cpp
+  TheRestlessTombs/armoredOrc.h
+  TheRestlessTombs/babyOrc.cpp
+  TheRestlessTombs/babyOrc.h
+  TheRestlessTombs/bomb.cpp
+  TheRestlessTombs/bomb.h
+  TheRestlessTombs/bomberOrc.cpp
+  TheRestlessTombs/bomberOrc.h
+  TheRestlessTombs/boss.cpp
+  TheRestlessTombs/boss.h
+  TheRestlessTombs/bossOrc.cpp
+  TheRestlessTombs/bossOrc.h
+  TheRestlessTombs/crate.cpp
+  TheRestlessTombs/crate.h
+  TheRestlessTombs/damagePotion.cpp
+  TheRestlessTombs/damagePotion.h
+  TheRestlessTombs/destructable.cpp
   TheRestlessTombs/destructable.h
-  TheRestlessTombs/door.cpp 
-  TheRestlessTombs/door.h 
-  TheRestlessTombs/enemy.cpp 
-  TheRestlessTombs/enemy.h 
-  TheRestlessTombs/gold.cpp 
-  TheRestlessTombs/gold.h 
-  TheRestlessTombs/healthPotion.cpp 
-  TheRestlessTombs/healthPotion.h 
-  TheRestlessTombs/level1.cpp 
-  TheRestlessTombs/level1.h 
-  TheRestlessTombs/lootChest.cpp 
-  TheRestlessTombs/lootChest.h 
-  TheRestlessTombs/necromancerOrc.cpp 
-  TheRestlessTombs/necromancerOrc.h 
-  TheRestlessTombs/orc.cpp 
-  TheRestlessTombs/orc.h 
-  TheRestlessTombs/person.cpp 
-  TheRestlessTombs/person.h 
-  TheRestlessTombs/player.cpp 
-  TheRestlessTombs/player.h 
-  TheRestlessTombs/potion.cpp  
-  TheRestlessTombs/potion.h 
-  TheRestlessTombs/psychoOrc.cpp 
-  TheRestlessTombs/psychoOrc.h 
-  TheRestlessTombs/room.cpp 
-  TheRestlessTombs/room.h 
-  TheRestlessTombs/shop.cpp 
-  TheRestlessTombs/shop.h 
-  TheRestlessTombs/speedPotion.cpp 
-  TheRestlessTombs/speedPotion.h 
-  TheRestlessTombs/wall.cpp 
+  TheRestlessTombs/door.cpp
+  TheRestlessTombs/door.h
+  TheRestlessTombs/enemy.cpp
+  TheRestlessTombs/enemy.h
+  TheRestlessTombs/gold.cpp
+  TheRestlessTombs/gold.h
+  TheRestlessTombs/healthPotion.cpp
+  TheRestlessTombs/healthPotion.h
+  TheRestlessTombs/level1.cpp
+  TheRestlessTombs/level1.h
+  TheRestlessTombs/lootChest.cpp
+  TheRestlessTombs/lootChest.h
+  TheRestlessTombs/necromancerOrc.cpp
+  TheRestlessTombs/necromancerOrc.h
+  TheRestlessTombs/orc.cpp
+  TheRestlessTombs/orc.h
+  TheRestlessTombs/person.cpp
+  TheRestlessTombs/person.h
+  TheRestlessTombs/player.cpp
+  TheRestlessTombs/player.h
+  TheRestlessTombs/potion.cpp
+  TheRestlessTombs/potion.h
+  TheRestlessTombs/psychoOrc.cpp
+  TheRestlessTombs/psychoOrc.h
+  TheRestlessTombs/room.cpp
+  TheRestlessTombs/room.h
+  TheRestlessTombs/shop.cpp
+  TheRestlessTombs/shop.h
+  TheRestlessTombs/speedPotion.cpp
+  TheRestlessTombs/speedPotion.h
+  TheRestlessTombs/wall.cpp
   TheRestlessTombs/wall.h
-  TheRestlessTombs/b2entity.cpp 
-  TheRestlessTombs/b2entity.h 
-  TheRestlessTombs/renderable.cpp 
-  TheRestlessTombs/renderable.h 
-  TheRestlessTombs/hand.cpp 
-  TheRestlessTombs/hand.h 
-  TheRestlessTombs/contactListener.h 
+  TheRestlessTombs/b2entity.cpp
+  TheRestlessTombs/b2entity.h
+  TheRestlessTombs/renderable.cpp
+  TheRestlessTombs/renderable.h
+  TheRestlessTombs/hand.cpp
+  TheRestlessTombs/hand.h
+  TheRestlessTombs/contactListener.h
   TheRestlessTombs/contactListener.cpp
-  TheRestlessTombs/weapon.cpp 
-  TheRestlessTombs/weapon.h 
-  TheRestlessTombs/showCase.cpp 
-  TheRestlessTombs/showCase.h 
+  TheRestlessTombs/weapon.cpp
+  TheRestlessTombs/weapon.h
+  TheRestlessTombs/showCase.cpp
+  TheRestlessTombs/showCase.h
   TheRestlessTombs/rayCastCallBack.h
   TheRestlessTombs/rayCastCallBack.cpp
-  TheRestlessTombs/item.h 
-  TheRestlessTombs/item.cpp 
+  TheRestlessTombs/item.h
+  TheRestlessTombs/item.cpp
+  TheRestlessTombs/menu.h 
+  TheRestlessTombs/menu.cpp 
 )
 target_link_libraries(trt
   ${BOX2D_LIB}
@@ -212,7 +225,7 @@ target_link_libraries(trt
   SOIL2
 )
 
-ADD_DEPENDENCIES(trt 
+ADD_DEPENDENCIES(trt
   SOIL2
 )
 # Copy shaders and textures to the build directory
@@ -238,13 +251,13 @@ IF (MAKE_EpicFighter)
 
 add_executable(ef
   ${TB2DSOURCE}
-  EpicFighter/main.cpp 
-  EpicFighter/player.cpp 
-  EpicFighter/player.h 
-  EpicFighter/sword.cpp 
-  EpicFighter/sword.h 
-  EpicFighter/ground.cpp 
-  EpicFighter/ground.h 
+  EpicFighter/main.cpp
+  EpicFighter/player.cpp
+  EpicFighter/player.h
+  EpicFighter/sword.cpp
+  EpicFighter/sword.h
+  EpicFighter/ground.cpp
+  EpicFighter/ground.h
 )
 
 target_link_libraries(ef
@@ -280,13 +293,13 @@ IF (MAKE_BOX2DLES)
 
 add_executable(b2
   ${TB2DSOURCE}
-  Box2dLes/main.cpp 
-  Box2dLes/b2entity.h 
-  Box2dLes/b2entity.cpp 
-  Box2dLes/contactListener.h 
-  Box2dLes/contactListener.cpp 
-  Box2dLes/circle.h 
-  Box2dLes/circle.cpp 
+  Box2dLes/main.cpp
+  Box2dLes/b2entity.h
+  Box2dLes/b2entity.cpp
+  Box2dLes/contactListener.h
+  Box2dLes/contactListener.cpp
+  Box2dLes/circle.h
+  Box2dLes/circle.cpp
 )
 
 

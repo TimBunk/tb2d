@@ -15,6 +15,7 @@
 #include "window.h"
 #include "contactListener.h"
 #include "button.h"
+#include "menu.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -33,15 +34,9 @@ Level1* level1;
 float Window::m2p = 50;
 float Window::p2m = 1 / Window::m2p;
 
-bool quit;
 GameState gameState;
-Scene* menu;
+Menu* menu;
 bool initMenu;
-Text* titleGame;
-Button* startButton;
-Button* restartButton;
-Button* quitButton;
-Text* credits;
 
 int main() {
 	window = new Window(800, 600, "TheRestlessTombs", false);
@@ -115,36 +110,17 @@ int main() {
 	contactListener = new ContactListener();
 	world->SetContactListener(contactListener);
 
-	quit = false;
 	gameState = GameState::_menu;
-	menu = new Scene(camera);
+	menu = new Menu(rm, input, camera);
 	initMenu = false;
-	titleGame = new Text("fonts/OpenSans-Regular.ttf", "The Restless Tombs", 90, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
-	titleGame->localPosition = glm::vec3(camera->screenWidth/2 - titleGame->GetWidth()/4, 100, 1.0f);
-	menu->AddChild(titleGame);
-	startButton = new Button(camera->screenWidth/2, 200, 125, 75, true, "start", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
-	menu->AddChild(startButton);
-	restartButton = new Button(camera->screenWidth/2, 300, 125, 75, true, "restart", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
-	quitButton = new Button(camera->screenWidth/2, 400, 125, 75, true, "quit", glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f), input, camera, rm);
-	menu->AddChild(quitButton);
-	credits = new Text("fonts/OpenSans-Regular.ttf", "Credits\nProgrammed by Tim Bunk\nArt done by https://0x72.itch.io", 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
-	credits->localPosition = glm::vec3(0.0f, camera->screenHeight - credits->GetHeight()/2, 1.0f);
-	menu->AddChild(credits);
-
 
 
 
 	// THE GAME LOOP
-	while (!input->Quit() && !quit) {
+	while (!input->Quit() && !menu->Quit()) {
 		// Clear the window and update the window
 		window->ClearWindow();
 		window->Update();
-		if (input->KeyPress(SDL_SCANCODE_1)) {
-			shop->_SetActive(true);
-		}
-		else if (input->KeyPress(SDL_SCANCODE_2)) {
-			shop->_SetActive(false);
-		}
 
 		switch (gameState) {
 		case _game:
@@ -161,10 +137,10 @@ int main() {
 			// Press escape to switch to the menu
 			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 				gameState =  GameState::_menu;
+				menu->SetActive(true);
 				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
 				if (!initMenu) {
-					startButton->SetText("continue");
-					menu->AddChild(restartButton);
+					menu->InitMenu();
 					initMenu = true;
 				}
 			}
@@ -173,42 +149,15 @@ int main() {
 		case _menu:
 			// Update the menu
 			menu->Update(window->GetDeltaTime());
-			// If escape key is down or the start button is pressed switch to game state
-			if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
+			if (!menu->IsActive()) {
 				gameState =  GameState::_game;
 				window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
-			if (startButton->Hover()) {
-				startButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
-				if (startButton->Down()) {
-					gameState =  GameState::_game;
-					window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
-				}
-			}
-			else {
-				startButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
-			}
 			// If the restart button is pressed restart the game and launch the game
-			if (restartButton->Hover()) {
-				restartButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
-				if (restartButton->Down()) {
-					level1->Reset();
-					gameState =  GameState::_game;
-					window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
-				}
-			}
-			else {
-				restartButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
-			}
-			// If the quit button is pressed exit the application
-			if (quitButton->Hover()) {
-				quitButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 1.0f));
-				if (quitButton->Down()) {
-					quit = true;
-				}
-			}
-			else {
-				quitButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
+			if (menu->Restart()) {
+				level1->Reset();
+				gameState =  GameState::_game;
+				window->SetBackgroundColor(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 			break;
 
@@ -223,10 +172,10 @@ int main() {
 			// If escape is pressed go to the menu
 			else if (input->KeyPress(SDL_SCANCODE_ESCAPE)) {
 				gameState =  GameState::_menu;
+				menu->SetActive(true);
 				window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
 				if (!initMenu) {
-					startButton->SetText("continue");
-					menu->AddChild(restartButton);
+					menu->InitMenu();
 					initMenu = true;
 				}
 			}
@@ -246,11 +195,6 @@ int main() {
     delete world;
 
     delete menu;
-    delete titleGame;
-    delete startButton;
-    delete restartButton;
-    delete quitButton;
-    delete credits;
 
     // end of the program
     std::cout << "Program succeeded" << std::endl;
