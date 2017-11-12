@@ -28,6 +28,8 @@ public:
     /// @brief Destructor of the Person
     virtual ~Person();
 
+    void Draw();
+
     /// @brief Checks if the person is alive according to their health, meaning if the health is lower or equal to 0 the player is not alive
     /// @return bool
     bool IsAlive();
@@ -61,6 +63,10 @@ protected:
 
 	bool flippedTexture; ///< @brief flippedTexture is a boolean that keeps track if the texture is flipped
 	float currentX; ///< @brief save the currentX of the Person so that we can later check it with the new X and that way we can determine which direction the Person is moving
+
+	bool damaged;
+	float cooldownDamaged;
+	float timerDamaged;
 
 private:
 

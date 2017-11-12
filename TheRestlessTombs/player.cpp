@@ -1,18 +1,13 @@
 #include "player.h"
 
-Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
+Player::Player(PlayerHud* playerHud, Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world) : Person::Person(rm, camera, shader, world) {
 	// Initialize all of the variables
+	this->playerHud = playerHud;
+	this->AddChild(playerHud);
 	this->input =  input;
-	showCase = new ShowCase(700, 500, 50, 50, camera, rm->GetShader("hud"), rm->GetShader("textHud"), rm->GetTexture("showCase"));
-	this->AddChild(showCase);
 	item = nullptr;
 	currentRoom = 0;
 	gold = 0;
-	std::string s = std::to_string(gold);
-	std::string ss = "Gold: " + s;
-	textGold = new Text("fonts/OpenSans-Regular.ttf", ss, 60, glm::vec4(0.62f, 0.62f, 0.62f, 1.0f), true, camera, rm->GetShader("textHud"));
-	textGold->localPosition = glm::vec3(20, 100, 1.0f);
-	this->AddChild(textGold);
 
 	damage = 1.0f;
 	currentDamage = damage;
@@ -27,21 +22,12 @@ Player::Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader
 	health = 4;
 	currentHealth = health;
 	lastHealth = health;
-	CreateLives(health);
-	textStats = new Text("fonts/OpenSans-Regular.ttf", "No stats available", 22, glm::vec4(0.62f, 0.62f, 0.62f, 1.0f), true, camera, rm->GetShader("textHud"));
-	textStats->localPosition = glm::vec3(20, 500, 1.0f);
+	this->playerHud->CreateLives(currentHealth, health);
 	UpdateStats();
-	this->AddChild(textStats);
 }
 
 Player::~Player() {
 	delete sword;
-	delete showCase;
-	delete textGold;
-	delete textStats;
-	for (int i=0;i<health;i++) {
-		delete hudHealth[i];
-	}
 }
 
 void Player::Update(double deltaTime) {
@@ -76,7 +62,7 @@ void Player::Update(double deltaTime) {
 		else if (dynamic_cast<SpeedPotion*>(item) != NULL) {
 			this->speedBoost = dynamic_cast<SpeedPotion*>(item)->Use();
 		}
-		showCase->Clear();
+		playerHud->ClearShowcase();
 		item = nullptr;
 	}
 	// Set the velocity and the camera's position
@@ -113,16 +99,18 @@ void Player::Update(double deltaTime) {
 
 	// Update health textures
 	if (lastHealth != currentHealth) {
-		for (int i=0;i<health;i++) {
-			if (currentHealth > i) {
-				hudHealth[i]->SetTexture(rm->GetTexture("heartFilled"));
-			}
-			else {
-				hudHealth[i]->SetTexture(rm->GetTexture("heartEmpty"));
-			}
-		}
+		playerHud->UpdateHealth(currentHealth);
 	}
 	lastHealth = currentHealth;
+
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 
 	// Update the stats of the player
 	if (damageBoost.lifeTime > 0.0f) {
@@ -177,9 +165,7 @@ int Player::GetRoom() {
 void Player::AddGold(int gold) {
 	// Add to the player's gold and update the text that displays the amount of gold
 	this->gold += gold;
-	std::string s = std::to_string(this->gold);
-	std::string ss = "Gold: " + s;
-	textGold->SetText(ss);
+	playerHud->UpdateGold(this->gold);
 }
 
 int Player::GetGold() {
@@ -191,18 +177,18 @@ void Player::GiveItem(Item* item) {
 	if (!IsInventoryFull()) {
 		this->item = item;
 		item->Destroy();
-		showCase->Give(item->PickUp());
+		playerHud->GiveShowcase(item->PickUp());
 	}
 }
 
 bool Player::IsInventoryFull() {
-	return showCase->IsFull();
+	return playerHud->IsShowCaseFull();
 }
 
 void Player::UpgradeHealth(int newHealth) {
 	this->health = newHealth;
 	currentHealth++;
-	this->CreateLives(health);
+	playerHud->CreateLives(currentHealth, health);
 }
 
 void Player::UpgradeSpeed(float newSpeed) {
@@ -264,28 +250,7 @@ void Player::UpdateStats() {
 	}
 	stats += "AttackSpeed: " + stringAttackSpeed + "\n";
 	stats += "Speed: " + stringSpeed + "\n";
-
-	textStats->SetText(stats);
-}
-
-void Player::CreateLives(int amount) {
-	// Delete the old hearts
-	std::vector<Hud*>::iterator it = hudHealth.begin();
-	while (it != hudHealth.end()) {
-		this->RemoveChild((*it));
-		delete (*it);
-		it = hudHealth.erase(it);
-	}
-	// Create the health hearts
-	int xHealth = 30;
-	for (int i=0;i<amount;i++) {
-		hudHealth.push_back(new Hud(xHealth, 30, 50, 50, camera, rm->GetShader("hud"), rm->GetTexture("heartFilled")));
-		if (currentHealth-1 < i) {
-			hudHealth[i]->SetTexture(rm->GetTexture("heartEmpty"));
-		}
-		this->AddChild(hudHealth[i]);
-		xHealth += 60;
-	}
+	playerHud->UpdateStats(stats);
 }
 
 void Player::Reset() {
@@ -293,13 +258,13 @@ void Player::Reset() {
 	health = 4;
 	currentHealth = 4;
 	lastHealth = currentHealth;
-	CreateLives(4);
+	playerHud->CreateLives(currentHealth, health);
 	UpgradeDamage(1);
 	speed = 6.0f;
 	this->localPosition = glm::vec3(0.0f, 0.0f, 1.0f);
 	body->SetTransform(b2Vec2(0.0f, 0.0f), this->angle);
 	SetRoom(0);
-	showCase->Clear();
+	playerHud->ClearShowcase();
 	item = nullptr;
 	AddGold(GetGold() * -1);
 }

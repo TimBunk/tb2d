@@ -202,6 +202,8 @@ add_executable(trt
   TheRestlessTombs/item.cpp
   TheRestlessTombs/menu.h
   TheRestlessTombs/menu.cpp
+  TheRestlessTombs/playerHud.h 
+  TheRestlessTombs/playerHud.cpp
 )
 target_link_libraries(trt
   ${BOX2D_LIB}

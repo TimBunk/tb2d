@@ -22,6 +22,7 @@
 #include "text.h"
 #include "bomb.h"
 #include "gold.h"
+#include "playerHud.h"
 
 #include <math.h>
 #include <string.h>
@@ -34,13 +35,14 @@
  */
 class Player : public Person {
 public:
-	/// @brief Constructor of the Person takes a Camera and Shader that is used for rendering and a B2World for the B2Body
+	/// @brief Constructor of the Player takes a Camera and Shader that is used for rendering and a B2World for the B2Body
+	/// @param playerHud Is the hud the player will send information about himself to
 	/// @param input The input is required for moving the player and attack with sword
 	/// @param rm The ResourceManager is used for getting the right textures and shaders for your person
 	/// @param camera The reason it takes a camera is for drawing the object with the view and projection matrix that can be received from the camera
 	/// @param shader The shader is used for the drawing and the shader needs at least to have 3 uniforms matrix4: projection, view and model als the VAO needs to excist of 1. 2Dposition and 2. uv's
 	/// @param world The world is need for creating the body and deleting the box2D body
-    Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
+    Player(PlayerHud* playerHud, Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
 
     /// @brief Destructor of the Player
     virtual ~Player();
@@ -96,12 +98,9 @@ public:
     void Reset();
 
 private:
+    PlayerHud* playerHud; ///< @brief playerHud Is used to send information about the player and display it on the screen
     Input* input; ///< @brief input Is used for handling movement with the keyboard and the sword with the mouse
     Weapon* sword; ///< @brief sword Is the weapon the player uses to defeat the enemy's
-    ShowCase* showCase; ///< @brief showCase can visualize the item the player is holding
-    Text* textGold; ///< @brief textGold is a text that displays the amount of gold you have
-    Text* textStats; ///< @brief textStats is a text that display the values of all the player's stats
-    std::vector<Hud*> hudHealth; ///< @brief hudHealth is a list with Hud's that represent the health of the player
     Item* item; ///< @brief item Is the item that the player is holding
     DamageBoost damageBoost; ///< @brief damageBoost Is the damageBoost that can be received by a DamagePotion
     SpeedBoost speedBoost; ///< @brief speedBoost is the SpeedBoost that can be receieved by a SpeedPotion
@@ -116,11 +115,6 @@ private:
     /// @brief UpdateStats update all of the text for the stats that the player currently has
     /// @return void
     void UpdateStats();
-
-    /// @brief CreateLives will create new Hud elements that will represent the health of the player this can be called as many times as you want
-    /// @param amount Is the amount of lives there need to be created
-    /// @return void
-    void CreateLives(int amount);
 };
 
 #endif // !PLAYER_H

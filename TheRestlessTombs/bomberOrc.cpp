@@ -46,6 +46,14 @@ void BomberOrc::Update(double deltaTime) {
 			++it;
 		}
 	}
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 }
 
 bool BomberOrc::LookForPlayer(float deltaTime) {
@@ -85,6 +93,7 @@ bool BomberOrc::LookForPlayer(float deltaTime) {
 void BomberOrc::TakeDamage(int damage) {
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	else {
 		currentHealth = 0;

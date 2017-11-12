@@ -57,6 +57,13 @@ void Boss::Draw() {
 		model = glm::rotate(model, GetAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(Window::m2p, Window::m2p, 0.0f));
 		shader->SetMatrix4("model", model);
+		// If a person got damaged make it red so that it is clearly noticable for the user
+		if (damaged) {
+			shader->SetFloat("red", 0.5f);
+		}
+		else {
+			shader->SetFloat("red", 0.0f);
+		}
 		glActiveTexture(GL_TEXTURE0 + texture.id);
 		shader->SetInt("ourTexture", texture.id);
 		glBindTexture(GL_TEXTURE_2D, texture.id);

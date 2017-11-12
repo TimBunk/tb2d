@@ -54,6 +54,14 @@ void BossOrc::Update(double deltaTime) {
 			hammer->Attack();
 		}
 	}
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 }
 
 bool BossOrc::LookForPlayer(double deltaTime) {
@@ -118,6 +126,7 @@ bool BossOrc::LookForPlayer(double deltaTime) {
 void BossOrc::TakeDamage(int damage) {
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	else {
 		currentHealth = 0;

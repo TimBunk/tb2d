@@ -43,11 +43,20 @@ void BabyOrc::Update(double deltaTime) {
 			sword->Attack();
 		}
 	}
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 }
 
 void BabyOrc::TakeDamage(int damage) {
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	else {
 		currentHealth = 0;

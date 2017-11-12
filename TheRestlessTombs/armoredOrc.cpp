@@ -43,11 +43,20 @@ void ArmoredOrc::Update(double deltaTime) {
 			sword->Attack();
 		}
 	}
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 }
 
 void ArmoredOrc::TakeDamage(int damage) {
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	// If the ArmoredOrc dies destroy it and it's sword
 	else {

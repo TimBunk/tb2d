@@ -15,6 +15,7 @@
 #include "contactListener.h"
 #include "button.h"
 #include "menu.h"
+#include "playerHud.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
@@ -27,6 +28,7 @@ ResourceManager* rm;
 b2World* world;
 ContactListener* contactListener;
 
+PlayerHud* playerHud;
 Player* player;
 Shop* shop;
 Level1* level1;
@@ -38,7 +40,7 @@ Menu* menu;
 bool initMenu;
 
 int main() {
-	window = new Window(800, 600, "TheRestlessTombs", false);
+	window = new Window(800, 600, "TheRestlessTombs", true);
 	window->SetBackgroundColor(glm::vec3(0.258823529f, 0.156862745f, 0.207843137f));
 	camera = window->GetCamera();
 	input = window->GetInput();
@@ -54,6 +56,7 @@ int main() {
 	rm->CreateShader("colorHUD", "shaders//colorHUD.vs", "shaders//colorHUD.fs");
 	rm->CreateShader("bomb", "shaders//bomb.vs", "shaders//bomb.fs");
 	rm->CreateShader("healthbar", "shaders//healthbar.vs", "shaders//healthbar.fs");
+	rm->CreateShader("person", "shaders//person.vs", "shaders//person.fs");
 
 	// Load textures
 	rm->CreateTexture("player", "textures/Player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -96,7 +99,8 @@ int main() {
 
 	// Create the world, player, shop and level
 	world = new b2World(b2Vec2(0.0f, 0.0f));
-	player = new Player(input, rm, camera, rm->GetShader("shader"), world);
+	playerHud = new PlayerHud(rm, camera);
+	player = new Player(playerHud, input, rm, camera, rm->GetShader("person"), world);
 	player->GiveTexture(rm->GetTexture("player"));
 	player->CreateBody(0, 0, 50, 75, true, false);
 	shop = new Shop(player, rm, input, camera, rm->GetShader("shader"), world);
@@ -120,10 +124,10 @@ int main() {
 
 		switch (gameState) {
 		case _game:
-			if (input->KeyPress(SDL_SCANCODE_1)) {
+			/*if (input->KeyPress(SDL_SCANCODE_1)) {
 				gameState = GameState::_shop;
 				shop->_SetActive(true);
-			}
+			}*/
 			// Check if the shop is active, if so switch to that state instead
 			if (shop->IsActive()) {
 				gameState = GameState::_shop;
@@ -189,6 +193,7 @@ int main() {
     // DELETE ALL VARIABLES CREATED WITH THE KEYWORD "new"
 	delete window;
     delete level1;
+    delete playerHud;
     delete player;
     delete shop;
     delete contactListener;

@@ -38,7 +38,7 @@ void NecromancerOrc::Update(double deltaTime) {
 			}
 			if (currentCooldown <= 0.0f && babyOrcs.size() < 4) {
 				BabyOrc* bo;
-				bo = new BabyOrc(this->player, this->lineOfSight, this->rm, this->camera, this->rm->GetShader("shader"), this->world);
+				bo = new BabyOrc(this->player, this->lineOfSight, this->rm, this->camera, this->rm->GetShader("person"), this->world);
 				bo->CreateBody(this->localPosition.x + anglePlayerEnemy.x, this->localPosition.y + anglePlayerEnemy.y, 50, 50);
 				bo->GiveTexture(this->rm->GetTexture("babyOrc"));
 				babyOrcs.push_back(bo);
@@ -63,11 +63,20 @@ void NecromancerOrc::Update(double deltaTime) {
 		}
 	}
 	babyOrcsHolder->UpdateChilderen(babyOrcsHolder, deltaTime);
+	// Check if the person got damaged
+	if (damaged && timerDamaged < cooldownDamaged) {
+		timerDamaged += deltaTime;
+	}
+	else {
+		timerDamaged = 0.0f;
+		damaged = false;
+	}
 }
 
 void NecromancerOrc::TakeDamage(int damage) {
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	else {
 		currentHealth = 0;

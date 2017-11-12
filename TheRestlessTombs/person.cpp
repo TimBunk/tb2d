@@ -10,10 +10,42 @@ Person::Person(ResourceManager* rm, Camera* camera, Shader* shader, b2World* wor
     speed = 0;
     flippedTexture = false;
     currentX = this->localPosition.x;
+
+    damaged = false;
+    cooldownDamaged = 0.25f;
+    timerDamaged = 0.0f;
 }
 
 Person::~Person() {
 
+}
+
+void Person::Draw() {
+	// Draw the destructable only when it is active
+	if (alive) {
+		shader->Use();
+		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+		glm::mat4 model;
+		model = glm::translate(model, this->GetGlobalPosition());
+		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(Window::m2p * this->GetGlobalScale().x, Window::m2p * this->GetGlobalScale().y, 0.0f));
+		shader->SetMatrix4("model", model);
+		// If a person got damaged make it red so that it is clearly noticable for the user
+		if (damaged) {
+			shader->SetFloat("red", 0.5f);
+		}
+		else {
+			shader->SetFloat("red", 0.0f);
+		}
+		glActiveTexture(GL_TEXTURE0 + texture.id);
+		shader->SetInt("ourTexture", texture.id);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(0);
+	}
 }
 
 bool Person::IsAlive() {
@@ -28,6 +60,7 @@ void Person::TakeDamage(int damage) {
 	// Make sure the health never drops below 0
 	if (currentHealth - damage > 0) {
 		currentHealth -= damage;
+		damaged = true;
 	}
 	else {
 		currentHealth = 0;
