@@ -1,12 +1,10 @@
 #CMake entry point
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 2.8.0)
 project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
 OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
-OPTION(MAKE_BOX2DLES "Box2dLes" OFF)
-OPTION(MAKE_EpicFighter "Make EpicFighter" OFF)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -91,8 +89,6 @@ set(TB2DSOURCE
   tb2d/text.cpp
   tb2d/resourceManager.h
   tb2d/resourceManager.cpp
-  tb2d/shape.h
-  tb2d/shape.cpp
   tb2d/input.h
   tb2d/input.cpp
   tb2d/window.h
@@ -194,8 +190,6 @@ add_executable(trt
   TheRestlessTombs/b2entity.h
   TheRestlessTombs/renderable.cpp
   TheRestlessTombs/renderable.h
-  TheRestlessTombs/hand.cpp
-  TheRestlessTombs/hand.h
   TheRestlessTombs/contactListener.h
   TheRestlessTombs/contactListener.cpp
   TheRestlessTombs/weapon.cpp
@@ -239,93 +233,4 @@ file(
   COPY TheRestlessTombs/shaders
   DESTINATION ${CMAKE_BINARY_DIR}
 )
-ENDIF()
-
-####################################################################
-# EpicFighter                                                            #
-####################################################################
-
-IF (MAKE_EpicFighter)
-
-add_executable(ef
-  ${TB2DSOURCE}
-  EpicFighter/main.cpp
-  EpicFighter/player.cpp
-  EpicFighter/player.h
-  EpicFighter/sword.cpp
-  EpicFighter/sword.h
-  EpicFighter/ground.cpp
-  EpicFighter/ground.h
-)
-
-target_link_libraries(ef
-${BOX2D_LIB}
-${ALL_GRAPHICS_LIBS}
-SDL2
-${SDL2_MIXER_LIBRARIES}
-${SDL2_TTF_LIBRARY}
-${SDL2IMAGE_LIBRARY}
-SOIL2
-)
-
-ADD_DEPENDENCIES(ef
-  SOIL2
-)
-
-# Copy shaders to the build directory
-file(
-COPY tb2d/shaders
-DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-COPY TheRestlessTombs/textures
-DESTINATION ${CMAKE_BINARY_DIR}
-)
-ENDIF()
-
-####################################################################
-# BOX2DLES                                                            #
-####################################################################
-
-IF (MAKE_BOX2DLES)
-
-add_executable(b2
-  ${TB2DSOURCE}
-  Box2dLes/main.cpp
-  Box2dLes/b2entity.h
-  Box2dLes/b2entity.cpp
-  Box2dLes/contactListener.h
-  Box2dLes/contactListener.cpp
-  Box2dLes/circle.h
-  Box2dLes/circle.cpp
-)
-
-
-target_link_libraries(b2
-${BOX2D_LIB}
-${ALL_GRAPHICS_LIBS}
-SDL2
-${SDL2_MIXER_LIBRARIES}
-${SDL2_TTF_LIBRARY}
-${SDL2IMAGE_LIBRARY}
-SOIL2
-)
-
-ADD_DEPENDENCIES(b2
-  SOIL2
-)
-# Copy shaders to the build directory
-file(
-COPY tb2d/shaders
-DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-COPY tb2d/textures
-DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-  COPY tb2d/fonts
-  DESTINATION ${CMAKE_BINARY_DIR}
-)
-
 ENDIF()

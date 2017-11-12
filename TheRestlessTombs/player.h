@@ -12,7 +12,6 @@
 #include "person.h"
 #include "camera.h"
 #include "input.h"
-#include "hand.h"
 #include "renderable.h"
 #include "door.h"
 #include "weapon.h"
