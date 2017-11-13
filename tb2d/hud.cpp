@@ -13,35 +13,42 @@ Hud::Hud(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture tex
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
-	float vertices[] = {
-		// position
-		this->w/2 * -1, this->h/2 * -1, 0.0f, 0.0f,  // lower-left corner
-		this->w/2, this->h/2 * -1, 1.0f, 0.0f,  // lower-right corner
-		this->w/2, this->h/2, 1.0f, 1.0f,  // upper-right corner
-		this->w/2 * -1, this->h/2, 0.0f, 1.0f  // uper left corner
-	};
-
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
-
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	// create vertices on the heap
+	GLfloat* vertices;
+	vertices = new GLfloat[16];
+	// position
+	vertices[0] = this->w/2 * -1; vertices[1] = this->h/2 * -1; vertices[2] = 0.0f; vertices[3] = 0.0f;  // lower-left corner
+	vertices[4] = this->w/2; vertices[5] = this->h/2 * -1; vertices[6] = 1.0f; vertices[7]  = 0.0f;  // lower-right corner
+	vertices[8] = this->w/2; vertices[9] = this->h/2; vertices[10] = 1.0f; vertices[11] = 1.0f;  // upper-right corner
+	vertices[12] = this->w/2 * -1; vertices[13] = this->h/2; vertices[14] =  0.0f; vertices[15] =  1.0f;  // uper left corner
+
+	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// create the indices on the heap
+	GLuint * indices;
+	indices = new GLuint[6];
+	indices[0] = 0; indices[1] = 1; indices[2] = 3;
+	indices[3] = 1; indices[4] =  2; indices[5] = 3;
+
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
 	// set the vertices
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLuint), (GLvoid*)(2 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
+
+	// delete the vertices and indices created on the heap
+	delete vertices;
+	delete indices;
 }
 
 Hud::~Hud() {
@@ -58,7 +65,7 @@ void Hud::Draw() {
 	glm::mat4 model;
 	model = glm::translate(model, this->localPosition);
 	model = glm::rotate(model, glm::radians(this->GetGlobalAngle()), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(this->GetGlobalScale(), 1.0f));
+	model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 1.0f));
 	shader->SetMatrix4("model", model);
 	glActiveTexture(GL_TEXTURE0 + texture.id);
 	shader->SetInt("ourTexture", texture.id);

@@ -8,19 +8,6 @@ Boss::Boss(std::string nameBoss, Player* player, float lineOfSight, ResourceMana
 	this->AddChild(textBoss);
 
 	// Create the healthbar
-	float vertices[] = {
-		// position
-		0.0f, -15.0f,  // lower-left corner
-		400.0f, -15.0f, // lower-right corner
-		400.0f, 15.0f,  // upper-right corner
-		0.0f, 15.0f // uper left corner
-	};
-
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
-
 	glGenVertexArrays(1, &HealthVAO);
 	glGenBuffers(1, &HealthVBO);
 	glGenBuffers(1, &HealthEBO);
@@ -28,16 +15,36 @@ Boss::Boss(std::string nameBoss, Player* player, float lineOfSight, ResourceMana
 	glBindVertexArray(HealthVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, HealthVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	// create vertices on the stack to make sure they won't get out of range
+	GLfloat* vertices;
+	vertices = new GLfloat[8];
+	// position
+	vertices[0] = 0.0f; vertices[1] = -15.0f;// lower-left corner
+	vertices[2] = 400.0f; vertices[3] = -15.0f;// lower-right corner
+	vertices[4] = 400.0f; vertices[5] = 15.0f;// upper-right corner
+	vertices[6] = 0.0f; vertices[7] = 15.0f;  // uper left corner
+
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, HealthEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// create the indices on the stack to make sure they won't get out of range
+	unsigned int * indices;
+	indices = new unsigned int[6];
+	indices[0] = 0; indices[1] = 1; indices[2] = 3;
+	indices[3] = 1; indices[4] =  2; indices[5] = 3;
+
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	// set the vertices
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
+
+	// delete the vertices and indices created on the stack
+	delete vertices;
+	delete indices;
 }
 
 Boss::~Boss() {
