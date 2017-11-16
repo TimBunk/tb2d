@@ -14,7 +14,7 @@ On arch linux you need to install other sdl2 packages too, You can run "sudo pac
 
 ## Documentation
 
-Documentation is coming soon with doxygen
+Documentation is coming soon with doxygen.
 
 ## Libraries
 
