@@ -14,8 +14,7 @@ On arch linux you need to install other sdl2 packages too, You can run "sudo pac
 
 ## Documentation
 
-At the moment there is only a documentation of my game "The Restless Tombs".
-To view this documentation go to the root of this folder and type in the terminal "doxygen Doxyfile" it will create a documentation folder and search for index.html and open it.
+Documentation is coming soon with doxygen
 
 ## Libraries
 
