@@ -4,7 +4,6 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
-OPTION(MAKE_THERESTLESSTOMBS "Make TheRestlessTombs" ON)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -22,17 +21,15 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(external)
 
-if(UNIX)
-  # Set c++11 as main language
-  set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
+# Set c++11 as main language
+set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 
-  # Look up SDL2 and add the include directory to our include path
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
-  find_package(SDL2 REQUIRED)
-  find_package(SDL2_mixer REQUIRED)
-  find_package(SDL2_ttf REQUIRED)
-  find_package(SDL2_image REQUIRED)
-endif(UNIX)
+# Look up SDL2 and add the include directory to our include path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
+find_package(SDL2 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_image REQUIRED)
 
 # Create library from soil2 source
 set (SOIL2_INCLUDE_DIR
@@ -127,112 +124,4 @@ IF(USE_BOX2D)
 	set(BOX2D_LIB
 	    Box2D
 	)
-ENDIF()
-
-####################################################################
-# TheRestlessTombs                                                 #
-####################################################################
-IF(MAKE_THERESTLESSTOMBS)
-add_executable(trt
-  ${TB2DSOURCE}
-  TheRestlessTombs/main.cpp
-  TheRestlessTombs/armoredOrc.cpp
-  TheRestlessTombs/armoredOrc.h
-  TheRestlessTombs/babyOrc.cpp
-  TheRestlessTombs/babyOrc.h
-  TheRestlessTombs/bomb.cpp
-  TheRestlessTombs/bomb.h
-  TheRestlessTombs/bomberOrc.cpp
-  TheRestlessTombs/bomberOrc.h
-  TheRestlessTombs/boss.cpp
-  TheRestlessTombs/boss.h
-  TheRestlessTombs/bossOrc.cpp
-  TheRestlessTombs/bossOrc.h
-  TheRestlessTombs/crate.cpp
-  TheRestlessTombs/crate.h
-  TheRestlessTombs/damagePotion.cpp
-  TheRestlessTombs/damagePotion.h
-  TheRestlessTombs/destructable.cpp
-  TheRestlessTombs/destructable.h
-  TheRestlessTombs/door.cpp
-  TheRestlessTombs/door.h
-  TheRestlessTombs/enemy.cpp
-  TheRestlessTombs/enemy.h
-  TheRestlessTombs/gold.cpp
-  TheRestlessTombs/gold.h
-  TheRestlessTombs/healthPotion.cpp
-  TheRestlessTombs/healthPotion.h
-  TheRestlessTombs/level1.cpp
-  TheRestlessTombs/level1.h
-  TheRestlessTombs/lootChest.cpp
-  TheRestlessTombs/lootChest.h
-  TheRestlessTombs/necromancerOrc.cpp
-  TheRestlessTombs/necromancerOrc.h
-  TheRestlessTombs/orc.cpp
-  TheRestlessTombs/orc.h
-  TheRestlessTombs/person.cpp
-  TheRestlessTombs/person.h
-  TheRestlessTombs/player.cpp
-  TheRestlessTombs/player.h
-  TheRestlessTombs/potion.cpp
-  TheRestlessTombs/potion.h
-  TheRestlessTombs/psychoOrc.cpp
-  TheRestlessTombs/psychoOrc.h
-  TheRestlessTombs/room.cpp
-  TheRestlessTombs/room.h
-  TheRestlessTombs/shop.cpp
-  TheRestlessTombs/shop.h
-  TheRestlessTombs/speedPotion.cpp
-  TheRestlessTombs/speedPotion.h
-  TheRestlessTombs/wall.cpp
-  TheRestlessTombs/wall.h
-  TheRestlessTombs/b2entity.cpp
-  TheRestlessTombs/b2entity.h
-  TheRestlessTombs/renderable.cpp
-  TheRestlessTombs/renderable.h
-  TheRestlessTombs/contactListener.h
-  TheRestlessTombs/contactListener.cpp
-  TheRestlessTombs/weapon.cpp
-  TheRestlessTombs/weapon.h
-  TheRestlessTombs/showCase.cpp
-  TheRestlessTombs/showCase.h
-  TheRestlessTombs/rayCastCallBack.h
-  TheRestlessTombs/rayCastCallBack.cpp
-  TheRestlessTombs/item.h
-  TheRestlessTombs/item.cpp
-  TheRestlessTombs/menu.h
-  TheRestlessTombs/menu.cpp
-  TheRestlessTombs/playerHud.h 
-  TheRestlessTombs/playerHud.cpp
-)
-target_link_libraries(trt
-  ${BOX2D_LIB}
-  ${ALL_GRAPHICS_LIBS}
-  SDL2
-	${SDL2_MIXER_LIBRARIES}
-	${SDL2_TTF_LIBRARY}
-  ${SDL2IMAGE_LIBRARY}
-  SOIL2
-)
-
-ADD_DEPENDENCIES(trt
-  SOIL2
-)
-# Copy shaders and textures to the build directory
-file(
-  COPY tb2d/shaders
-  DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-  COPY tb2d/fonts
-  DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-  COPY TheRestlessTombs/textures
-  DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-  COPY TheRestlessTombs/shaders
-  DESTINATION ${CMAKE_BINARY_DIR}
-)
 ENDIF()
