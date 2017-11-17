@@ -9,11 +9,10 @@
 #include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
 
 #include <GL/glew.h>
-#include <SDL2/SDL.h>
 
 class Camera {
 public:
-	Camera(int screenWidth, int screenHeight, SDL_DisplayMode dm);
+	Camera(int screenWidth, int screenHeight);
 	virtual ~Camera();
 
 	// Position in pixels

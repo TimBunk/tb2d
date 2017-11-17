@@ -9,11 +9,10 @@
 #include <glm-0.9.8.4/glm/glm.hpp>
 #include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
 #include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
-#include <SDL2/SDL.h>
 
 class Input {
 public:
-	Input(SDL_DisplayMode dm);
+	Input();
 	virtual ~Input();
 	void Update();
 

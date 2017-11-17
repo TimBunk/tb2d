@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(int screenWidth, int screenHeight, SDL_DisplayMode dm)
+Camera::Camera(int screenWidth, int screenHeight)
 {
 	projection = glm::ortho(0.0f, ((float)screenWidth), ((float)screenHeight), 0.0f, -50.0f, 50.0f);
 	position = glm::vec2(0.0f, 0.0f);

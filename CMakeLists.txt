@@ -4,6 +4,7 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
+OPTION(USE_TEST_PROJECT "Use project for testing purposes" ON)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -24,13 +25,6 @@ add_subdirectory(external)
 # Set c++11 as main language
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 
-# Look up SDL2 and add the include directory to our include path
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/external/sdl2/")
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(SDL2_image REQUIRED)
-
 # Create library from soil2 source
 set (SOIL2_INCLUDE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src
@@ -40,16 +34,30 @@ add_subdirectory(
   external/SOIL2/src
 )
 
+# Create library from freetype2 source
+set (FREETYPE2_INCLUDE_DIR
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/freetype-2.8.1
+)
+
+add_subdirectory(
+  external/freetype-2.8.1
+)
+
 include_directories(
   ${SOIL2_INCLUDE_DIR}
+  ${FREETYPE2_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/include/GLFW
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
+  ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/include
+  ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/src
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/tb2d
 )
 
 link_directories(
+  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/src
   ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
   ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
   ${CMAKE_SOURCE_DIR}/external
@@ -58,6 +66,7 @@ link_directories(
 set(ALL_GRAPHICS_LIBS
 	${OPENGL_LIBRARY}
   GLEW
+  glfw
   ${GLEW_LIBRARIES}
 )
 
@@ -125,3 +134,42 @@ IF(USE_BOX2D)
 	    Box2D
 	)
 ENDIF()
+
+
+####################################################################
+# TestProject                                                 #
+####################################################################
+if (USE_TEST_PROJECT)
+  add_executable(testProject
+    tb2d/resourceManager.cpp
+    tb2d/resourceManager.h
+    tb2d/texture.cpp
+    tb2d/texture.h
+    tb2d/shader.cpp
+    tb2d/shader.h
+    testProject/main.cpp
+  )
+  #set_target_properties(testProject PROPERTIES LINKER_LANGUAGE C)
+  target_link_libraries(testProject
+    ${BOX2D_LIB}
+    ${ALL_GRAPHICS_LIBS}
+    freetype
+    SOIL2
+  )
+  ADD_DEPENDENCIES(testProject
+    SOIL2
+  )
+  # Copy shaders and textures to the build directory
+  file(
+    COPY tb2d/shaders
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY tb2d/textures
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY tb2d/fonts
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+endif()
