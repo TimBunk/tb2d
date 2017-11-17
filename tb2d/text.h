@@ -3,56 +3,37 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
-#include "entity.h"
 #include "shader.h"
-#include "camera.h"
+#include "entity.h"
 
-#include <GL/glew.h>
-#include <glm-0.9.8.4/glm/glm.hpp>
-#include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
-#include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+/// Holds all state information relevant to a character as loaded using FreeType
+struct Character {
+	GLuint TextureID;   // ID handle of the glyph texture
+	glm::ivec2 Size;    // Size of glyph
+	glm::ivec2 Bearing;  // Offset from baseline to left/top of glyph
+	GLuint Advance;    // Horizontal offset to advance to next glyph
+};
 
 class Text : public Entity {
 public:
-	Text(const char* filePath, std::string text, int fontSize, glm::vec4 color, bool HUD, Camera* camera, Shader* shader);
-	virtual ~Text();
+	Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 color);
+	~Text();
 
 	void SetText(std::string text);
-	void SetFontSize(int fontSize);
-	// Set RGBA color
-	void SetColor(glm::vec4 color);
-	void SetVisibility(float value);
-	void Draw();
-
-	std::string GetText();
-	unsigned int GetFontSize();
-	glm::vec4 GetColor();
-	float GetVisibility();
-	int GetWidth();
-	int GetHeight();
-
+	void SetColor(glm::vec3 color);
+	void Draw(glm::mat4 projection);
 private:
-	SDL_Surface* sdlSurface;
-	const char* filePath;
-	TTF_Font* font;
-	SDL_Color fontColor;
-	std::string currentText;
-	unsigned int fontSize;
-	bool HUD;
-	int width, height;
-	Camera* camera;
-	glm::vec4 color;
-	float visibility;
-
 	Shader* shader;
-	GLuint VAO, VBO, EBO;
-	GLuint textureId;
+	std::map<GLchar, Character> characters;
+	GLuint VAO, VBO;
 
-	void CreateText();
+	std::string text;
+	glm::vec3 color;
 };
 
-#endif // TEXT_H
+#endif //! TEXT_H

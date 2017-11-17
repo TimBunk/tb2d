@@ -1,160 +1,154 @@
 #include "text.h"
 
-Text::Text(const char* filePath, std::string text, int fontSize, glm::vec4 color, bool HUD, Camera* camera, Shader* shader) : Entity::Entity() {
-	// Set the values of the needed variables
-	this->filePath = filePath;
-	this->currentText = text;
-	this->fontSize = fontSize;
-	this->color = color;
-	this->HUD = HUD;
-	this->camera = camera;
+Text::Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 color) : Entity::Entity()
+{
+	this->text = text;
 	this->shader = shader;
-	width = 0;
-	height = 0;
-	visibility = 1.0f;
+	this->color = color;
+	// Initialize freetyp2
+	// FreeType
+	FT_Library ft;
+	// All functions return a value different than 0 whenever an error occurred
+	if (FT_Init_FreeType(&ft))
+		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
-	//Initialize SDL_ttf
-	if( TTF_Init() == -1 ) {
-		printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+	// Load font as face
+	FT_Face face;
+	if (FT_New_Face(ft, fontPath, 0, &face)) {
+		std::cout << "ERROR::FREETYPE: Failed to load font: " << fontPath << " instead it loaded fonts/OpenSans-Regular.ttf" << std::endl;
+		// Load a standard font from the fonts folder
+		FT_New_Face(ft, "fonts/OpenSans-Regular.ttf", 0, &face);
 	}
-	// generate the needed texture for the text
-	glGenTextures(1, &textureId);
-	//Create the texture
-	fontColor = {color.x * 255.0f, color.y * 255.0f, color.z * 255.0f, color.w * 255.0f};
-	CreateText();
-}
 
-Text::~Text() {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-}
+	// Set size to load glyphs as
+	FT_Set_Pixel_Sizes(face, 0, 48);
 
-void Text::SetText(std::string text) {
-	if (text != currentText) {
-		currentText = text;
-		CreateText();
+	// Disable byte-alignment restriction
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	// Load all of the 255 characters of ASCII set
+	for (GLubyte c = 0; c < 255; c++)
+	{
+		// Load character glyph 
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+		{
+			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+			continue;
+		}
+		// Generate texture
+		GLuint texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
+		// Set texture options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Now store character for later use
+		Character character = {
+			texture,
+			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+			face->glyph->advance.x
+		};
+		characters.insert(std::pair<GLchar, Character>(c, character));
 	}
-}
-
-void Text::SetFontSize(int fontSize) {
-	if (this->fontSize != fontSize) {
-		this->fontSize = fontSize;
-		CreateText();
-	}
-}
-
-void Text::SetColor(glm::vec4 color) {
-	if (this->color != color) {
-		this->color = color;
-		fontColor = {color.x * 255.0f, color.y * 255.0f, color.z * 255.0f, color.w * 255.0f};
-		CreateText();
-	}
-}
-
-void Text::SetVisibility(float value) {
-	this->visibility = value;
-}
-
-void Text::Draw() {
-	shader->Use();
-	shader->SetFloat("visibility", visibility);
-	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	glm::mat4 model;
-	model = glm::translate(model, this->localPosition);
-	shader->SetMatrix4("model", model);
-	if (!HUD) {
-		shader->SetMatrix4("view", camera->GetViewMatrix());
-	}
-	// Apply the texture to the shader
-	glActiveTexture(GL_TEXTURE0 + textureId);
-	shader->SetInt("ourTexture", textureId);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-	glActiveTexture(GL_TEXTURE0);
-}
-
-std::string Text::GetText() {
-	return currentText;
-}
-
-unsigned int Text::GetFontSize() {
-	return fontSize;
-}
-
-glm::vec4 Text::GetColor() {
-	return color;
-}
-
-float Text::GetVisibility() {
-	return visibility;
-}
-
-int Text::GetWidth() {
-	return width;
-}
-
-int Text::GetHeight() {
-	return height;
-}
-
-void Text::CreateText() {
-	// Open the font
-	font = TTF_OpenFont(filePath, fontSize);
-	// Create a SDL_surface
-	//SDL_Surface* sdlSurface = TTF_RenderText_Blended(font, currentText.c_str(), fontColor);
-	sdlSurface = TTF_RenderText_Blended_Wrapped(font, currentText.c_str(), fontColor,  4096);
-	// Create texture
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sdlSurface->w, sdlSurface->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	this->width = sdlSurface->w;
-	this->height = sdlSurface->h;
-	// Set the vertices/indices of the texture
-	float vertices[] = {
-		// vertPosition					uvPosition
-		0.0f, -0.5f * sdlSurface->h,	0.0f, 0.0f,//bottomLeft
-		0.5f * sdlSurface->w, -0.5f * sdlSurface->h,	1.0f, 0.0f,//bottomRight
-		0.5 * sdlSurface->w, 0.5f *sdlSurface->h,	1.0f, 1.0f,// topRight
-		0.0f, 0.5f * sdlSurface->h, 	0.0f, 1.0f// topLeft
-	};
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
-	if (VAO != 0) {
-		// Delete the old VAO
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
-	}
-	// Create the VAO
+	// Destroy FreeType once we're finished
+	FT_Done_Face(face);
+	FT_Done_FreeType(ft);
+
+	// Configure VAO/VBO for texture quads
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
 	glBindVertexArray(VAO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
-	SDL_FreeSurface(sdlSurface);
-	// Close the font
-	TTF_CloseFont(font);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+Text::~Text()
+{
+	//delete all of the graphics card memory associated with the texture. If you
+	//don't call this method, the texture will stay in graphics card memory until you
+	//close the application.
+	for (GLubyte c = 0; c < 255; c++)
+	{
+		Character crh = characters[c];
+		glDeleteTextures(1, &crh.TextureID);
+	}
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+}
+
+void Text::SetText(std::string text)
+{
+	this->text = text;
+}
+
+void Text::SetColor(glm::vec3 color)
+{
+	this->color = color;
+}
+
+void Text::Draw(glm::mat4 projection)
+{
+	GLfloat x = this->GetGlobalPosition().x;
+	GLfloat y = this->GetGlobalPosition().y;
+	GLfloat z = this->GetGlobalPosition().z;
+	// Use that Shader and set it's uniforms	
+	shader->Use();
+	shader->SetVec3Float("textColor", color);
+	shader->SetMatrix4("projection", projection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+
+	// Iterate through all characters
+	std::string::const_iterator c;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		Character ch = characters[*c];
+
+		GLfloat xpos = x + ch.Bearing.x * GetGlobalScale().x;
+		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * GetGlobalScale().y;
+
+		GLfloat w = ch.Size.x * GetGlobalScale().x;
+		GLfloat h = ch.Size.y * GetGlobalScale().y;
+		// Update VBO for each character
+		GLfloat vertices[6][5] = {
+			// Vertex positions		// uv positions
+			{ xpos,     ypos + h,   z, 0.0f, 0.0f },
+			{ xpos,     ypos,       z, 0.0f, 1.0f },
+			{ xpos + w, ypos,       z, 1.0f, 1.0f },
+
+			{ xpos,     ypos + h,   z, 0.0f, 0.0f },
+			{ xpos + w, ypos,       z, 1.0f, 1.0f },
+			{ xpos + w, ypos + h,   z, 1.0f, 0.0f }
+		};
+		// Render glyph texture over quad
+		glActiveTexture(GL_TEXTURE0 + ch.TextureID);
+		shader->SetInt("text", ch.TextureID);
+		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+		// Update content of VBO memory
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices) /5 * 5, vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /5 * 4, sizeof(vertices) / 5 * 2, vertices);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		x += (ch.Advance >> 6) * GetGlobalScale().x; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+	}
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(0);
 }

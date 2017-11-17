@@ -141,6 +141,14 @@ ENDIF()
 ####################################################################
 if (USE_TEST_PROJECT)
   add_executable(testProject
+    tb2d/scene.cpp
+    tb2d/scene.h
+    tb2d/camera.cpp
+    tb2d/camera.h 
+    tb2d/text.cpp
+    tb2d/text.h
+    tb2d/entity.cpp
+    tb2d/entity.h
     tb2d/resourceManager.cpp
     tb2d/resourceManager.h
     tb2d/texture.cpp
