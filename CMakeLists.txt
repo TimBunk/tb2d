@@ -103,6 +103,8 @@ set(TB2DSOURCE
   tb2d/hud.cpp
   tb2d/button.h
   tb2d/button.cpp
+  tb2d/sprite.h
+  tb2d/sprite.cpp
 )
 
 ####################################################################
@@ -141,10 +143,12 @@ ENDIF()
 ####################################################################
 if (USE_TEST_PROJECT)
   add_executable(testProject
+    tb2d/sprite.cpp 
+    tb2d/sprite.h
     tb2d/scene.cpp
     tb2d/scene.h
     tb2d/camera.cpp
-    tb2d/camera.h 
+    tb2d/camera.h
     tb2d/text.cpp
     tb2d/text.h
     tb2d/entity.cpp

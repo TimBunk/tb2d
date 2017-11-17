@@ -17,7 +17,7 @@ public:
 	virtual ~ResourceManager();
 
 	Shader* GetShader(std::string name);
-	Texture GetTexture(std::string name);
+	Texture* GetTexture(std::string name);
 
 	// Example: CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
 	void CreateShader(std::string nameOfShader, const char* vertexPath, const char* fragmentPath);
@@ -26,7 +26,7 @@ public:
 
 private:
 	std::map<std::string, Shader*> shaders;
-	std::map<std::string, Texture> textures;
+	std::map<std::string, Texture*> textures;
 };
 
 #endif // !RESOURCEMANGER_H

@@ -22,7 +22,7 @@ struct Character {
 class Text : public Entity {
 public:
 	Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 color);
-	~Text();
+	virtual ~Text();
 
 	void SetText(std::string text);
 	void SetColor(glm::vec3 color);

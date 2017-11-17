@@ -1,21 +1,15 @@
 #include "texture.h"
 
-Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType)
+Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType)
 {
-	// Note to self the first texture of a ID is 1 instead of 0
-
-	// define all needed variables
-	GLuint id;
-	std::string type;
-	Texture texture;
-
 	int width, height;
+	// unsigned char, which gives you at least the 0 to 255 range.
 	unsigned char* data;
 
 	// generate and bind the textures
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
-	// choose the entered wrapping
+	// get the entered wrapping
 	switch (textureWrap) {
 	case repeat:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -34,7 +28,7 @@ Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, Texture
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		break;
 	}
-	// choose the entered filter
+	// get the entered filter
 	switch (textureFilter) {
 	case linear:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -46,7 +40,7 @@ Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, Texture
 		break;
 	}
 
-	// choose the entered type
+	// get the entered type
 	switch (textureType) {
 	case diffuse:
 		type = "diffuse";
@@ -56,9 +50,6 @@ Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, Texture
 		break;
 	case emission:
 		type = "emission";
-		break;
-	case normalMap:
-		type = "normalMap";
 		break;
 	}
 	// load the image data and create Mipmap
@@ -73,19 +64,19 @@ Texture Tex::LoadTexture(const char * filePath, TextureWrap textureWrap, Texture
 
 	// free the allocated memory
 	SOIL_free_image_data(data);
-
-	texture.id = id;
-	texture.type = type;
-
-	// return the texture
-	return texture;
 }
 
-void Tex::SaveImage(const unsigned int * screenWidth, const unsigned int * screenHeight)
+Texture::~Texture()
 {
-	int saveResult;
-	saveResult = SOIL_save_screenshot("AwesomeScreenshot.png", SOIL_SAVE_TYPE_PNG, 0, 0, *screenWidth, *screenHeight);
-	if (!saveResult) {
-		std::cout << "Error in taking screenshot: " << SOIL_last_result() << std::endl;
-	}
+	glDeleteTextures(1, &id);
+}
+
+unsigned int Texture::GetId()
+{
+	return id;
+}
+
+std::string Texture::GetType()
+{
+	return type;
 }

@@ -2,13 +2,13 @@
 
 Entity::Entity()
 {
-	position = glm::vec3(0.0f);
+	position = glm::vec2(0.0f, 0.0f);
 	angle = 0.0f;
-	scale = glm::vec2(1.0f);
+	scale = glm::vec2(1.0f, 1.0f);
 
-	localPosition = glm::vec3(0.0f);
+	localPosition = glm::vec2(0.0f, 0.0f);
 	localAngle = 0.0f;
-	localScale = glm::vec2(1.0f);
+	localScale = glm::vec2(1.0f, 1.0f);
 }
 
 Entity::~Entity()
@@ -26,7 +26,7 @@ void Entity::Draw()
 
 }
 
-glm::vec3 Entity::GetGlobalPosition() {
+glm::vec2 Entity::GetGlobalPosition() {
 	return position;
 }
 

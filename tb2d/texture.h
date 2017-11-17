@@ -5,13 +5,7 @@
 #include <string>
 
 #include <GL/glew.h>
-//#include "SOIL2/SOIL2.h"
 #include <SOIL2.h>
-
-struct Texture {
-	unsigned int id;
-	std::string type;
-};
 
 enum TextureWrap {
 	repeat,
@@ -26,16 +20,19 @@ enum TextureFilter {
 enum TextureType {
 	diffuse,
 	specular,
-	emission,
-	normalMap
+	emission
 };
 
-class Tex {
-
+class Texture {
 public:
+	Texture(const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType);
+	~Texture();
 
-	static Texture LoadTexture(const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType);
-	static void SaveImage(const unsigned int* screenWidth, const unsigned int* screenHeight);
+	unsigned int GetId();
+	std::string GetType();
+private:
+	unsigned int id;
+	std::string type;
 };
 
 #endif // !TEXTURE_H

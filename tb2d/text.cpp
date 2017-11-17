@@ -64,12 +64,12 @@ Text::Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 col
 	glGenBuffers(1, &VBO);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -104,7 +104,6 @@ void Text::Draw(glm::mat4 projection)
 {
 	GLfloat x = this->GetGlobalPosition().x;
 	GLfloat y = this->GetGlobalPosition().y;
-	GLfloat z = this->GetGlobalPosition().z;
 	// Use that Shader and set it's uniforms	
 	shader->Use();
 	shader->SetVec3Float("textColor", color);
@@ -124,15 +123,15 @@ void Text::Draw(glm::mat4 projection)
 		GLfloat w = ch.Size.x * GetGlobalScale().x;
 		GLfloat h = ch.Size.y * GetGlobalScale().y;
 		// Update VBO for each character
-		GLfloat vertices[6][5] = {
+		GLfloat vertices[6][4] = {
 			// Vertex positions		// uv positions
-			{ xpos,     ypos + h,   z, 0.0f, 0.0f },
-			{ xpos,     ypos,       z, 0.0f, 1.0f },
-			{ xpos + w, ypos,       z, 1.0f, 1.0f },
+			{ xpos,     ypos + h,   0.0f, 0.0f },
+			{ xpos,     ypos,		0.0f, 1.0f },
+			{ xpos + w, ypos,		1.0f, 1.0f },
 
-			{ xpos,     ypos + h,   z, 0.0f, 0.0f },
-			{ xpos + w, ypos,       z, 1.0f, 1.0f },
-			{ xpos + w, ypos + h,   z, 1.0f, 0.0f }
+			{ xpos,     ypos + h,   0.0f, 0.0f },
+			{ xpos + w, ypos,       1.0f, 1.0f },
+			{ xpos + w, ypos + h,   1.0f, 0.0f }
 		};
 		// Render glyph texture over quad
 		glActiveTexture(GL_TEXTURE0 + ch.TextureID);
@@ -140,8 +139,8 @@ void Text::Draw(glm::mat4 projection)
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices) /5 * 5, vertices);
-		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /5 * 4, sizeof(vertices) / 5 * 2, vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /4 * 3, sizeof(vertices) / 4 * 2, vertices);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// Render quad

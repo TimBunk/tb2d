@@ -8,14 +8,18 @@
 #include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
 
 #include "resourceManager.h"
+#include "sprite.h"
 #include "text.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 ResourceManager* rm;
+Texture* texture;
+Shader* shaderFreetype;
 Shader* shader;
-Texture texture;
+Camera* camera;
+Sprite* sprite;
 glm::mat4 projection;
 
 Text* text;
@@ -51,29 +55,34 @@ int main() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//GL_LEQUAL: Passes if the incoming depth value is less than or equal to the stored depth value.
-	glDepthFunc(GL_LEQUAL);
 
 
 	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -50.0f, 50.0f);
 	rm = new ResourceManager();
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	texture = rm->GetTexture("awesome");
-	rm->CreateShader("shader", "shaders\\freetype.vs", "shaders\\freetype.fs");
+	rm->CreateShader("shader", "shaders\\shader.vs", "shaders\\shader.fs");
 	shader = rm->GetShader("shader");
-	shader->SetMatrix4("projection", projection);
-	text = new Text("This is sample text", shader, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f));
-	text->localPosition = glm::vec3(400.0f, 300.0f, 1.0f);
-	text->localScale.x = 1.0f;
-	text->localScale.y = 1.0f;
+	rm->CreateShader("shaderFreetype", "shaders\\freetype.vs", "shaders\\freetype.fs");
+	shaderFreetype = rm->GetShader("shaderFreetype");
+	shaderFreetype->SetMatrix4("projection", projection);
+	text = new Text("This is sample text", shaderFreetype, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f));
+	text->localPosition = glm::vec2(400.0f, 300.0f);
+
+	camera = new Camera(800, 600);
+	sprite = new Sprite(250, 250, texture, shader, camera);
+	sprite->localPosition = glm::vec2(400.0f, 300.0f);
 
 
 	while (!glfwWindowShouldClose(window)) {
 		// rendering commands
 		glClearColor(0, 0.5, 0.5, 1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Draw the texture on the screen
+		sprite->UpdateChilderen(NULL, 0.0f);
+		sprite->Draw();
+
 		text->UpdateChilderen(NULL, 0.0f);
 		text->Draw(projection);
 
@@ -87,6 +96,8 @@ int main() {
 		glfwPollEvents();
 	}
 	delete text;
+	delete camera;
+	delete sprite;
 	delete rm;
 	glfwDestroyWindow(window);
 	glfwTerminate();

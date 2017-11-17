@@ -14,7 +14,7 @@ public:
 	virtual ~Entity();
 
 	// local values
-	glm::vec3 localPosition;
+	glm::vec2 localPosition;
 	float localAngle;
 	glm::vec2 localScale;
 
@@ -26,14 +26,14 @@ public:
 	void AddChild(Entity* child);
 	void RemoveChild(Entity* child);
 
-	glm::vec3 GetGlobalPosition();
+	glm::vec2 GetGlobalPosition();
 	float GetGlobalAngle();
 	glm::vec2 GetGlobalScale();
 
 protected:
 	std::vector<Entity*> entities;
 	// global values
-	glm::vec3 position;
+	glm::vec2 position;
 	float angle;
 	glm::vec2 scale;
 private:
