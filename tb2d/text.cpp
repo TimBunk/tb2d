@@ -1,10 +1,12 @@
 #include "text.h"
 
-Text::Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 color) : Entity::Entity()
+Text::Text(std::string text, int size, const char* fontPath, glm::vec3 color, Shader* shader, Camera* camera, bool HUD) : Entity::Entity()
 {
 	this->text = text;
 	this->shader = shader;
+	this->camera = camera;
 	this->color = color;
+	this->HUD = HUD;
 	// Initialize freetyp2
 	// FreeType
 	FT_Library ft;
@@ -21,7 +23,7 @@ Text::Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 col
 	}
 
 	// Set size to load glyphs as
-	FT_Set_Pixel_Sizes(face, 0, 48);
+	FT_Set_Pixel_Sizes(face, 0, size);
 
 	// Disable byte-alignment restriction
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -100,14 +102,15 @@ void Text::SetColor(glm::vec3 color)
 	this->color = color;
 }
 
-void Text::Draw(glm::mat4 projection)
+void Text::Draw()
 {
 	GLfloat x = this->GetGlobalPosition().x;
 	GLfloat y = this->GetGlobalPosition().y;
 	// Use that Shader and set it's uniforms	
 	shader->Use();
 	shader->SetVec3Float("textColor", color);
-	shader->SetMatrix4("projection", projection);
+	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+	shader->SetMatrix4("view", camera->GetViewMatrix());
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 
@@ -120,18 +123,24 @@ void Text::Draw(glm::mat4 projection)
 		GLfloat xpos = x + ch.Bearing.x * GetGlobalScale().x;
 		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * GetGlobalScale().y;
 
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(xpos, ypos, 0.0f));
+		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
+		shader->SetMatrix4("model", model);
+
 		GLfloat w = ch.Size.x * GetGlobalScale().x;
 		GLfloat h = ch.Size.y * GetGlobalScale().y;
 		// Update VBO for each character
 		GLfloat vertices[6][4] = {
 			// Vertex positions		// uv positions
-			{ xpos,     ypos + h,   0.0f, 0.0f },
-			{ xpos,     ypos,		0.0f, 1.0f },
-			{ xpos + w, ypos,		1.0f, 1.0f },
+			{ 0.0f,     h,			0.0f, 0.0f },
+			{ 0.0f,     0.0f,		0.0f, 1.0f },
+			{ w,		0.0f,		1.0f, 1.0f },
 
-			{ xpos,     ypos + h,   0.0f, 0.0f },
-			{ xpos + w, ypos,       1.0f, 1.0f },
-			{ xpos + w, ypos + h,   1.0f, 0.0f }
+			{ 0.0f,     h,			0.0f, 0.0f },
+			{ w,		0.0f,       1.0f, 1.0f },
+			{ w,		h,			1.0f, 0.0f }
 		};
 		// Render glyph texture over quad
 		glActiveTexture(GL_TEXTURE0 + ch.TextureID);

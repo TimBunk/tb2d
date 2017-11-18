@@ -47,7 +47,7 @@ void Sprite::Draw()
 	glm::mat4 model;
 	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 0.0f));
 	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 1.0f));
 	shader->SetMatrix4("model", model);
 	glActiveTexture(GL_TEXTURE0 + texture->GetId());
 	shader->SetInt("ourTexture", texture->GetId());
@@ -56,4 +56,14 @@ void Sprite::Draw()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+}
+
+void Sprite::SetTexture(Texture * texture)
+{
+	this->texture = texture;
+}
+
+void Sprite::SetShader(Shader * shader)
+{
+	this->shader = shader;
 }

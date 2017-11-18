@@ -12,6 +12,8 @@ public:
 	virtual ~Sprite();
 
 	void Draw();
+	void SetTexture(Texture* texture);
+	void SetShader(Shader* shader);
 
 private:
 	GLuint VAO;

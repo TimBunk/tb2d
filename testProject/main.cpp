@@ -10,6 +10,7 @@
 #include "resourceManager.h"
 #include "sprite.h"
 #include "text.h"
+#include "scene.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -18,9 +19,8 @@ ResourceManager* rm;
 Texture* texture;
 Shader* shaderFreetype;
 Shader* shader;
-Camera* camera;
+Scene* scene;
 Sprite* sprite;
-glm::mat4 projection;
 
 Text* text;
 
@@ -57,7 +57,6 @@ int main() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -50.0f, 50.0f);
 	rm = new ResourceManager();
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	texture = rm->GetTexture("awesome");
@@ -65,13 +64,14 @@ int main() {
 	shader = rm->GetShader("shader");
 	rm->CreateShader("shaderFreetype", "shaders\\freetype.vs", "shaders\\freetype.fs");
 	shaderFreetype = rm->GetShader("shaderFreetype");
-	shaderFreetype->SetMatrix4("projection", projection);
-	text = new Text("This is sample text", shaderFreetype, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f));
-	text->localPosition = glm::vec2(400.0f, 300.0f);
 
-	camera = new Camera(800, 600);
-	sprite = new Sprite(250, 250, texture, shader, camera);
-	sprite->localPosition = glm::vec2(400.0f, 300.0f);
+	scene = new Scene(1920, 1080);
+	sprite = new Sprite(250, 250, texture, shader, scene->GetCamera());
+	sprite->localPosition = glm::vec2(125.0f, 125.0f);
+	scene->AddChild(sprite);
+	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), shaderFreetype, scene->GetCamera(), false);
+	text->localPosition = glm::vec2(960.0f, 540.0f);
+	scene->AddChild(text);
 
 
 	while (!glfwWindowShouldClose(window)) {
@@ -80,11 +80,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Draw the texture on the screen
-		sprite->UpdateChilderen(NULL, 0.0f);
-		sprite->Draw();
-
-		text->UpdateChilderen(NULL, 0.0f);
-		text->Draw(projection);
+		scene->UpdateChilderen(NULL, 0.0f);
 
 		// if escaped is pressed exit the program
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -96,7 +92,7 @@ int main() {
 		glfwPollEvents();
 	}
 	delete text;
-	delete camera;
+	delete scene;
 	delete sprite;
 	delete rm;
 	glfwDestroyWindow(window);

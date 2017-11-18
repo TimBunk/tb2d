@@ -7,6 +7,7 @@
 
 #include "shader.h"
 #include "entity.h"
+#include "camera.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -21,19 +22,21 @@ struct Character {
 
 class Text : public Entity {
 public:
-	Text(std::string text, Shader* shader, const char* fontPath, glm::vec3 color);
+	Text(std::string text, int size, const char* fontPath, glm::vec3 color, Shader* shader, Camera* camera, bool HUD);
 	virtual ~Text();
 
 	void SetText(std::string text);
 	void SetColor(glm::vec3 color);
-	void Draw(glm::mat4 projection);
+	void Draw();
 private:
 	Shader* shader;
+	Camera* camera;
 	std::map<GLchar, Character> characters;
 	GLuint VAO, VBO;
 
 	std::string text;
 	glm::vec3 color;
+	bool HUD;
 };
 
 #endif //! TEXT_H
