@@ -110,7 +110,9 @@ void Text::Draw()
 	shader->Use();
 	shader->SetVec3Float("textColor", color);
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	shader->SetMatrix4("view", camera->GetViewMatrix());
+	if (!HUD) {
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 

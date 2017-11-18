@@ -17,6 +17,7 @@ Camera::~Camera()
 void Camera::SetPosition(glm::vec2 position)
 {
 	this->position = position;
+	this->position *= -1;
 }
 
 void Camera::PositionAdd(glm::vec2 position)

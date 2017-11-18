@@ -2,13 +2,12 @@
 #define SPRITE_H
 
 #include "entity.h"
-#include "shader.h"
-#include "texture.h"
 #include "camera.h"
+#include "resourceManager.h"
 
 class Sprite : public Entity {
 public:
-	Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera);
+	Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD);
 	virtual ~Sprite();
 
 	void Draw();
@@ -21,6 +20,7 @@ private:
 	Texture* texture;
 	Shader* shader;
 	Camera* camera;
+	bool HUD;
 };
 
 #endif // !SPRITE_H

@@ -1,6 +1,14 @@
 #include "resourceManager.h"
 
 ResourceManager::ResourceManager() {
+	// The default shader
+	CreateShader("defaultShader", "shaders\\defaultShader.vs", "shaders\\defaultShader.fs");
+	// The default HUD shader
+	CreateShader("defaultHUD", "shaders\\defaultHUD.vs", "shaders\\defaultShader.fs");
+	// The default freetype shader
+	CreateShader("defaultFreetype", "shaders\\defaultShader.vs", "shaders\\defaultFreetype.fs");
+	// The default freetypeHUD shader
+	CreateShader("defaultFreetypeHUD", "shaders\\defaultHUD.vs", "shaders\\defaultFreetype.fs");
 }
 
 ResourceManager::~ResourceManager() {

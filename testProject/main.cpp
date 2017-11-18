@@ -59,17 +59,12 @@ int main() {
 
 	rm = new ResourceManager();
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	texture = rm->GetTexture("awesome");
-	rm->CreateShader("shader", "shaders\\shader.vs", "shaders\\shader.fs");
-	shader = rm->GetShader("shader");
-	rm->CreateShader("shaderFreetype", "shaders\\freetype.vs", "shaders\\freetype.fs");
-	shaderFreetype = rm->GetShader("shaderFreetype");
 
 	scene = new Scene(1920, 1080);
-	sprite = new Sprite(250, 250, texture, shader, scene->GetCamera());
+	sprite = new Sprite(250, 250, rm->GetTexture("awesome"), rm->GetShader("defaultHUD"), scene->GetCamera(), true);
 	sprite->localPosition = glm::vec2(125.0f, 125.0f);
 	scene->AddChild(sprite);
-	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), shaderFreetype, scene->GetCamera(), false);
+	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), rm->GetShader("defaultFreetype"), scene->GetCamera(), false);
 	text->localPosition = glm::vec2(960.0f, 540.0f);
 	scene->AddChild(text);
 
@@ -85,6 +80,9 @@ int main() {
 		// if escaped is pressed exit the program
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, true);
+		}
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+			scene->GetCamera()->PositionAdd(glm::vec2(0.0f, -0.1f));
 		}
 			
 		// check/call events and swap the buffers

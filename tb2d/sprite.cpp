@@ -1,9 +1,10 @@
 #include "sprite.h"
 
-Sprite::Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera) {
+Sprite::Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD) {
 	this->texture = texture;
 	this->shader = shader;
 	this->camera = camera;
+	this->HUD = HUD;
 
 	float vertices[] = {
 		// position				// uv's
@@ -43,7 +44,9 @@ void Sprite::Draw()
 {
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	shader->SetMatrix4("view", camera->GetViewMatrix());
+	if (!HUD) {
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+	}
 	glm::mat4 model;
 	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 0.0f));
 	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
