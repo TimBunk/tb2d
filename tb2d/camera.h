@@ -30,10 +30,13 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
 
-	float screenWidth;
-	float screenHeight;
+	float GetWidth();
+	float GetHeight();
 
 private:
+	float width;
+	float height;
+
 	glm::vec2 position;
 	float angle;
 	float scale;

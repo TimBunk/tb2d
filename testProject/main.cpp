@@ -21,6 +21,7 @@ Shader* shaderFreetype;
 Shader* shader;
 Scene* scene;
 Sprite* sprite;
+Input* input;
 
 Text* text;
 
@@ -34,13 +35,16 @@ int main() {
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	scene = new Scene(1920, 1080);
-	sprite = new Sprite(250, 250, rm->GetTexture("awesome"), rm->GetShader("defaultHUD"), scene->GetCamera(), true);
+	sprite = new Sprite(250, 250, rm->GetTexture("awesome"), rm->GetShader("defaultShader"), scene->GetCamera(), false);
 	sprite->localPosition = glm::vec2(125.0f, 125.0f);
 	scene->AddChild(sprite);
 	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), rm->GetShader("defaultFreetype"), scene->GetCamera(), false);
 	text->localPosition = glm::vec2(960.0f, 540.0f);
 	scene->AddChild(text);
 
+	scene->GetCamera()->SetPosition(glm::vec2(-960.0f, -540.0f));
+
+	input = window->GetInput();
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
 	while (!window->ShouldClose()) {
@@ -50,6 +54,8 @@ int main() {
 
 		// Draw the texture on the screen
 		scene->UpdateChilderen(NULL, 0.0f);
+		//std::cout << "xpos mouse world space = " << input->GetMousePositionWorldSpace(scene->GetCamera()).x << std::endl;
+		//std::cout << "ypos mouse world space = " << input->GetMousePositionWorldSpace(scene->GetCamera()).y << std::endl;
 
 		window->SwapBuffers();
 	}

@@ -6,7 +6,6 @@ void FramebufferSize(GLFWwindow* window, int width, int height);
 
 Window::Window(const char* screenName, bool fullScreen) {
 	// Initialize all variables with a value
-	this->screenName = screenName;
 	backgroundColor = glm::vec3(0.0f, 0.0f, 0.0f);
 	// initialize and configure glfw
 	glfwInit();
@@ -45,6 +44,7 @@ Window::Window(const char* screenName, bool fullScreen) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
+	input = new Input(window, mode->width, mode->height);
 	rm = new ResourceManager();
 	// Initalize variables for deltaTime
 	deltaTime = 0.0f;
@@ -56,12 +56,15 @@ Window::Window(const char* screenName, bool fullScreen) {
 
 Window::~Window() {
 	delete rm;
+	delete input;
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 
 void Window::Update() {
 	CalculateFrameRate();
+	glfwPollEvents();
+	input->Update();
 	// if escaped is pressed exit the program
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		CloseWindow();
@@ -78,7 +81,7 @@ void Window::Clear() {
 void Window::SwapBuffers() {
 	// check/call events and swap the buffers
 	glfwSwapBuffers(window);
-	glfwPollEvents();
+	
 }
 
 int Window::ShouldClose()
@@ -101,7 +104,13 @@ void FramebufferSize(GLFWwindow * window, int width, int height)
 
 void Window::Resize(int screenWidth, int screenHeight)
 {
+	input->SetScreenWidthAndHeight(screenWidth, screenHeight);
 	glfwSetWindowSize(window, screenWidth, screenHeight);
+}
+
+Input * Window::GetInput()
+{
+	return input;
 }
 
 ResourceManager* Window::GetResourceManager() {

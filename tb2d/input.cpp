@@ -1,19 +1,29 @@
 #include "input.h"
 
-Input::Input(SDL_DisplayMode dm) {
-	this->dm = dm;
-	mousePosition = glm::vec2(0.0f);
-	quit = false;
-	for (int i=0;i<285;i++) {
+Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
+	this->window = window;
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
+	mousePosition = glm::vec2(0.0f, 0.0f);
+	for (int i = 0; i<348; i++) {
 		keysPressed[i] = false;
 		keysDown[i] = false;
 		keysUp[i] = true;
-		if (i < 6) {
+		if (i < 8) {
 			mousePressed[i] = false;
 			mouseDown[i] = false;
 			mouseUp[i] = true;
 		}
 	}
+	
+	// A hacky kinda way to get events working for member functions
+	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
+	glfwSetWindowUserPointer(window, this);
+	auto func = [](GLFWwindow* window, double xpos, double ypos)
+	{
+		static_cast<Input*>(glfwGetWindowUserPointer(window))->MouseCallback(window, xpos, ypos);
+	};
+	glfwSetCursorPosCallback(window, func);
 }
 
 Input::~Input() {
@@ -21,110 +31,117 @@ Input::~Input() {
 }
 
 void Input::Update() {
-	// Go through a list of events from sdl2
-	while(SDL_PollEvent(&sdlEvent) != 0) {
-	// Check if the user wants to exit the window
-		if(sdlEvent.type == SDL_QUIT) {
-			quit = true;
-		}
-		// Checks for keysDown input
-		else if (sdlEvent.type == SDL_KEYDOWN) {
-			if (keysDown[sdlEvent.key.keysym.scancode] == false) {
-				keysPressed[sdlEvent.key.keysym.scancode] = true;
-			}
-			else {
-				keysPressed[sdlEvent.key.keysym.scancode] = false;
-			}
-			keysUp[sdlEvent.key.keysym.scancode] = false;
-			keysDown[sdlEvent.key.keysym.scancode] = true;
-		}
-		// Check for keysUp input
-		else if (sdlEvent.type == SDL_KEYUP) {
-			keysPressed[sdlEvent.key.keysym.scancode] = false;
-			keysUp[sdlEvent.key.keysym.scancode] = true;
-			keysDown[sdlEvent.key.keysym.scancode] = false;
-		}
-		// Get mousePosition in screenCoordinates
-		else if (sdlEvent.type == SDL_MOUSEMOTION) {
-			mousePosition.x = sdlEvent.button.x;
-			mousePosition.y = sdlEvent.button.y;
-		}
-		// Check for mouse keys that are up
-		else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
-			if (mouseDown[(int)sdlEvent.button.button] == false) {
-				mousePressed[(int)sdlEvent.button.button] = true;
-			}
-			else {
-				mousePressed[(int)sdlEvent.button.button] = false;
-			}
-			mouseUp[(int)sdlEvent.button.button] = false;
-			mouseDown[(int)sdlEvent.button.button] = true;
-		}
-		// Check for mouse keys that are down
-		else if (sdlEvent.type == SDL_MOUSEBUTTONUP) {
-			mousePressed[(int)sdlEvent.button.button] = false;
-			mouseUp[(int)sdlEvent.button.button] = true;
-			mouseDown[(int)sdlEvent.button.button] = false;
-		}
-	}
+
+}
+
+void Input::SetScreenWidthAndHeight(float screenWidth, float screenHeight)
+{
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
+}
+
+void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
+{
+	// Get the position according to the window's size
+	mousePosition.x = xpos;
+	mousePosition.y = ypos;
 }
 
 glm::vec2 Input::GetMousePositionScreenSpace(Camera* camera) {
 	glm::vec2 mousePositionScreenSpace;
-	mousePositionScreenSpace = glm::vec2(camera->screenWidth/dm.w*mousePosition.x, camera->screenHeight/dm.h*mousePosition.y);
+	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/screenWidth*mousePosition.x, ((camera->GetHeight()/screenHeight*mousePosition.y) - camera->GetHeight()) * -1);
 	return mousePositionScreenSpace;
 }
 
 glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
 	glm::vec2 mousePositionWorldSpace;
-	mousePositionWorldSpace = glm::vec2(camera->screenWidth/dm.w*mousePosition.x + -camera->GetPosition().x, camera->screenHeight/dm.h*mousePosition.y + -camera->GetPosition().y);
+	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / screenWidth*mousePosition.x + camera->GetPosition().x, ((camera->GetHeight() / screenHeight*mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y);
 	return mousePositionWorldSpace;
 }
 
-bool Input::MousePress(int key) {
-	if (mousePressed[key] == true) {
-		mousePressed[key] = false;
-		return true;
+bool Input::MousePress(int mouse) {
+	// Check if the mousepressed is already true and if so it first has to become false again by releasing the mouse
+	if (mousePressed[mouse]) {
+		SetMouseState(mouse);
+		if (mousePressed[mouse]) {
+			return false;
+		}
 	}
-	return false;
+	else {
+		SetMouseState(mouse);
+	}
+	return mousePressed[mouse];
 }
 
-bool Input::MouseDown(int key) {
-	if (mouseDown[key] == true) {
-		return true;
-	}
-	return false;
+bool Input::MouseDown(int mouse) {
+	SetMouseState(mouse);
+	return mouseDown[mouse];
 }
 
-bool Input::MouseUp(int key) {
-	if (mouseUp[key] == true) {
-		return true;
+bool Input::MouseUp(int mouse) {
+	SetMouseState(mouse);
+	return mouseUp[mouse];
+}
+
+void Input::SetMouseState(int mouse)
+{
+	// Check if the mouse is held down
+	if (glfwGetMouseButton(window, mouse) == GLFW_PRESS) {
+		// Set the mousedown to true because it is being held down and the mouseup to false
+		mouseDown[mouse] = true;
+		mouseUp[mouse] = false;
+		// Check if the mousepressed has not yet been pressed otherwise you have to release the mouse first
+		if (!mousePressed[mouse]) {
+			mousePressed[mouse] = true;
+		}
+		return;
 	}
-	return false;
+	// The mouse is not being held down so set mouseup to true and mousedown and pressed to false
+	mousePressed[mouse] = false;
+	mouseDown[mouse] = false;
+	mouseUp[mouse] = true;
 }
 
 bool Input::KeyPress(int key) {
-	if (keysPressed[key] == true) {
-		keysPressed[key] = false;
-		return true;
+	// Check if the keypressed is already true and if so it first has to become false again by releasing the key
+	if (keysPressed[key]) {
+		SetKeyState(key);
+		if (keysPressed[key]) {
+			return false;
+		}
 	}
-	return false;
+	else {
+		SetKeyState(key);
+	}
+	return keysPressed[key];
 }
 
 bool Input::KeyDown(int key) {
-	if (keysDown[key] == true) {
-		return true;
-	}
-	return false;
+	SetKeyState(key);
+	return keysDown[key];
 }
 
 bool Input::KeyUp(int key) {
-	if (keysUp[key] == true) {
-		return true;
-	}
-	return false;
+	SetKeyState(key);
+	return keysUp[key];
 }
 
-bool Input::Quit() {
-	return quit;
+void Input::SetKeyState(int key)
+{
+	// Check if the key is held down
+	if (glfwGetKey(window, key) == GLFW_PRESS) {
+		// Set the keysdown to true because it is being held down and the keysup to false
+		keysDown[key] = true;
+		keysUp[key] = false;
+		// Check if the keypressed has not yet been pressed otherwise you have to release the key first
+		if (!keysPressed[key]) {
+			keysPressed[key] = true;
+		}
+		return;
+	}
+	// The key is not being held down so set keyup to true and keydown and pressed to false
+	keysPressed[key] = false;
+	keysDown[key] = false;
+	keysUp[key] = true;
 }
+

@@ -1,13 +1,13 @@
 #include "camera.h"
 
-Camera::Camera(int screenWidth, int screenHeight)
+Camera::Camera(int width, int height)
 {
-	projection = glm::ortho(0.0f, ((float)screenWidth), 0.0f, ((float)screenHeight), -50.0f, 50.0f);
+	projection = glm::ortho(0.0f, ((float)width), 0.0f, ((float)height), -50.0f, 50.0f);
 	position = glm::vec2(0.0f, 0.0f);
 	angle = 0.0f;
 	scale = 1.0f;
-	this->screenWidth = screenWidth;
-	this->screenHeight = screenHeight;
+	this->width = width;
+	this->height = height;
 }
 
 Camera::~Camera()
@@ -62,4 +62,14 @@ glm::mat4 Camera::GetViewMatrix()
 glm::mat4 Camera::GetProjectionMatrix()
 {
 	return projection;
+}
+
+float Camera::GetWidth()
+{
+	return width;
+}
+
+float Camera::GetHeight()
+{
+	return height;
 }

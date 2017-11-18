@@ -4,41 +4,44 @@
 #include <iostream>
 #include <vector>
 
-#include "camera.h"
+#include <gl\glew.h>
+#include <glfw3.h>
 
-#include <glm-0.9.8.4/glm/glm.hpp>
-#include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
-#include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
+#include "camera.h"
 
 class Input {
 public:
-	Input();
+	Input(GLFWwindow* window, float screenWidth, float screenHeight);
 	virtual ~Input();
 	void Update();
 
+	void SetScreenWidthAndHeight(float screenWidth, float screenHeight);
+	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+
 	glm::vec2 GetMousePositionScreenSpace(Camera* camera);
 	glm::vec2 GetMousePositionWorldSpace(Camera* camera);
-	bool MousePress(int key);
-	bool MouseDown(int key);
-	bool MouseUp(int key);
+	bool MousePress(int mouse);
+	bool MouseDown(int mouse);
+	bool MouseUp(int mouse);
 
 	bool KeyPress(int key);
 	bool KeyDown(int key);
 	bool KeyUp(int key);
-
-	bool Quit();
 private:
-	SDL_Event sdlEvent;
-	SDL_DisplayMode dm;
+	void SetMouseState(int mouse);
+	void SetKeyState(int key);
+	GLFWwindow* window;
+	float screenWidth;
+	float screenHeight;
 
 	glm::vec2 mousePosition;
-	bool mousePressed[6];
-	bool mouseDown[6];
-	bool mouseUp[6];
+	bool mousePressed[8];
+	bool mouseDown[8];
+	bool mouseUp[8];
 
-	bool keysPressed[285];
-	bool keysDown[285];
-	bool keysUp[285];
+	bool keysPressed[348];
+	bool keysDown[348];
+	bool keysUp[348];
 	bool quit;
 };
 

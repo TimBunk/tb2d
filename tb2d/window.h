@@ -13,6 +13,7 @@
 
 #include "resourceManager.h"
 #include "text.h"
+#include "input.h"
 
 class Window {
 public:
@@ -26,6 +27,7 @@ public:
 	void CloseWindow();
 	void Resize(int screenWidth, int screenHeight);
 
+	Input* GetInput();
 	ResourceManager* GetResourceManager();
 	double GetDeltaTime();
 
@@ -35,7 +37,7 @@ private:
 	void CalculateFrameRate();
 
 	GLFWwindow* window;
-	const char* screenName;
+	Input* input;
 	ResourceManager* rm;
 	glm::vec3 backgroundColor;
 
