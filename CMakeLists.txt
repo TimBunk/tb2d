@@ -143,6 +143,8 @@ ENDIF()
 ####################################################################
 if (USE_TEST_PROJECT)
   add_executable(testProject
+    tb2d/button.h
+    tb2d/button.cpp
     tb2d/input.h
     tb2d/input.cpp
     tb2d/window.h

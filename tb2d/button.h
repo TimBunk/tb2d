@@ -7,27 +7,27 @@
 
 class Button : public Entity {
 public:
-	Button(int x, int y, int width, int height, bool HUD, std::string text, glm::vec4 color, Input* input, Camera* camera, ResourceManager* rm);
+	Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera, ResourceManager* rm);
 	virtual ~Button();
 
 	void Update(double deltaTime);
 	void Draw();
 
-	void SetColor(glm::vec4 color);
+	void SetColor(glm::vec3 color);
 
+	void CreateText(std::string text, int textSize, glm::vec3 color);
 	void SetText(std::string text);
-	void SetTextFontSize(int fontSize);
-	void SetTextColor(glm::vec4 color);
 
 	bool Hover();
 	bool Down();
 
 private:
 	int width, height;
+	ResourceManager* rm;
 	Input* input;
 	Camera* camera;
 	Text* text;
-	glm::vec4 color;
+	glm::vec3 color;
 	Shader* shader;
 	GLuint VBO, VAO, EBO;
 

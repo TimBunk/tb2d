@@ -28,7 +28,11 @@ public:
 	void SetText(std::string text);
 	void SetColor(glm::vec3 color);
 	void Draw();
+
+	float GetWidth();
+	float GetHeight();
 private:
+	float width, height;
 	Shader* shader;
 	Camera* camera;
 	std::map<GLchar, Character> characters;

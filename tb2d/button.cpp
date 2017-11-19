@@ -1,30 +1,27 @@
 #include "button.h"
 
-Button::Button(int x, int y, int width, int height, bool HUD, std::string text, glm::vec4 color, Input* input, Camera* camera, ResourceManager* rm) : Entity::Entity() {
-	this->localPosition = glm::vec3(x, y, 1.0f);
+Button::Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera, ResourceManager* rm) : Entity::Entity() {
 	this->width = width;
 	this->height = height;
 	this->HUD = HUD;
+	this->color = color;
 	this->input = input;
 	this->camera = camera;
+	this->rm = rm;
+	this->text = nullptr;
 	if (HUD) {
-		this->text = new Text("fonts/OpenSans-Regular.ttf", text, 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true, camera, rm->GetShader("textHud"));
 		shader = rm->GetShader("colorHUD");
 	}
 	else {
-		this->text = new Text("fonts/OpenSans-Regular.ttf", text, 60, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), false, camera, rm->GetShader("text"));
 		shader = rm->GetShader("color");
 	}
-	this->text->localPosition = glm::vec3(x - this->text->GetWidth()/4, y, 1.0f);
-	this->AddChild(this->text);
-	this->color = color;
 	hover = false;
 	down = false;
 	VAO = 0;
 	VBO = 0;
 	EBO = 0;
 
-
+	// Create the vertex array object
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -64,7 +61,9 @@ Button::Button(int x, int y, int width, int height, bool HUD, std::string text, 
 	delete indices;
 }
 Button::~Button() {
-	delete text;
+	if (text != nullptr) {
+		delete text;
+	}
 }
 
 void Button::Update(double deltaTime) {
@@ -94,13 +93,13 @@ void Button::Update(double deltaTime) {
 
 void Button::Draw() {
 	shader->Use();
-	shader->SetVec4Float("color", color);
+	shader->SetVec3Float("color", color);
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
 	glm::mat4 model;
-	model = glm::translate(model, this->GetGlobalPosition());
+	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 1.0f));
 	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.0f));
 	shader->SetMatrix4("model", model);
@@ -109,25 +108,39 @@ void Button::Draw() {
 	glBindVertexArray(0);
 }
 
-void Button::SetColor(glm::vec4 color) {
+void Button::SetColor(glm::vec3 color) {
 	this->color = color;
 }
 
-void Button::SetText(std::string text) {
-	this->text->localPosition = glm::vec3(this->text->localPosition.x + this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
-	this->text->SetText(text);
-	this->text->localPosition = glm::vec3(this->text->localPosition.x - this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
+void Button::CreateText(std::string text, int textSize, glm::vec3 color)
+{
+	// If a text has already been created remove the previous one
+	if (this->text != nullptr) {
+		RemoveChild(this->text);
+		delete this->text;
+	}
+	if (HUD) {
+		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, rm->GetShader("defaultFreetypeHUD"), camera, true);
+	}
+	else {
+		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, rm->GetShader("defaultFreetype"), camera, false);
+	}
+
+	// Drawing the text is needed in order to get the correct width and height
+
+ 	this->text->Draw();
+	this->text->localPosition = glm::vec2(-this->text->GetWidth() / 2, -this->text->GetHeight() / 2);
+	AddChild(this->text);
+
 }
 
-void Button::SetTextFontSize(int fontSize) {
-	this->text->localPosition = glm::vec3(this->text->localPosition.x + this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
-	text->SetFontSize(fontSize);
-	this->text->localPosition = glm::vec3(this->text->localPosition.x - this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
-}
-void Button::SetTextColor(glm::vec4 color) {
-	this->text->localPosition = glm::vec3(this->text->localPosition.x + this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
-	text->SetColor(color);
-	this->text->localPosition = glm::vec3(this->text->localPosition.x - this->text->GetWidth()/4, this->text->localPosition.y, 1.0f);
+void Button::SetText(std::string text) {
+	if (this->text != nullptr) {
+		this->text->SetText(text);
+		// Drawing the text is needed in order to get the correct width and height
+		this->text->Draw();
+		this->text->localPosition = glm::vec2(width / 2 - this->text->GetWidth() / 2, height / 2 - this->text->GetHeight() / 2);
+	}
 }
 
 bool Button::Hover() {

@@ -63,7 +63,6 @@ Window::~Window() {
 
 void Window::Update() {
 	CalculateFrameRate();
-	glfwPollEvents();
 	input->Update();
 	// if escaped is pressed exit the program
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -81,6 +80,7 @@ void Window::Clear() {
 void Window::SwapBuffers() {
 	// check/call events and swap the buffers
 	glfwSwapBuffers(window);
+	glfwPollEvents();
 	
 }
 

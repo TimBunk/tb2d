@@ -3,10 +3,20 @@
 Text::Text(std::string text, int size, const char* fontPath, glm::vec3 color, Shader* shader, Camera* camera, bool HUD) : Entity::Entity()
 {
 	this->text = text;
-	this->shader = shader;
+	// TODO There seems to be a bug that when there are two text's and they use the same shader the last one will be drawn incorrect
+	//this->shader = shader;
+	// Temporary fix for the shader is to create a new one instead of using the one that the resourceManager provides
+	if (HUD) {
+		this->shader = new Shader("shaders\\defaultFreetypeHUD.vs", "shaders\\defaultFreetype.fs");
+	}
+	else {
+		this->shader = new Shader("shaders\\defaultFreetype.vs", "shaders\\defaultFreetype.fs");
+	}
 	this->camera = camera;
 	this->color = color;
 	this->HUD = HUD;
+	width = 0.0f;
+	height = 0.0f;
 	// Initialize freetyp2
 	// FreeType
 	FT_Library ft;
@@ -47,6 +57,7 @@ Text::Text(std::string text, int size, const char* fontPath, glm::vec3 color, Sh
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		// Now store character for later use
 		Character character = {
 			texture,
@@ -69,10 +80,7 @@ Text::Text(std::string text, int size, const char* fontPath, glm::vec3 color, Sh
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -90,6 +98,7 @@ Text::~Text()
 	}
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	delete shader;
 }
 
 void Text::SetText(std::string text)
@@ -106,6 +115,8 @@ void Text::Draw()
 {
 	GLfloat x = this->GetGlobalPosition().x;
 	GLfloat y = this->GetGlobalPosition().y;
+	width = 0.0f;
+	height = 0.0f;
 	// Use that Shader and set it's uniforms	
 	shader->Use();
 	shader->SetVec3Float("textColor", color);
@@ -113,7 +124,6 @@ void Text::Draw()
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
-	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 
 	// Iterate through all characters
@@ -125,14 +135,15 @@ void Text::Draw()
 		GLfloat xpos = x + ch.Bearing.x * GetGlobalScale().x;
 		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * GetGlobalScale().y;
 
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(xpos, ypos, 0.0f));
-		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
-		shader->SetMatrix4("model", model);
-
 		GLfloat w = ch.Size.x * GetGlobalScale().x;
 		GLfloat h = ch.Size.y * GetGlobalScale().y;
+
+		// Get the height and width of the text
+		width += w;
+		if (h > height) {
+			height = h;
+		}
+
 		// Update VBO for each character
 		GLfloat vertices[6][4] = {
 			// Vertex positions		// uv positions
@@ -144,14 +155,21 @@ void Text::Draw()
 			{ w,		0.0f,       1.0f, 1.0f },
 			{ w,		h,			1.0f, 0.0f }
 		};
+		// Use that Shader and set it's uniforms	
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(xpos, ypos, 0.0f));
+		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
+		shader->SetMatrix4("model", model);
 		// Render glyph texture over quad
 		glActiveTexture(GL_TEXTURE0 + ch.TextureID);
 		shader->SetInt("text", ch.TextureID);
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		//glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /4 * 3, sizeof(vertices) / 4 * 2, vertices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /4 * 3, sizeof(vertices) / 4 * 2, vertices);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// Render quad
@@ -161,4 +179,14 @@ void Text::Draw()
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+}
+
+float Text::GetWidth()
+{
+	return width;
+}
+
+float Text::GetHeight()
+{
+	return height;
 }

@@ -10,6 +10,7 @@
 #include "window.h"
 #include "sprite.h"
 #include "scene.h"
+#include "button.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -22,6 +23,7 @@ Shader* shader;
 Scene* scene;
 Sprite* sprite;
 Input* input;
+Button* button;
 
 Text* text;
 
@@ -36,15 +38,18 @@ int main() {
 
 	scene = new Scene(1920, 1080);
 	sprite = new Sprite(250, 250, rm->GetTexture("awesome"), rm->GetShader("defaultShader"), scene->GetCamera(), false);
-	sprite->localPosition = glm::vec2(125.0f, 125.0f);
+	sprite->localPosition = glm::vec2(125.0f, 540.0f);
 	scene->AddChild(sprite);
 	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), rm->GetShader("defaultFreetype"), scene->GetCamera(), false);
-	text->localPosition = glm::vec2(960.0f, 540.0f);
+	text->localPosition = glm::vec2(0.0f, 540.0f);
 	scene->AddChild(text);
 
-	scene->GetCamera()->SetPosition(glm::vec2(-960.0f, -540.0f));
+	//scene->GetCamera()->SetPosition(glm::vec2(-960.0f, -540.0f));
 
 	input = window->GetInput();
+	button = new Button(500, 100, true, glm::vec3(1.0f, 0.0f, 0.0f), input, scene->GetCamera(), rm);
+	button->localPosition = glm::vec2(960, 540);
+	scene->AddChild(button);
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
 	while (!window->ShouldClose()) {
@@ -54,11 +59,24 @@ int main() {
 
 		// Draw the texture on the screen
 		scene->UpdateChilderen(NULL, 0.0f);
-		//std::cout << "xpos mouse world space = " << input->GetMousePositionWorldSpace(scene->GetCamera()).x << std::endl;
-		//std::cout << "ypos mouse world space = " << input->GetMousePositionWorldSpace(scene->GetCamera()).y << std::endl;
+
+		if (button->Hover()) {
+			button->SetColor(glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		else {
+			button->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+
+		if (input->KeyPress(GLFW_KEY_SPACE)) {
+			//text->localPosition = glm::vec2(text->GetGlobalPosition().x, text->GetGlobalPosition().y - (text->GetHeight() / 2));
+			//text->localScale = glm::vec2(0.8f, 0.8f);
+			scene->GetCamera()->PositionAdd(glm::vec2(50.0f, 0.0f));
+			button->CreateText("Start", 48, glm::vec3(0.0f, 0.0f, 1.0f));
+		}
 
 		window->SwapBuffers();
 	}
+	delete button;
 	delete text;
 	delete scene;
 	delete sprite;

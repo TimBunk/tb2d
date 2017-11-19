@@ -6,9 +6,13 @@ ResourceManager::ResourceManager() {
 	// The default HUD shader
 	CreateShader("defaultHUD", "shaders\\defaultHUD.vs", "shaders\\defaultShader.fs");
 	// The default freetype shader
-	CreateShader("defaultFreetype", "shaders\\defaultShader.vs", "shaders\\defaultFreetype.fs");
+	CreateShader("defaultFreetype", "shaders\\defaultFreetype.vs", "shaders\\defaultFreetype.fs");
 	// The default freetypeHUD shader
-	CreateShader("defaultFreetypeHUD", "shaders\\defaultHUD.vs", "shaders\\defaultFreetype.fs");
+	CreateShader("defaultFreetypeHUD", "shaders\\defaultFreetypeHUD.vs", "shaders\\defaultFreetype.fs");
+	// The color shader
+	CreateShader("color", "shaders\\color.vs", "shaders\\color.fs");
+	// The colorHUD shader
+	CreateShader("colorHUD", "shaders\\colorHUD.vs", "shaders\\colorHUD.fs");
 }
 
 ResourceManager::~ResourceManager() {

@@ -16,18 +16,21 @@ Camera::~Camera()
 
 void Camera::SetPosition(glm::vec2 position)
 {
+	position *= -1;
 	this->position = position;
-	this->position *= -1;
 }
 
 void Camera::PositionAdd(glm::vec2 position)
 {
+	position *= -1;
 	this->position += position;
 }
 
 glm::vec2 Camera::GetPosition()
 {
-	return position;
+	glm::vec2 positionCopy = position;
+	positionCopy *= -1;
+	return positionCopy;
 }
 
 void Camera::SetAngle(float angle)
