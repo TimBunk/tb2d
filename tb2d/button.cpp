@@ -78,7 +78,7 @@ void Button::Update(double deltaTime) {
 	}
 	if (mouseX >= (this->localPosition.x - (this->width/2)) && mouseX <= (this->localPosition.x + (this->width/2)) && mouseY >= (this->localPosition.y - (this->height/2)) && mouseY <= (this->localPosition.y + (this->height/2))) {
 		hover = true;
-		if (input->MousePress(1)) {
+		if (input->MousePress(0)) {
 			down = true;
 		}
 		else {

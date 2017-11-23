@@ -1,4 +1,4 @@
-#include "hud.h"
+/*#include "hud.h"
 
 Hud::Hud(int x, int y, int w, int h, Camera* camera, Shader* shader, Texture texture) : Entity::Entity() {
 	this->localPosition.x = x;
@@ -79,3 +79,4 @@ void Hud::Draw() {
 void Hud::SetTexture(Texture texture) {
 	this->texture = texture;
 }
+*/

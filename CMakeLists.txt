@@ -4,7 +4,8 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
-OPTION(USE_TEST_PROJECT "Use project for testing purposes" ON)
+OPTION(USE_TEST_PROJECT "Use project for testing purposes" OFF)
+OPTION(USE_STAFF_OF_THE_CHAOS_TEMPLE "Use Staff of the Chaos Temple" ON)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -137,6 +138,62 @@ IF(USE_BOX2D)
 	)
 ENDIF()
 
+
+####################################################################
+# Staff of the Chaos Temple                                       #
+####################################################################
+
+if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
+  add_executable(staff
+    ${TB2DSOURCE}
+    StaffOfTheChaosTemple/player.h
+    StaffOfTheChaosTemple/player.cpp
+    StaffOfTheChaosTemple/staff.h
+    StaffOfTheChaosTemple/staff.cpp
+    StaffOfTheChaosTemple/laser.h
+    StaffOfTheChaosTemple/laser.cpp
+    StaffOfTheChaosTemple/mirror.h
+    StaffOfTheChaosTemple/mirror.cpp
+    StaffOfTheChaosTemple/b2entity.h
+    StaffOfTheChaosTemple/b2entity.cpp
+    StaffOfTheChaosTemple/contactListener.h
+    StaffOfTheChaosTemple/contactListener.cpp
+    StaffOfTheChaosTemple/raycastCallBack.h
+    StaffOfTheChaosTemple/raycastCallBack.cpp
+    StaffOfTheChaosTemple/main.cpp
+  )
+
+  target_link_libraries(staff
+    ${BOX2D_LIB}
+    ${ALL_GRAPHICS_LIBS}
+    freetype
+    SOIL2
+  )
+  ADD_DEPENDENCIES(staff
+    SOIL2
+  )
+  # Copy shaders and textures to the build directory
+  file(
+    COPY tb2d/shaders
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY tb2d/textures
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY tb2d/fonts
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY StaffOfTheChaosTemple/shaders
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY StaffOfTheChaosTemple/textures
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+endif()
 
 ####################################################################
 # TestProject                                                 #

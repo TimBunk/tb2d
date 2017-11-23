@@ -14,7 +14,11 @@ public:
 	void SetTexture(Texture* texture);
 	void SetShader(Shader* shader);
 
+	int GetWidth();
+	int GetHeight();
+
 private:
+	int width, height;
 	GLuint VAO;
 	GLuint VBO;
 	Texture* texture;

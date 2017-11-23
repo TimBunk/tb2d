@@ -1,6 +1,8 @@
 #include "sprite.h"
 
-Sprite::Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD) {
+Sprite::Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD) : Entity::Entity() {
+	this->width = width;
+	this->height = height;
 	this->texture = texture;
 	this->shader = shader;
 	this->camera = camera;
@@ -69,4 +71,14 @@ void Sprite::SetTexture(Texture * texture)
 void Sprite::SetShader(Shader * shader)
 {
 	this->shader = shader;
+}
+
+int Sprite::GetWidth()
+{
+	return width;
+}
+
+int Sprite::GetHeight()
+{
+	return height;
 }
