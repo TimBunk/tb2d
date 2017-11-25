@@ -76,5 +76,7 @@ float32 RaycastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, 
 
 RaycastOutput RaycastCallBack::GetOutput() {
 	// Return the RaycastOutput
-	return ro;
+	RaycastOutput ro2 = ro;
+	ro.fixture = nullptr;
+	return ro2;
 }

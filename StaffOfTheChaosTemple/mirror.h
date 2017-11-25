@@ -12,7 +12,7 @@ public:
 	void Update(double deltaTime);
 
 private:
-
+	Laser* laser;
 };
 
 #endif // !MIRROR_H

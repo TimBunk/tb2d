@@ -1,5 +1,5 @@
 #include "laser.h"
-#include "player.h"
+#include "mirror.h"
 
 Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shader* shader, Camera* camera, bool HUD) : Sprite::Sprite(texture, shader, camera, HUD)
 {
@@ -47,9 +47,14 @@ void Laser::Draw()
 	RaycastOutput ro = raycast->GetOutput();
 
 	if (ro.fixture != nullptr && static_cast<B2Entity*>(ro.fixture->GetUserData()) != NULL) {
+		B2Entity* mirrortest = static_cast<B2Entity*>(ro.fixture->GetUserData());
+		if (dynamic_cast<Mirror*>(mirrortest) == NULL) {
+			return;
+		}
 		// intersectionPoint is a vector that points towards the hitted point and is also the length between the ray starting point and the hitted point
 		b2Vec2 intersectionPoint = globalPos - destination;
 		intersectionPoint *= ro.fraction;
+
 		// Calculation reflection = d-(2*dot(d-n)*n)
 		b2Vec2 reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
 		// Draw the reflection
@@ -59,6 +64,9 @@ void Laser::Draw()
 		// Draw the normal
 		raycast->ChangeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
+	}
+	else {
+		return;
 	}
 
 	// Scale the laser by the distance of hit

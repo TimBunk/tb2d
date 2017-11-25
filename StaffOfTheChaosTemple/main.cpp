@@ -14,6 +14,7 @@
 #include "b2entity.h"
 #include "player.h"
 #include "level1.h"
+#include "mirror.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -31,6 +32,7 @@ Player* player;
 B2Entity* wall;
 B2Entity* wall2;
 B2Entity* wall3;
+Mirror* mirror;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -72,6 +74,11 @@ int main() {
 	wall3->CreateBody(1920, 540, 100, 1080, false, false);
 	wall3->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall3);
+
+	mirror = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror->CreateBody(960.0f, 0.0f, 800.0f, 150.0f, true, false);
+	mirror->GiveTexture(rm->GetTexture("laser"));
+	level1->AddChild(mirror);
 
 	level1->AddChild(player);
 
