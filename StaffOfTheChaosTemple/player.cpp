@@ -5,6 +5,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera * camera, Shader * shad
 	this->input = input;
 	this->rm = rm;
 	staff = new Staff(world, rm, 50, 150, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
+	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);
 }
 
@@ -28,21 +29,22 @@ void Player::Update(double deltaTime)
 	if (input->KeyDown(GLFW_KEY_D)) {
 		velocity.x += 1.0f;
 	}
+	body->SetAwake(true);
 	velocity.Normalize();
 	velocity *= 10.0f;
 	body->SetLinearVelocity(velocity);
 	localPosition = this->GetPositionInPixels();
 	// Rotate the player towards the mouse 
-	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - localPosition;
+	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - GetGlobalPosition();
 	glm::normalize(direction);
 	this->localAngle = std::atan2(direction.y, direction.x);
 
-	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
+	staff->localAngle = (90.0f * M_PI / 180.0f);
 
-	staff->localPosition.x = glm::cos(staff->localAngle + localAngle);
+	/*staff->localPosition.x = glm::cos(staff->localAngle + localAngle);
 	staff->localPosition.y = glm::sin(staff->localAngle + localAngle);
 	staff->localPosition = glm::normalize(staff->localPosition);
-	staff->localPosition *= 200.0f;
+	staff->localPosition *= 200.0f;*/
 }
 
 void Player::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor)
@@ -113,11 +115,8 @@ void Player::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	// set the vertices
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
 
@@ -127,4 +126,9 @@ void Player::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor)
 
 	this->localPosition = glm::vec2(x, y);
 	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
+}
+
+void Player::SetCamera(Camera * camera)
+{
+	this->camera = camera;
 }

@@ -1,45 +1,19 @@
 #include "sprite.h"
 
-Sprite::Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD) : Entity::Entity() {
-	this->width = width;
-	this->height = height;
+Sprite::Sprite(Texture* texture, Shader* shader, Camera* camera, bool HUD) : Entity::Entity() {
 	this->texture = texture;
 	this->shader = shader;
 	this->camera = camera;
 	this->HUD = HUD;
-
-	float vertices[] = {
-		// position				// uv's
-		-width / 2, height / 2, 0.0f, 0.0f,  // uper left corner
-		-width / 2, -height / 2, 0.0f, 1.0f,  // lower-left corner
-		width / 2, -height / 2, 1.0f, 1.0f,  // lower-right corner
-		
-		width / 2, -height / 2, 1.0f, 1.0f,  // lower-right corner
-		width / 2, height / 2, 1.0f, 0.0f,  // upper-right corner
-		-width / 2, height / 2, 0.0f, 0.0f,  // uper left corner
-	};
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	glBindVertexArray(0);
+	VAO = 0;
+	VBO = 0;
 }
 
 Sprite::~Sprite() {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+	}
 }
 
 void Sprite::Draw()
@@ -81,4 +55,37 @@ int Sprite::GetWidth()
 int Sprite::GetHeight()
 {
 	return height;
+}
+
+void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
+{
+	float vertices[] = {
+		// position										// uv's
+		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 0.0f,  // uper left corner
+		-width / 2 + pivot.x, -height / 2 + pivot.y,	0.0f, 1.0f,  // lower-left corner
+		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 1.0f,  // lower-right corner
+
+		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 1.0f,  // lower-right corner
+		width / 2 + pivot.x, height / 2 + pivot.y,		1.0f, 0.0f,  // upper-right corner
+		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 0.0f,  // uper left corner
+	};
+
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+	}
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// set the vertices
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
 }

@@ -148,18 +148,32 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     ${TB2DSOURCE}
     StaffOfTheChaosTemple/player.h
     StaffOfTheChaosTemple/player.cpp
+    StaffOfTheChaosTemple/enemy.h
+    StaffOfTheChaosTemple/enemy.cpp
+    StaffOfTheChaosTemple/person.h
+    StaffOfTheChaosTemple/person.cpp
     StaffOfTheChaosTemple/staff.h
     StaffOfTheChaosTemple/staff.cpp
     StaffOfTheChaosTemple/laser.h
     StaffOfTheChaosTemple/laser.cpp
+    StaffOfTheChaosTemple/rotator.h
+    StaffOfTheChaosTemple/rotator.cpp
     StaffOfTheChaosTemple/mirror.h
     StaffOfTheChaosTemple/mirror.cpp
+    StaffOfTheChaosTemple/crystal.h
+    StaffOfTheChaosTemple/crystal.cpp
+    StaffOfTheChaosTemple/door.h
+    StaffOfTheChaosTemple/door.cpp
+    StaffOfTheChaosTemple/linkable.h
+    StaffOfTheChaosTemple/linkable.cpp
     StaffOfTheChaosTemple/b2entity.h
     StaffOfTheChaosTemple/b2entity.cpp
     StaffOfTheChaosTemple/contactListener.h
     StaffOfTheChaosTemple/contactListener.cpp
     StaffOfTheChaosTemple/raycastCallBack.h
     StaffOfTheChaosTemple/raycastCallBack.cpp
+    StaffOfTheChaosTemple/level1.h
+    StaffOfTheChaosTemple/level1.cpp
     StaffOfTheChaosTemple/main.cpp
   )
 

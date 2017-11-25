@@ -7,24 +7,28 @@
 
 class Sprite : public Entity {
 public:
-	Sprite(int width, int height, Texture* texture, Shader* shader, Camera* camera, bool HUD);
+	Sprite(Texture* texture, Shader* shader, Camera* camera, bool HUD);
 	virtual ~Sprite();
 
-	void Draw();
+	virtual void Draw();
 	void SetTexture(Texture* texture);
 	void SetShader(Shader* shader);
 
 	int GetWidth();
 	int GetHeight();
 
-private:
+	void CreateBody(int height, int width, glm::vec2 pivot);
+protected:
+	Shader* shader;
+	Camera* camera;
 	int width, height;
 	GLuint VAO;
 	GLuint VBO;
 	Texture* texture;
-	Shader* shader;
-	Camera* camera;
 	bool HUD;
+
+private:
+
 };
 
 #endif // !SPRITE_H

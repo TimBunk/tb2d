@@ -1,19 +1,24 @@
 #ifndef LASER_H
 #define LASER_H
 
-#include "b2entity.h"
+#include "sprite.h"
 #include "raycastCallBack.h"
 
-class Laser : public B2Entity
+class Laser : public Sprite
 {
 public:
-	Laser(Shader* debug, Camera* camera, Shader* shader, b2World* world);
+	Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shader* shader, Camera* camera, bool HUD);
 	~Laser();
 
-	void Update(glm::vec2 direction);
+	void Update(double deltaTime);
+	void Draw();
+
+	void SetDirection(glm::vec2 direction);
 
 private:
 	RaycastCallBack* raycast;
+	glm::vec2 direction;
+	b2World* world;
 };
 
 #endif // !LASER_H

@@ -1,15 +1,16 @@
 #include "staff.h"
 
-Staff::Staff(b2World* world, ResourceManager* rm, int width, int height, Texture* texture, Shader* shader, Camera* camera) : Sprite::Sprite(width, height, texture, shader, camera, false)
+Staff::Staff(b2World* world, ResourceManager* rm, int width, int height, Texture* texture, Shader* shader, Camera* camera) : Sprite::Sprite(texture, shader, camera, false)
 {
 	this->rm = rm;
-	laser = new Laser(rm->GetShader("debug"), camera, shader, world);
+	laser = new Laser(world, rm->GetShader("debug"), 500.0f, rm->GetTexture("awesome"), shader, camera, false);
 	this->AddChild(laser);
+	this->CreateBody(height, width, glm::vec2(0.0f, 0.0f));
 }
 
 Staff::~Staff()
 {
-	//delete laser;
+	delete laser;
 }
 
 void Staff::Update(double deltaTime)
@@ -22,6 +23,7 @@ void Staff::Update(double deltaTime)
 	tmpDirection *= 500.0f;
 	tmpDirection = tmpDirection * -1.0f;
 	//std::cout << "direction.x = " << tmpDirection.x << " direction.y = " << tmpDirection.y << std::endl;
-	laser->Update(tmpDirection);
+	laser->SetDirection(tmpDirection);
+	//laser->Update(tmpDirection);
 }
 
