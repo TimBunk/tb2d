@@ -4,7 +4,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera * camera, Shader * shad
 {
 	this->input = input;
 	this->rm = rm;
-	staff = new Staff(world, rm, 50, 150, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
+	staff = new Staff(1000.0f, world, rm, 50, 150, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);
 }
@@ -16,6 +16,10 @@ Player::~Player()
 
 void Player::Update(double deltaTime)
 {
+	if (input->MouseDown(GLFW_MOUSE_BUTTON_1)) {
+		staff->Shoot();
+	}
+
 	b2Vec2 velocity = b2Vec2(0.0f, 0.0f);
 	if (input->KeyDown(GLFW_KEY_W)) {
 		velocity.y += 1.0f;

@@ -33,6 +33,8 @@ B2Entity* wall;
 B2Entity* wall2;
 B2Entity* wall3;
 Mirror* mirror;
+Mirror* mirror2;
+Mirror* mirror3;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -80,6 +82,16 @@ int main() {
 	mirror->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror);
 
+	mirror2 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror2->CreateBody(1360.0f, 500.0f, 150.0f, 1000.0f, true, false);
+	mirror2->GiveTexture(rm->GetTexture("laser"));
+	level1->AddChild(mirror2);
+
+	mirror3 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror3->CreateBody(560.0f, 500.0f, 150.0f, 1000.0f, true, false);
+	mirror3->GiveTexture(rm->GetTexture("laser"));
+	level1->AddChild(mirror3);
+
 	level1->AddChild(player);
 
 	while (!window->ShouldClose()) {
@@ -92,6 +104,9 @@ int main() {
 		world->Step(window->GetDeltaTime(), 8, 3);
 		window->SwapBuffers();
 	}
+	delete mirror;
+	delete mirror2;
+	delete mirror3;
 	delete wall;
 	delete wall2;
 	delete wall3;

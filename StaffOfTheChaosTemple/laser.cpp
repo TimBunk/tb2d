@@ -4,8 +4,9 @@
 Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shader* shader, Camera* camera, bool HUD) : Sprite::Sprite(texture, shader, camera, HUD)
 {
 	this->world = world;
+	reflection = b2Vec2(0.0f, 0.0f);
 	raycast = new RaycastCallBack();
-	raycast->CreateLine(500.0f, 50.0f, camera, debug, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	raycast->CreateLine(2500.0f, 50.0f, camera, debug, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	direction = glm::vec2(0.0f, 0.0f);
 	width = 25.0f;
 	height = radius;
@@ -38,25 +39,23 @@ void Laser::Draw()
 {
 	// Draw the ray's direction and length
 	raycast->ChangeColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	raycast->Draw(this->GetGlobalPosition(), glm::atan(-direction.y, -direction.x));
+	raycast->Draw(localPosition, glm::atan(-direction.y, -direction.x));
 
 	// Shoot raycast
-	b2Vec2 globalPos = b2Vec2(this->GetGlobalPosition().x * B2Entity::p2m, this->GetGlobalPosition().y * B2Entity::p2m);
+	b2Vec2 globalPos = b2Vec2(localPosition.x * B2Entity::p2m, localPosition.y * B2Entity::p2m);
 	b2Vec2 destination = globalPos + b2Vec2(direction.x * B2Entity::p2m, direction.y * B2Entity::p2m);
 	world->RayCast(raycast, globalPos, destination);
 	RaycastOutput ro = raycast->GetOutput();
 
-	if (ro.fixture != nullptr && static_cast<B2Entity*>(ro.fixture->GetUserData()) != NULL) {
-		B2Entity* mirrortest = static_cast<B2Entity*>(ro.fixture->GetUserData());
-		if (dynamic_cast<Mirror*>(mirrortest) == NULL) {
-			return;
-		}
-		// intersectionPoint is a vector that points towards the hitted point and is also the length between the ray starting point and the hitted point
+	if (ro.fixture != nullptr && dynamic_cast<Mirror*>(static_cast<B2Entity*>(ro.fixture->GetUserData())) != NULL) {
+		hit = true;
+		hitPosition = ro.point;
+		// intersectionPoint is a vector from the ray's starting point and the hitted point
 		b2Vec2 intersectionPoint = globalPos - destination;
 		intersectionPoint *= ro.fraction;
 
 		// Calculation reflection = d-(2*dot(d-n)*n)
-		b2Vec2 reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
+		reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
 		// Draw the reflection
 		raycast->ChangeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		raycast->Draw(glm::vec2(ro.point.x * B2Entity::m2p, ro.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
@@ -64,13 +63,16 @@ void Laser::Draw()
 		// Draw the normal
 		raycast->ChangeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
+
+		// Scale the laser by the distance of hit
+		localScale.y = ro.fraction;
 	}
 	else {
-		return;
+		hit = false;
+		hitPosition = b2Vec2(0.0f, 0.0f);
+		reflection = b2Vec2(0.0f, 0.0f);
+		localScale.y = 1.0f;
 	}
-
-	// Scale the laser by the distance of hit
-	localScale.y = ro.fraction;
 
 	// Update VBO
 	GLfloat vertices[6][4] = {
@@ -93,9 +95,9 @@ void Laser::Draw()
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 0.0f));
-	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 1.0f));
+	model = glm::translate(model, glm::vec3(localPosition.x, localPosition.y, 0.0f));
+	model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(localScale.x, localScale.y, 1.0f));
 	shader->SetMatrix4("model", model);
 	glActiveTexture(GL_TEXTURE0 + texture->GetId());
 	shader->SetInt("ourTexture", texture->GetId());
@@ -108,4 +110,21 @@ void Laser::Draw()
 void Laser::SetDirection(glm::vec2 direction)
 {
 	this->direction = direction;
+}
+
+bool Laser::Hit()
+{
+	return hit;
+}
+
+glm::vec2 Laser::GetHitPosition()
+{
+	glm::vec2 hp = glm::vec2(hitPosition.x * B2Entity::m2p, hitPosition.y * B2Entity::m2p);
+	return hp;
+}
+
+glm::vec2 Laser::GetReflection()
+{
+	glm::vec2 reflect = glm::vec2(reflection.x * B2Entity::m2p, reflection.y * B2Entity::m2p);
+	return reflect;
 }
