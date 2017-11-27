@@ -18,7 +18,6 @@ public:
 
 	void Update(double deltaTime);
 	void Shoot();
-	bool IsShooting();
 
 private:
 	float laserRange;

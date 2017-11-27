@@ -54,20 +54,22 @@ public:
 	/// @param dynamic If true the body will be dynamic that means that it will be affected by physics if false it will be static and not affected by physics
 	/// @param sensor If true the body can overlap with the other body's but still detects collision
 	/// @return void
-	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor);
+	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, bool fixedRotation);
 
 	/// @brief Give the B2Entity a texture that will be used while drawing
 	/// @param texture Specify the texture that you want to use for drawing
 	/// @return void
 	virtual void GiveTexture(Texture* texture);
 
+	glm::vec2 ApplyVelocityB2body(glm::vec2 velocity);
+
 	/// @brief Get the position from the box2d body but in pixels instead of meters
 	///	@return glm::vec2
-	glm::vec2 GetPositionInPixels();
+	glm::vec2 GetPositionInPixelsB2body();
 
 	/// @brief Get the angle from the b2Body. !Note that the angle is in radians
 	/// @return float
-	float GetAngle();
+	float GetAngleB2body();
 
 	/// @brief A contact will be added whenever this b2Entity fixture collided with an other fixture
 	/// @brief The ContactListener class takes care of adding the contacts to this class. You can access the contacts by the a vector named contacts that is protected for this class
@@ -82,10 +84,6 @@ public:
 	/// @param active If true the body will be active othterwise it will be deactive
 	/// @return void
 	virtual void SetActive(bool active);
-
-	/// @brief Reset function does at the moment nothing but this function can be overriden because it is virtual
-	/// @return void
-	virtual void Reset();
 
 	static float m2p;
 	static float p2m;

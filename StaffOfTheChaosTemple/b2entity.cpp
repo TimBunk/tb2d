@@ -39,27 +39,16 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 		this->position = this->localPosition + parent->GetGlobalPosition();
 		this->angle = this->localAngle + parent->GetGlobalAngle();
 		this->scale = this->localScale * parent->GetGlobalScale();
-		// If the parent is a B2Entity as well makes sure to transform the position and angle as well by the body of the B2Entity
-		if (this->body != nullptr) {
-			// Check whether the parent is a b2entity as well and if it's body is already initialized
-			if (dynamic_cast<B2Entity*>(parent) != NULL && dynamic_cast<B2Entity*>(parent)->body != nullptr) {
-				body->SetTransform(b2Vec2(this->GetGlobalPosition().x * p2m, this->GetGlobalPosition().y * p2m), this->angle + dynamic_cast<B2Entity*>(parent)->GetGlobalAngle());
-			}
-			else {
-				body->SetTransform(b2Vec2(this->GetGlobalPosition().x * p2m, this->GetGlobalPosition().y * p2m), this->angle);
-			}
-		}
 	}
 	else {
 		// If the parent is null set the global position/angle/scale equal to the localPosition of this B2Entity
 		this->position = this->localPosition;
 		this->angle = this->localAngle;
 		this->scale = this->localScale;
-		// Check if the body of this B2Entity is initialized if so get the angle from the b2Body
-		if (this->body != nullptr) {
-			this->angle = body->GetAngle();
-			body->SetTransform(b2Vec2(this->GetGlobalPosition().x * p2m, this->GetGlobalPosition().y * p2m), this->angle);
-		}
+	}
+	// If the body is intialized update the position and angle of the body
+	if (this->body != nullptr) {
+		body->SetTransform(b2Vec2(this->position.x * p2m, this->position.y * p2m), this->angle);
 	}
 	// Update and draw all of the childeren and their childeren
 	for (int i = 0; i < entities.size(); i++) {
@@ -92,14 +81,27 @@ void B2Entity::Draw() {
 	}
 }
 
-void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor) {
+void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, bool fixedRotation) {
+	// If the body was created make sure to delete everything as well
+	if (body != nullptr) {
+		body->DestroyFixture(fixture);
+		world->DestroyBody(body);
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
 	// Save the w and h for later use
 	width = w;
 	height = h;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(0.0f, 0.0f);
-	bodydef.fixedRotation = true;
+	if (fixedRotation) {
+		bodydef.fixedRotation = true;
+	}
+	else {
+		bodydef.fixedRotation = false;
+	}
 	if (dynamic) {
 		bodydef.type = b2_dynamicBody;
 	}
@@ -176,7 +178,17 @@ void B2Entity::GiveTexture(Texture* texture) {
 	this->texture = texture;
 }
 
-glm::vec2 B2Entity::GetPositionInPixels()
+glm::vec2 B2Entity::ApplyVelocityB2body(glm::vec2 velocity)
+{
+	// Set the velocity to a b2Vec2 and apply it
+	b2Vec2 vel = b2Vec2(velocity.x, velocity.y);
+	body->SetLinearVelocity(vel);
+	// Receive the new position and return it in world space
+	glm::vec2 pos = glm::vec2(body->GetPosition().x * m2p, body->GetPosition().y * m2p);
+	return pos;
+}
+
+glm::vec2 B2Entity::GetPositionInPixelsB2body()
 {
 	// Get the position directly from the box2d body and it will automatically be converted to pixels for you
 	glm::vec2 pos;
@@ -184,7 +196,7 @@ glm::vec2 B2Entity::GetPositionInPixels()
 	return pos;
 }
 
-float B2Entity::GetAngle()
+float B2Entity::GetAngleB2body()
 {
 	// Get the angle in radians from the body
 	float angle;
@@ -215,8 +227,4 @@ void B2Entity::SetActive(bool active) {
 	if (body != NULL) {
 		body->SetActive(active);
 	}
-}
-
-void B2Entity::Reset() {
-	// This is empty it's up to the user's to deceide what it does
 }

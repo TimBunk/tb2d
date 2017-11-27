@@ -32,11 +32,6 @@ Laser::~Laser()
 
 void Laser::Update(double deltaTime)
 {
-	
-}
-
-void Laser::Draw()
-{
 	// Draw the ray's direction and length
 	raycast->ChangeColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	raycast->Draw(localPosition, glm::atan(-direction.y, -direction.x));
@@ -47,23 +42,27 @@ void Laser::Draw()
 	world->RayCast(raycast, globalPos, destination);
 	RaycastOutput ro = raycast->GetOutput();
 
-	if (ro.fixture != nullptr && dynamic_cast<Mirror*>(static_cast<B2Entity*>(ro.fixture->GetUserData())) != NULL) {
-		hit = true;
-		hitPosition = ro.point;
-		// intersectionPoint is a vector from the ray's starting point and the hitted point
-		b2Vec2 intersectionPoint = globalPos - destination;
-		intersectionPoint *= ro.fraction;
+	if (ro.fixture != nullptr) {
+		if (dynamic_cast<Mirror*>(static_cast<B2Entity*>(ro.fixture->GetUserData())) != NULL) {
+			hit = true;
+			hitPosition = ro.point;
+			// intersectionPoint is a vector from the ray's starting point and the hitted point
+			b2Vec2 intersectionPoint = globalPos - destination;
+			intersectionPoint *= ro.fraction;
 
-		// Calculation reflection = d-(2*dot(d-n)*n)
-		reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
-		// Draw the reflection
-		raycast->ChangeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		raycast->Draw(glm::vec2(ro.point.x * B2Entity::m2p, ro.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
+			// Calculation reflection = d-(2*dot(d-n)*n)
+			reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
+			// Draw the reflection
+			raycast->ChangeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			raycast->Draw(glm::vec2(ro.point.x * B2Entity::m2p, ro.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
 
-		// Draw the normal
-		raycast->ChangeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
-
+			// Draw the normal
+			raycast->ChangeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
+		}
+		else {
+			hit = false;
+		}
 		// Scale the laser by the distance of hit
 		localScale.y = ro.fraction;
 	}
@@ -73,7 +72,10 @@ void Laser::Draw()
 		reflection = b2Vec2(0.0f, 0.0f);
 		localScale.y = 1.0f;
 	}
+}
 
+void Laser::Draw()
+{
 	// Update VBO
 	GLfloat vertices[6][4] = {
 		// Vertex positions		// uv positions

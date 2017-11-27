@@ -61,34 +61,34 @@ int main() {
 	level1 = new Level1(1920, 1080);
 
 	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	player->CreateBody(960, 540, 250, 250, true, false);
+	player->CreateBody(960, 540, 250, 250, true, false, false);
 	player->GiveTexture(rm->GetTexture("player"));
 
 	wall = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall->CreateBody(960, 1080, 1920, 100, false, false);
+	wall->CreateBody(960, 1080, 1920, 100, false, false, true);
 	wall->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall);
 	wall2 = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall2->CreateBody(0, 540, 100, 1080, false, false);
+	wall2->CreateBody(0, 540, 100, 1080, false, false, true);
 	wall2->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall2);
 	wall3 = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall3->CreateBody(1920, 540, 100, 1080, false, false);
+	wall3->CreateBody(1920, 540, 100, 1080, false, false, true);
 	wall3->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall3);
 
 	mirror = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror->CreateBody(960.0f, 0.0f, 800.0f, 150.0f, true, false);
+	mirror->CreateBody(960.0f, 0.0f, 800.0f, 150.0f, false, false, true);
 	mirror->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror);
 
 	mirror2 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror2->CreateBody(1360.0f, 500.0f, 150.0f, 1000.0f, true, false);
+	mirror2->CreateBody(1820.0f, 500.0f, 150.0f, 1000.0f, false, false, true);
 	mirror2->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror2);
 
 	mirror3 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror3->CreateBody(560.0f, 500.0f, 150.0f, 1000.0f, true, false);
+	mirror3->CreateBody(75.0f, 500.0f, 150.0f, 1000.0f, false, false, true);
 	mirror3->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror3);
 

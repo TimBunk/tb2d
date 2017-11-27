@@ -14,7 +14,6 @@ public:
 	~Player();
 
 	void Update(double deltaTime);
-	void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor);
 	void SetCamera(Camera* camera);
 
 private:

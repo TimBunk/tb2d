@@ -77,6 +77,14 @@ void Staff::Update(double deltaTime)
 					// Break out of the while loop otherwise the program will crash
 					break;
 				}
+				if (lasers.size() > 15) {
+					while (lasers.size() > 15) {
+						delete lasers[lasers.size() - 1];
+						lasers.pop_back();
+					}
+					// Break out of the while loop otherwise the program will crash
+					break;
+				}
 			}
 		}
 	}
@@ -86,9 +94,3 @@ void Staff::Shoot()
 {
 	shooting = true;
 }
-
-bool Staff::IsShooting()
-{
-	return shooting;
-}
-
