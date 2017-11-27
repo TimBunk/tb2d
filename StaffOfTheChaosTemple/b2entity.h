@@ -54,7 +54,7 @@ public:
 	/// @param dynamic If true the body will be dynamic that means that it will be affected by physics if false it will be static and not affected by physics
 	/// @param sensor If true the body can overlap with the other body's but still detects collision
 	/// @return void
-	virtual void CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, bool fixedRotation);
+	virtual void CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation);
 
 	/// @brief Give the B2Entity a texture that will be used while drawing
 	/// @param texture Specify the texture that you want to use for drawing

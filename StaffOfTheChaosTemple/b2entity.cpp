@@ -81,7 +81,7 @@ void B2Entity::Draw() {
 	}
 }
 
-void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor, bool fixedRotation) {
+void B2Entity::CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation) {
 	// If the body was created make sure to delete everything as well
 	if (body != nullptr) {
 		body->DestroyFixture(fixture);
@@ -114,8 +114,10 @@ void B2Entity::CreateBody(int x, int y, int w, int h, bool dynamic, bool sensor,
 
 	// Step 3 create shape
 	b2PolygonShape shape;
+	// pivot has to go times -1 because box2d sets the pivot point the otherway around then I want it
+	pivot *= -1;
 	// the reason for dividing by 2 is because box2D draws from the center
-	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m);
+	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m, b2Vec2(pivot.x * p2m, pivot.y * p2m), 0.0f);
 	// step 4 create fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;

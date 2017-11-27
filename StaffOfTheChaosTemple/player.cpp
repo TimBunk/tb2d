@@ -44,6 +44,7 @@ void Player::Update(double deltaTime)
 	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - GetGlobalPosition();
 	glm::normalize(direction);
 	this->localAngle = std::atan2(direction.y, direction.x);
+	std::cout << " angle = " << (localAngle * 180.0f / M_PI) << std::endl;
 
 	staff->localAngle = (90.0f * M_PI / 180.0f);
 
