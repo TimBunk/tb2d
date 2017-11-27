@@ -26,6 +26,11 @@ void Entity::Draw()
 
 }
 
+glm::mat4 Entity::GetModelMatrix()
+{
+	return model;
+}
+
 glm::vec2 Entity::GetGlobalPosition() {
 	return position;
 }
@@ -58,17 +63,22 @@ void Entity::RemoveChild(Entity* child) {
 void Entity::UpdateChilderen(Entity * parent, double deltaTime)
 {
 	if (parent != NULL) {
-		this->position = this->localPosition + parent->position;
-		this->angle = this->localAngle + parent->angle;
+		model = parent->model;
+		model = glm::translate(model, glm::vec3(localPosition.x, localPosition.y, 0.0f));
+		model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(localScale.x, localScale.y, 1.0f));
+		this->position = model[3];
+		this->angle = glm::atan(model[0][1], model[0][0]);
 		this->scale = this->localScale * parent->scale;
-		/*model = glm::translate(model, this->position);
-		model = glm::rotate(model, glm::radians(this->angle), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(this->scale, 0.0f));*/
 	}
 	else {
 		this->position = this->localPosition;
 		this->angle = this->localAngle;
 		this->scale = this->localScale;
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(scale.x, scale.y, 1.0f));
 	}
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->Draw();

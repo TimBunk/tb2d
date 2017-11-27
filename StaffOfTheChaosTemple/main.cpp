@@ -6,6 +6,7 @@
 #include <glm-0.9.8.4\glm\glm.hpp>
 #include <glm-0.9.8.4\glm\gtc\matrix_transform.hpp>
 #include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
+#include <glm-0.9.8.4\glm\gtx\matrix_decompose.hpp>
 
 #include "window.h"
 #include "sprite.h"
@@ -15,6 +16,7 @@
 #include "player.h"
 #include "level1.h"
 #include "mirror.h"
+#include "rotator.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -35,6 +37,11 @@ B2Entity* wall3;
 Mirror* mirror;
 Mirror* mirror2;
 Mirror* mirror3;
+
+Rotator* rotator;
+
+Sprite* parent;
+Sprite* child;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -60,8 +67,20 @@ int main() {
 
 	level1 = new Level1(1920, 1080);
 
+	/*parent = new Sprite(rm->GetTexture("player"), rm->GetShader("defaultShader"), level1->GetCamera(), false);
+	parent->CreateBody(300, 300, glm::vec2(0.0f, 0.0f));
+	parent->localPosition = glm::vec2(960.0f, 540.0f);
+	parent->localAngle = glm::radians(90.0f);
+	level1->AddChild(parent);
+
+	child = new Sprite(rm->GetTexture("awesome"), rm->GetShader("defaultShader"), level1->GetCamera(), false);
+	child->CreateBody(150, 150, glm::vec2(0.0f, 0.0f));
+	child->localPosition = glm::vec2(300.0f, 300.0f);
+	child->localAngle = glm::radians(90.0f);
+	parent->AddChild(child);*/
+
 	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	player->CreateBody(960, 540, 250, 250, glm::vec2(0.0f, 0.0f), true, false, false);
+	player->CreateBody(960, 0, 250, 250, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->GiveTexture(rm->GetTexture("player"));
 
 	wall = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
@@ -77,22 +96,31 @@ int main() {
 	wall3->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall3);
 
-	mirror = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror->CreateBody(960.0f, 0.0f, 800.0f, 150.0f, glm::vec2(0.0f, 0.0f), false, false, true);
+	mirror = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror->CreateBody(960.0f, 540.0f, 800.0f, 150.0f, glm::vec2(0.0f, 0.0f), false, false, true);
 	mirror->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror);
 
-	mirror2 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror2 = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
 	mirror2->CreateBody(1820.0f, 500.0f, 150.0f, 1000.0f, glm::vec2(0.0f, 0.0f), false, false, true);
 	mirror2->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror2);
 
-	mirror3 = new Mirror(level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	mirror3 = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
 	mirror3->CreateBody(75.0f, 500.0f, 150.0f, 1000.0f, glm::vec2(0.0f, 0.0f), false, false, true);
 	mirror3->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror3);
 
 	level1->AddChild(player);
+
+	/*level1->GetCamera()->PositionAdd(glm::vec2(500.0f, 0.0f));
+	glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 translation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(level1->GetCamera()->GetViewMatrix(), scale, rotation, translation, skew, perspective);
+	std::cout << "translation.x = " << translation.x << std::endl;*/
 
 	while (!window->ShouldClose()) {
 		// rendering commands
@@ -104,12 +132,14 @@ int main() {
 		world->Step(window->GetDeltaTime(), 8, 3);
 		window->SwapBuffers();
 	}
-	/*delete mirror;
+	//delete parent;
+	//delete child;
+	delete mirror;
 	delete mirror2;
 	delete mirror3;
 	delete wall;
 	delete wall2;
-	delete wall3;*/
+	delete wall3;
 	delete player;
 	delete level1;
 	delete window;

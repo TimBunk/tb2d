@@ -8,6 +8,8 @@ public:
 	Rotator(Camera* camera, Shader* shader, b2World* world);
 	~Rotator();
 
+	void Update(double deltaTime);
+
 private:
 
 };

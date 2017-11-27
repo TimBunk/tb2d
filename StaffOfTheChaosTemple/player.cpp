@@ -38,20 +38,15 @@ void Player::Update(double deltaTime)
 	if (velocity.x != 0 || velocity.y != 0) {
 		velocity = glm::normalize(velocity);
 		velocity *= 10.0f;
-		localPosition = ApplyVelocityB2body(velocity);
 	}
+	localPosition = ApplyVelocityB2body(velocity);
 	// Rotate the player towards the mouse
 	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - GetGlobalPosition();
 	glm::normalize(direction);
 	this->localAngle = std::atan2(direction.y, direction.x);
-	std::cout << " angle = " << (localAngle * 180.0f / M_PI) << std::endl;
 
 	staff->localAngle = (90.0f * M_PI / 180.0f);
-
-	staff->localPosition.x = glm::cos(staff->localAngle + localAngle);
-	staff->localPosition.y = glm::sin(staff->localAngle + localAngle);
-	staff->localPosition = glm::normalize(staff->localPosition);
-	staff->localPosition *= 200.0f;
+	staff->localPosition = glm::vec2(0.0f, 200.0f);
 }
 
 void Player::SetCamera(Camera * camera)

@@ -36,15 +36,21 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 {
 	// Check if the parent does not equals NULL and set this's position/angle and scale
 	if (parent != NULL) {
-		this->position = this->localPosition + parent->GetGlobalPosition();
-		this->angle = this->localAngle + parent->GetGlobalAngle();
-		this->scale = this->localScale * parent->GetGlobalScale();
+		model = parent->GetModelMatrix();
+		model = glm::translate(model, glm::vec3(localPosition.x, localPosition.y, 0.0f));
+		model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+		// The third row is the position of the 
+		this->position = model[3];
+		// The first two values in the mat4 can be used to get the z-rotation according to: https://stackoverflow.com/questions/39251412/get-the-angle-from-a-rotated-matrix-using-glm
+		this->angle = glm::atan(model[0][1], model[0][0]);
 	}
 	else {
 		// If the parent is null set the global position/angle/scale equal to the localPosition of this B2Entity
 		this->position = this->localPosition;
 		this->angle = this->localAngle;
-		this->scale = this->localScale;
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 	// If the body is intialized update the position and angle of the body
 	if (this->body != nullptr) {
@@ -64,13 +70,11 @@ void B2Entity::Draw() {
 		shader->Use();
 		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 		shader->SetMatrix4("view", camera->GetViewMatrix());
-		// Create a model matrix that gets the global position angle and scale of this B2Entity
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 0.0f));
-		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		// The reason I multiply with m2p is because the body's size is in meters but we want to draw it in pixels
-		model = glm::scale(model, glm::vec3(m2p * this->GetGlobalScale().x, m2p * this->GetGlobalScale().y, 0.0f));
-		shader->SetMatrix4("model", model);
+		glm::mat4 _model;
+		_model = glm::translate(_model, glm::vec3(GetGlobalPosition().x, GetGlobalPosition().y, 0.0f));
+		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));
+		shader->SetMatrix4("model", _model);
 		glActiveTexture(GL_TEXTURE0 + texture->GetId());
 		shader->SetInt("ourTexture", texture->GetId());
 		glBindTexture(GL_TEXTURE_2D, texture->GetId());

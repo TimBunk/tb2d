@@ -9,3 +9,8 @@ Rotator::~Rotator()
 {
 
 }
+
+void Rotator::Update(double deltaTime)
+{
+	//localAngle = GetAngleB2body();
+}

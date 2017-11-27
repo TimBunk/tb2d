@@ -26,6 +26,7 @@ public:
 	void AddChild(Entity* child);
 	void RemoveChild(Entity* child);
 
+	glm::mat4 GetModelMatrix();
 	glm::vec2 GetGlobalPosition();
 	float GetGlobalAngle();
 	glm::vec2 GetGlobalScale();
@@ -33,6 +34,7 @@ public:
 protected:
 	std::vector<Entity*> entities;
 	// global values
+	glm::mat4 model;
 	glm::vec2 position;
 	float angle;
 	glm::vec2 scale;

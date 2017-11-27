@@ -7,6 +7,8 @@ Sprite::Sprite(Texture* texture, Shader* shader, Camera* camera, bool HUD) : Ent
 	this->HUD = HUD;
 	VAO = 0;
 	VBO = 0;
+	width = 0;
+	height = 0;
 }
 
 Sprite::~Sprite() {
@@ -23,10 +25,6 @@ void Sprite::Draw()
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 0.0f));
-	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 1.0f));
 	shader->SetMatrix4("model", model);
 	glActiveTexture(GL_TEXTURE0 + texture->GetId());
 	shader->SetInt("ourTexture", texture->GetId());
@@ -49,12 +47,14 @@ void Sprite::SetShader(Shader * shader)
 
 int Sprite::GetWidth()
 {
-	return width;
+	int w = width * this->GetGlobalScale().x;
+	return w;
 }
 
 int Sprite::GetHeight()
 {
-	return height;
+	int h = height * this->GetGlobalScale().y;
+	return h;
 }
 
 void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
