@@ -28,7 +28,8 @@ B2Entity::~B2Entity() {
 }
 
 void B2Entity::Update(double deltaTime) {
-
+	body->SetAwake(true);
+	body->SetActive(true);
 }
 
 // This function is normally called by the parent
@@ -133,6 +134,7 @@ void B2Entity::CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dyna
 		fixture->SetSensor(true);
 	}
 	fixture->SetUserData(this);
+	body->SetActive(true);
 	for (int i = 0; i < 4; i++) {
 		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
 		//std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;

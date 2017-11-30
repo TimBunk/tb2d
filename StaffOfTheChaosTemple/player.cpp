@@ -4,7 +4,7 @@ Player::Player(Input* input, ResourceManager* rm, Camera * camera, Shader * shad
 {
 	this->input = input;
 	this->rm = rm;
-	staff = new Staff(1000.0f, world, rm, 50, 150, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
+	staff = new Staff(1000.0f, world, rm, 20, 90, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);
 }
@@ -33,7 +33,6 @@ void Player::Update(double deltaTime)
 	if (input->KeyDown(GLFW_KEY_D) || input->KeyDown(GLFW_KEY_RIGHT)) {
 		velocity.x += 1.0f;
 	}
-	body->SetAwake(true);
 	// The velocity has to be not equal to zero otherwise if I normalze the vec2 it will return nand-id
 	if (velocity.x != 0 || velocity.y != 0) {
 		velocity = glm::normalize(velocity);
@@ -44,9 +43,47 @@ void Player::Update(double deltaTime)
 	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - GetGlobalPosition();
 	glm::normalize(direction);
 	this->localAngle = std::atan2(direction.y, direction.x);
+	//std::cout << " player angle = " << (glm::atan(direction.y, direction.x) * 180.0f / M_PI) << std::endl;
 
 	staff->localAngle = (90.0f * M_PI / 180.0f);
-	staff->localPosition = glm::vec2(0.0f, 200.0f);
+	staff->localPosition = glm::vec2(0.0f, 30.0f);
+
+	for (int i = 0; i < contacts.size(); i++) {
+		//std::cout << "contact amount = " << contacts.size() << std::endl;
+		if (dynamic_cast<Rotator*>(contacts[i]) != NULL) {
+			// Get the pointer of the rotator
+			Rotator* rot = dynamic_cast<Rotator*>(contacts[i]);
+
+			// Position 'a' is the pivot point of the rotator, The reason I do minus 0.0001f is because otherwise the value will be zero and normaling zero will return nan-id
+			glm::vec2 a = (glm::vec2(rot->GetGlobalPosition().x - 0.001f, rot->GetGlobalPosition().y) - rot->GetGlobalPosition());
+			a = glm::normalize(a);
+			glm::vec2 b = GetGlobalPosition() - rot->GetGlobalPosition();
+			b = glm::normalize(b);
+
+			// Dot product between pivot rotator and player
+			float dot = glm::dot(a, b);//      # dot product
+
+			float det = a.x*b.y - a.y*b.x;//      # determinant
+			//angle = atan2(det, dot)  # atan2(y, x) or atan2(sin, cos)
+
+			float anglePlayer = (glm::atan(det, dot) * 180.0f / M_PI);//(glm::acos(glm::dot(a, b)) * 180.0f / M_PI);
+			//std::cout << " angle player = " << anglePlayer << std::endl;
+			float angleRot = (rot->GetRotation() * 180.0f / M_PI);
+			//std::cout << " angle rotator = " << angleRot << std::endl;
+			float difference = anglePlayer - angleRot;
+			//std::cout << " difference = " << anglePlayer - angleRot << std::endl;
+
+			// Rotate the mirror's rotator
+			// Sometimes there is a huge difference betweent the angle of the player and the rotator
+			// so a hacky kinda way is: asking if it higher or lower helps me find out of what side the player is pushing from
+			if (difference > -250.0f && difference < 0.0f || difference > 250.0f) {
+				rot->Rotate(true, (50.0f * deltaTime));
+			}
+			else if (difference >= 0.0f || difference < -250.0f) {
+				rot->Rotate(false, (50.0f * deltaTime));
+			}
+		}
+	}
 }
 
 void Player::SetCamera(Camera * camera)

@@ -9,6 +9,7 @@
 #include <glm-0.9.8.4\glm\gtx\matrix_decompose.hpp>
 
 #include "window.h"
+#include "contactListener.h"
 #include "sprite.h"
 #include "scene.h"
 #include "button.h"
@@ -29,6 +30,7 @@ Texture* texture;
 
 Level1* level1;
 
+ContactListener* contactListener;
 b2World* world;
 Player* player;
 B2Entity* wall;
@@ -48,7 +50,7 @@ float B2Entity::p2m = 1.0f / B2Entity::m2p;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("Staff of the Chaos Temple", false);
+	window = new Window("Staff of the Chaos Temple", true);
 	window->Resize(800, 600);
 
 	rm = window->GetResourceManager();
@@ -63,7 +65,10 @@ int main() {
 	input = window->GetInput();
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
+	contactListener = new ContactListener();
 	world = new b2World(b2Vec2(0.0f, 0.0f));
+	world->SetContactListener(contactListener);
+	world->SetAllowSleeping(false);
 
 	level1 = new Level1(1920, 1080);
 
@@ -80,7 +85,7 @@ int main() {
 	parent->AddChild(child);*/
 
 	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	player->CreateBody(960, 0, 250, 250, glm::vec2(0.0f, 0.0f), true, false, false);
+	player->CreateBody(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->GiveTexture(rm->GetTexture("player"));
 
 	wall = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
@@ -97,17 +102,19 @@ int main() {
 	level1->AddChild(wall3);
 
 	mirror = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror->CreateBody(960.0f, 540.0f, 800.0f, 150.0f, glm::vec2(0.0f, 0.0f), false, false, true);
+	mirror->localPosition = glm::vec2(960.0f, 540.0f);
 	mirror->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror);
 
 	mirror2 = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror2->CreateBody(1820.0f, 500.0f, 150.0f, 1000.0f, glm::vec2(0.0f, 0.0f), false, false, true);
+	mirror2->localPosition = glm::vec2(1440.0f, 700.0f);
+	mirror2->SetRotation(-90.0f);
 	mirror2->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror2);
 
 	mirror3 = new Mirror(true, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	mirror3->CreateBody(75.0f, 500.0f, 150.0f, 1000.0f, glm::vec2(0.0f, 0.0f), false, false, true);
+	mirror3->localPosition = glm::vec2(1440.0f, 380.0f);
+	mirror3->SetRotation(90.0f);
 	mirror3->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror3);
 
@@ -142,6 +149,7 @@ int main() {
 	delete wall3;
 	delete player;
 	delete level1;
+	delete contactListener;
 	delete window;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;

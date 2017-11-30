@@ -9,9 +9,13 @@ public:
 	~Rotator();
 
 	void Update(double deltaTime);
+	
+	void Rotate(bool clockWise, float degrees);
+	float GetRotation();
+	void SetRotation(float degrees);
 
 private:
-
+	float rotation;
 };
 
 #endif // !ROTATOR_H

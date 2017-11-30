@@ -1,7 +1,7 @@
 #include "contactListener.h"
 
 ContactListener::ContactListener() {
-
+	
 }
 
 ContactListener::~ContactListener() {

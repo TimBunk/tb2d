@@ -11,6 +11,7 @@ public:
 	~Mirror();
 
 	void Update(double deltaTime);
+	void SetRotation(float degrees);
 
 private:
 	Rotator* rotator;
