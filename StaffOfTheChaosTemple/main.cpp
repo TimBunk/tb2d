@@ -18,6 +18,7 @@
 #include "level1.h"
 #include "mirror.h"
 #include "rotator.h"
+#include "crystal.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -40,7 +41,7 @@ Mirror* mirror;
 Mirror* mirror2;
 Mirror* mirror3;
 
-Rotator* rotator;
+Crystal* crystal;
 
 Sprite* parent;
 Sprite* child;
@@ -50,7 +51,7 @@ float B2Entity::p2m = 1.0f / B2Entity::m2p;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("Staff of the Chaos Temple", true);
+	window = new Window("Staff of the Chaos Temple", false);
 	window->Resize(800, 600);
 
 	rm = window->GetResourceManager();
@@ -59,8 +60,10 @@ int main() {
 	rm->CreateTexture("wall", "textures/wall.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("staff", "textures/matrix.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	rm->CreateTexture("laser", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	rm->CreateTexture("crystal", "textures/container2_specular.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	rm->CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
+	rm->CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
 
 	input = window->GetInput();
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
@@ -118,6 +121,11 @@ int main() {
 	mirror3->GiveTexture(rm->GetTexture("laser"));
 	level1->AddChild(mirror3);
 
+	crystal = new Crystal(level1->GetCamera(), rm->GetShader("crystal"), world);
+	crystal->CreateBody(1400, 540, 50, 50, glm::vec2(0, 0), false, false, true);
+	crystal->GiveTexture(rm->GetTexture("crystal"));
+	level1->AddChild(crystal);
+
 	level1->AddChild(player);
 
 	/*level1->GetCamera()->PositionAdd(glm::vec2(500.0f, 0.0f));
@@ -139,8 +147,7 @@ int main() {
 		world->Step(window->GetDeltaTime(), 8, 3);
 		window->SwapBuffers();
 	}
-	//delete parent;
-	//delete child;
+	delete crystal;
 	delete mirror;
 	delete mirror2;
 	delete mirror3;

@@ -62,10 +62,13 @@ void RaycastCallBack::Draw(glm::vec2 position, float angle) {
 }
 
 float32 RaycastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
-	// THE RAYCAST IGNORES SENSORS AND ENEMY'S
-	/*if (fixture->IsSensor()) {
+	// The Raycast will detect the crystals but ingores them
+	B2Entity* b = static_cast<B2Entity*>(fixture->GetUserData());
+	if (dynamic_cast<Linkable*>(b) != NULL) {
+		Linkable* c = dynamic_cast<Linkable*>(b);
+		c->Enable(true);
 		return -1;
-	}*/
+	}
 	// Set all of the values in a RaycastOutput struct that can be received by calling GetOutput()
 	ro.fixture = fixture;
 	ro.point = point;
