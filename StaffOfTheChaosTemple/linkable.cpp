@@ -3,22 +3,19 @@
 Linkable::Linkable(Camera * camera, Shader * shader, b2World * world) : B2Entity::B2Entity(camera, shader, world)
 {
 	enabled = false;
+	hit = false;
 }
 
 Linkable::~Linkable()
 {
 }
 
-void Linkable::Enable(bool state)
+void Linkable::Hit()
 {
-	enabled = state;
+	hit = true;
 }
 
 bool Linkable::IsEnabled()
 {
-	if (enabled) {
-		enabled = false;
-		return true;
-	}
-	return false;
+	return enabled;
 }

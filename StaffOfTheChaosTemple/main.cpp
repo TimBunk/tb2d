@@ -19,6 +19,7 @@
 #include "mirror.h"
 #include "rotator.h"
 #include "crystal.h"
+#include "door.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -42,6 +43,9 @@ Mirror* mirror2;
 Mirror* mirror3;
 
 Crystal* crystal;
+Crystal* crystal2;
+Door* door;
+Door* door2;
 
 Sprite* parent;
 Sprite* child;
@@ -122,9 +126,28 @@ int main() {
 	level1->AddChild(mirror3);
 
 	crystal = new Crystal(level1->GetCamera(), rm->GetShader("crystal"), world);
-	crystal->CreateBody(1400, 540, 50, 50, glm::vec2(0, 0), false, false, true);
+	crystal->CreateBody(1400, 540, 70, 70, glm::vec2(0, 0), false, false, true);
 	crystal->GiveTexture(rm->GetTexture("crystal"));
 	level1->AddChild(crystal);
+
+	crystal2 = new Crystal(level1->GetCamera(), rm->GetShader("crystal"), world);
+	crystal2->CreateBody(1300, 640, 70, 70, glm::vec2(0, 0), false, false, true);
+	crystal2->GiveTexture(rm->GetTexture("crystal"));
+	level1->AddChild(crystal2);
+
+	door = new Door(Direction::west, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	door->CreateBody(960, 900, 100, 50, glm::vec2(0, 0), false, false, true);
+	door->GiveTexture(rm->GetTexture("player"));
+	door->Link(crystal);
+	door->Link(crystal2);
+	level1->AddChild(door);
+
+	door2 = new Door(Direction::east, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	door2->CreateBody(1060, 900, 100, 50, glm::vec2(0, 0), false, false, true);
+	door2->GiveTexture(rm->GetTexture("player"));
+	door2->Link(crystal);
+	door2->Link(crystal2);
+	level1->AddChild(door2);
 
 	level1->AddChild(player);
 
@@ -147,7 +170,10 @@ int main() {
 		world->Step(window->GetDeltaTime(), 8, 3);
 		window->SwapBuffers();
 	}
+	delete door;
+	delete door2;
 	delete crystal;
+	delete crystal2;
 	delete mirror;
 	delete mirror2;
 	delete mirror3;

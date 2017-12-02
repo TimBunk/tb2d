@@ -12,7 +12,13 @@ Crystal::~Crystal()
 
 void Crystal::Update(double deltaTime)
 {
-
+	if (hit) {
+		enabled = true;
+		hit = false;
+	}
+	else {
+		enabled = false;
+	}
 }
 
 void Crystal::Draw()
@@ -20,7 +26,7 @@ void Crystal::Draw()
 	// Use the shader and draw the texture
 	if (body != nullptr && texture != nullptr) {
 		shader->Use();
-		if (IsEnabled()) {
+		if (enabled) {
 			shader->SetVec4Float("glow", glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 		}
 		else {

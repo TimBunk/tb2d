@@ -8,10 +8,11 @@ RaycastCallBack::RaycastCallBack() : b2RayCastCallback::b2RayCastCallback() {
 	lineWidth = 0;
 	VAO = 0;
 	VBO = 0;
+	firstUpdate = false;
 }
 
 RaycastCallBack::~RaycastCallBack() {
-
+	
 }
 
 void RaycastCallBack::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec4 color) {
@@ -66,7 +67,8 @@ float32 RaycastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, 
 	B2Entity* b = static_cast<B2Entity*>(fixture->GetUserData());
 	if (dynamic_cast<Linkable*>(b) != NULL) {
 		Linkable* c = dynamic_cast<Linkable*>(b);
-		c->Enable(true);
+		c->Hit();
+		linkables.push_back(c);
 		return -1;
 	}
 	// Set all of the values in a RaycastOutput struct that can be received by calling GetOutput()

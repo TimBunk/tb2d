@@ -9,10 +9,11 @@ public:
 	Linkable(Camera* camera, Shader* shader, b2World* world);
 	~Linkable();
 
-	virtual void Enable(bool state);
+	void Hit();
 	virtual bool IsEnabled();
 
 protected:
+	bool hit;
 	bool enabled;
 
 private:

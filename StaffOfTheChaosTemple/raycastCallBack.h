@@ -70,6 +70,8 @@ public:
 	/// @return RaycastOutput
 	RaycastOutput GetOutput();
 private:
+	bool firstUpdate;
+	std::vector<Linkable*> linkables;
 	RaycastOutput ro; ///< @brief The raycastOutput received by GetOutput()
 	float lineWidth; ///< @brief the lineWidth that is used for drawing
 	Camera* camera; ///< @brief The camera is needed for drawing

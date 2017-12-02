@@ -37,8 +37,8 @@ void Staff::Update(double deltaTime)
 		lasers[0]->Update(deltaTime);
 		lasers[0]->Draw();
 		// Check if the first laser hits
+		int i = 1;
 		if (lasers[0]->Hit()) {
-			int i = 1;
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
 				if (i == lasers.size() && lasers[i - 1]->Hit()) {
