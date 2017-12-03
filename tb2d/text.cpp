@@ -133,13 +133,16 @@ void Text::Draw()
 		Character ch = characters[*c];
 
 		GLfloat xpos = x + ch.Bearing.x * GetGlobalScale().x;
+		//std::cout << "bearing.x of " << *c << " = " << ch.Bearing.x << std::endl;
+		//std::cout << "xpos of " << *c << " = " << xpos << std::endl;
 		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * GetGlobalScale().y;
+		//std::cout << "ypos of " << *c << " = " << ypos << std::endl;
 
 		GLfloat w = ch.Size.x * GetGlobalScale().x;
 		GLfloat h = ch.Size.y * GetGlobalScale().y;
 
 		// Get the height and width of the text
-		width += w;
+		width += (w + (ch.Bearing.x*2));
 		if (h > height) {
 			height = h;
 		}
@@ -158,7 +161,6 @@ void Text::Draw()
 		// Use that Shader and set it's uniforms	
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(xpos, ypos, 0.0f));
-		model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
 		shader->SetMatrix4("model", model);
 		// Render glyph texture over quad
@@ -167,8 +169,6 @@ void Text::Draw()
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		//glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) /4 * 3, sizeof(vertices) / 4 * 2, vertices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

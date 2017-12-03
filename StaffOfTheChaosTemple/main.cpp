@@ -12,6 +12,7 @@
 #include "contactListener.h"
 #include "sprite.h"
 #include "scene.h"
+#include "menu.h"
 #include "button.h"
 #include "b2entity.h"
 #include "player.h"
@@ -47,11 +48,18 @@ Crystal* crystal2;
 Door* door;
 Door* door2;
 
-Sprite* parent;
-Sprite* child;
+Menu* menu;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
+
+enum GameState
+{
+	_game,
+	_menu
+};
+
+GameState gameState;
 
 int main() {
 	std::cout << "hello world" << std::endl;
@@ -151,25 +159,46 @@ int main() {
 
 	level1->AddChild(player);
 
-	/*level1->GetCamera()->PositionAdd(glm::vec2(500.0f, 0.0f));
-	glm::vec3 scale;
-	glm::quat rotation;
-	glm::vec3 translation;
-	glm::vec3 skew;
-	glm::vec4 perspective;
-	glm::decompose(level1->GetCamera()->GetViewMatrix(), scale, rotation, translation, skew, perspective);
-	std::cout << "translation.x = " << translation.x << std::endl;*/
+	gameState = _menu;
+	menu = new Menu(window->GetResourceManager(), input, 1920, 1080);
 
 	while (!window->ShouldClose()) {
 		// rendering commands
 		window->Clear();
+		// You have to update the window because the window will calculate the deltaTime and it updates the input
 		window->Update();
 
-		level1->Update(window->GetDeltaTime());
+		switch (gameState)
+		{
+		case _game:
+			level1->Update(window->GetDeltaTime());
+			// if escaped is pressed go back in to the menu
+			if (input->KeyPress(GLFW_KEY_ESCAPE)) {
+				gameState = _menu;
+			}
+			break;
+		case _menu:
+			menu->Update(window->GetDeltaTime());
+			// If start is pressed start the game
+			if (menu->Start()) {
+				gameState = _game;
+			}
+			else if (menu->Restart()) {
+				// TODO: restart level
+			}
+			else if (menu->Quit()) {
+				// exit the application
+				window->CloseWindow();
+			}
+			break;
+		}
 		
+		// Update the box2D world by the deltaTime
 		world->Step(window->GetDeltaTime(), 8, 3);
+		// Swap buffers
 		window->SwapBuffers();
 	}
+	delete menu;
 	delete door;
 	delete door2;
 	delete crystal;

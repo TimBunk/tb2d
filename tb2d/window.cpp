@@ -64,10 +64,6 @@ Window::~Window() {
 void Window::Update() {
 	CalculateFrameRate();
 	input->Update();
-	// if escaped is pressed exit the program
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		CloseWindow();
-	}
 }
 
 void Window::Clear() {

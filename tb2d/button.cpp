@@ -129,7 +129,7 @@ void Button::CreateText(std::string text, int textSize, glm::vec3 color)
 	// Drawing the text is needed in order to get the correct width and height
 
  	this->text->Draw();
-	this->text->localPosition = glm::vec2(-this->text->GetWidth() / 2, -this->text->GetHeight() / 2);
+	this->text->localPosition = glm::vec2(this->text->GetWidth() / 2 * -1, this->text->GetHeight()/2 * -1);
 	AddChild(this->text);
 
 }
@@ -139,7 +139,7 @@ void Button::SetText(std::string text) {
 		this->text->SetText(text);
 		// Drawing the text is needed in order to get the correct width and height
 		this->text->Draw();
-		this->text->localPosition = glm::vec2(width / 2 - this->text->GetWidth() / 2, height / 2 - this->text->GetHeight() / 2);
+		this->text->localPosition = glm::vec2(this->text->GetWidth() / 2 * -1.0f, this->text->GetHeight()/2 * -1);
 	}
 }
 

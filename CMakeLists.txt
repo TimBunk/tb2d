@@ -174,6 +174,8 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/raycastCallBack.cpp
     StaffOfTheChaosTemple/level1.h
     StaffOfTheChaosTemple/level1.cpp
+    StaffOfTheChaosTemple/menu.h
+    StaffOfTheChaosTemple/menu.cpp
     StaffOfTheChaosTemple/main.cpp
   )
 
