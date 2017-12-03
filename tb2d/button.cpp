@@ -76,7 +76,7 @@ void Button::Update(double deltaTime) {
 		mouseX = input->GetMousePositionWorldSpace(camera).x;
 		mouseY = input->GetMousePositionWorldSpace(camera).y;
 	}
-	if (mouseX >= (this->localPosition.x - (this->width/2)) && mouseX <= (this->localPosition.x + (this->width/2)) && mouseY >= (this->localPosition.y - (this->height/2)) && mouseY <= (this->localPosition.y + (this->height/2))) {
+	if (mouseX >= (this->localPosition.x - (this->width/2 * scale.x)) && mouseX <= (this->localPosition.x + (this->width/2 * scale.x)) && mouseY >= (this->localPosition.y - (this->height/2 * scale.y)) && mouseY <= (this->localPosition.y + (this->height/2 * scale.y))) {
 		hover = true;
 		if (input->MousePress(0)) {
 			down = true;
@@ -98,10 +98,6 @@ void Button::Draw() {
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(this->GetGlobalPosition().x, this->GetGlobalPosition().y, 1.0f));
-	model = glm::rotate(model, this->GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 0.0f));
 	shader->SetMatrix4("model", model);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

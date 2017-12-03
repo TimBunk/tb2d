@@ -4,14 +4,14 @@ Text::Text(std::string text, int size, const char* fontPath, glm::vec3 color, Sh
 {
 	this->text = text;
 	// TODO There seems to be a bug that when there are two text's and they use the same shader the last one will be drawn incorrect
-	//this->shader = shader;
+	this->shader = shader;
 	// Temporary fix for the shader is to create a new one instead of using the one that the resourceManager provides
-	if (HUD) {
+	/*if (HUD) {
 		this->shader = new Shader("shaders\\defaultFreetypeHUD.vs", "shaders\\defaultFreetype.fs");
 	}
 	else {
 		this->shader = new Shader("shaders\\defaultFreetype.vs", "shaders\\defaultFreetype.fs");
-	}
+	}*/
 	this->camera = camera;
 	this->color = color;
 	this->HUD = HUD;
@@ -98,7 +98,7 @@ Text::~Text()
 	}
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	delete shader;
+	//delete shader;
 }
 
 void Text::SetText(std::string text)
@@ -124,6 +124,7 @@ void Text::Draw()
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
+	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 
 	// Iterate through all characters
@@ -136,36 +137,35 @@ void Text::Draw()
 		//std::cout << "bearing.x of " << *c << " = " << ch.Bearing.x << std::endl;
 		//std::cout << "xpos of " << *c << " = " << xpos << std::endl;
 		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * GetGlobalScale().y;
-		//std::cout << "ypos of " << *c << " = " << ypos << std::endl;
+		//std::cout << "bearing.y of " << *c << " = " << ch.Bearing.y << " size.y = " << ch.Size.y << std::endl
 
 		GLfloat w = ch.Size.x * GetGlobalScale().x;
 		GLfloat h = ch.Size.y * GetGlobalScale().y;
 
 		// Get the height and width of the text
-		width += (w + (ch.Bearing.x*2));
+		width += (ch.Advance >> 6);// Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 		if (h > height) {
 			height = h;
 		}
 
 		// Update VBO for each character
 		GLfloat vertices[6][4] = {
-			// Vertex positions		// uv positions
-			{ 0.0f,     h,			0.0f, 0.0f },
-			{ 0.0f,     0.0f,		0.0f, 1.0f },
-			{ w,		0.0f,		1.0f, 1.0f },
+			// Vertex positions	// uv positions
+			{ 0.0f,     h,		0.0f, 0.0f },
+			{ 0.0f,     0,		0.0f, 1.0f },
+			{ w,		0,		1.0f, 1.0f },
 
-			{ 0.0f,     h,			0.0f, 0.0f },
-			{ w,		0.0f,       1.0f, 1.0f },
-			{ w,		h,			1.0f, 0.0f }
+			{ 0.0f,     h,		0.0f, 0.0f },
+			{ w,		0,      1.0f, 1.0f },
+			{ w,		h,		1.0f, 0.0f }
 		};
 		// Use that Shader and set it's uniforms	
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(xpos, ypos, 0.0f));
-		model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
+		//model = glm::scale(model, glm::vec3(this->GetGlobalScale().x, this->GetGlobalScale().y, 0.0f));
 		shader->SetMatrix4("model", model);
 		// Render glyph texture over quad
-		glActiveTexture(GL_TEXTURE0 + ch.TextureID);
-		shader->SetInt("text", ch.TextureID);
+		// Set the texture id
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -177,8 +177,8 @@ void Text::Draw()
 		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 		x += (ch.Advance >> 6) * GetGlobalScale().x; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 	}
-	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 float Text::GetWidth()

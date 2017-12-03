@@ -77,13 +77,13 @@ void B2Entity::Draw() {
 		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));
 		shader->SetMatrix4("model", _model);
-		glActiveTexture(GL_TEXTURE0 + texture->GetId());
-		shader->SetInt("ourTexture", texture->GetId());
-		glBindTexture(GL_TEXTURE_2D, texture->GetId());
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(VAO);
+
+		glBindTexture(GL_TEXTURE_2D, texture->GetId());
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 

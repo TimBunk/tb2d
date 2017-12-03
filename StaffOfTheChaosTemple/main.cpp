@@ -63,8 +63,8 @@ GameState gameState;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("Staff of the Chaos Temple", false);
-	window->Resize(800, 600);
+	window = new Window("Staff of the Chaos Temple", true);
+	//window->Resize(800, 600);
 
 	rm = window->GetResourceManager();
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);

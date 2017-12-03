@@ -26,13 +26,15 @@ void Sprite::Draw()
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
 	shader->SetMatrix4("model", model);
-	glActiveTexture(GL_TEXTURE0 + texture->GetId());
-	shader->SetInt("ourTexture", texture->GetId());
-	glBindTexture(GL_TEXTURE_2D, texture->GetId());
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+	glBindTexture(GL_TEXTURE_2D, texture->GetId());
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	// Set the currently binded VAO and texture to 0
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Sprite::SetTexture(Texture * texture)

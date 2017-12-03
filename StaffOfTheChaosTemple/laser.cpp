@@ -87,11 +87,6 @@ void Laser::Draw()
 		{ width/2.0f, -height,	1.0f, localScale.y * height / width }, // top right
 		{ -width/2.0f, -height,	0.0f, localScale.y * height / width }, // top left
 	};
-	glBindVertexArray(VAO);
-	// Update content of VBO memory
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
@@ -101,12 +96,35 @@ void Laser::Draw()
 	model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(localScale.x, localScale.y, 1.0f));
 	shader->SetMatrix4("model", model);
-	glActiveTexture(GL_TEXTURE0 + texture->GetId());
-	shader->SetInt("ourTexture", texture->GetId());
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+	// Update content of VBO memory
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	shader->Use();
+	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+	if (!HUD) {
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+	}
+	shader->SetMatrix4("model", model);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(VAO);
+	glBindTexture(GL_TEXTURE_2D, texture->GetId());
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	// Set the currently binded VAO and texture to 0
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Laser::SetDirection(glm::vec2 direction)
