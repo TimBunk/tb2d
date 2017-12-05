@@ -1,6 +1,6 @@
 #include "menu.h"
 
-Menu::Menu(ResourceManager* rm, Input* input, int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera) {
+Menu::Menu(Input* input, int screenWidthCamera, int screenHeightCamera, ResourceManager* rm) : Scene::Scene(screenWidthCamera, screenHeightCamera, rm) {
 	// Initialize all of the variables
 	init = false;
 	start = false;

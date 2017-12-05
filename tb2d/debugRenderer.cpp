@@ -1,99 +1,110 @@
 #include "debugRenderer.h"
 
-DebugRenderer::DebugRenderer(glm::mat4 projection, glm::vec4 color)
+DebugRenderer::DebugRenderer(Camera* camera, glm::vec3 color)
 {
-	shader = new Shader("shaders//debugRenderer.vs", "shaders//debugRenderer.fs");
-	shader->Use();
-	shader->SetMatrix4("projection", projection);
-	shader->SetVec4Float("color", color);
-	
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	// set the vertices
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
+	this->camera = camera;
+	this->color = color;
+	shader = new Shader("shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
+	VAO = 0;
+	VBO = 0;
+	EBO = 0;
 }
 
 DebugRenderer::~DebugRenderer()
 {
 	delete shader;
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
 }
 
-void DebugRenderer::DrawBox(b2Vec2* points)
+void DebugRenderer::DrawBox(GLfloat* vertices)
 {
-	verts.resize(verts.size() + 4);
+	GLuint * indices = new GLuint[8];
+	indices[0] = 0; indices[1] = 1; 
+	indices[2] = 1; indices[3] = 2;
+	indices[4] = 2; indices[5] = 3;
+	indices[6] = 3; indices[7] = 0;
 
-	for (int i = 0; i < 4; i++) {
-		verts[i] = glm::vec3(points[i].x, points[i].y, 1.0f);
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
 	}
-	indices.reserve(8);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
-	indices.push_back(0);
-	indices.push_back(1);
-
-	indices.push_back(1);
-	indices.push_back(2);
-
-	indices.push_back(2);
-	indices.push_back(3);
-
-	indices.push_back(3);
-	indices.push_back(0);
-}
-
-void DebugRenderer::DrawCircle(const glm::vec3 & center, float radius)
-{
-	int numVerts = 100;
-	verts.resize(numVerts);
-	for (int i = 0; i < numVerts; i++) {
-		float angle = ((float)i / numVerts) * M_PI * 2.0f;
-		verts[i].x = cos(angle) * radius;
-		verts[i].y = sin(angle) * radius;
-	}
-	indices.reserve(numVerts * 2.0f);
-	for (int i = 0; i < numVerts - 1; i++) {
-		indices.push_back(i);
-		indices.push_back(i + 1);
-	}
-	indices.push_back(numVerts - 1);
-	indices.push_back(0);
-}
-
-void DebugRenderer::Init()
-{
+	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(glm::vec3), nullptr, GL_DYNAMIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, verts.size() * sizeof(glm::vec3), verts.data());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, &vertices[0], GL_STATIC_DRAW);
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
-	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 8, &indices[0], GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
 
-	numElements = indices.size();
-	indices.clear();
-	verts.clear();
+	glBindVertexArray(0);
+
+	numElements = 8;
+	delete indices;
 }
 
-void DebugRenderer::Render(glm::mat4 view, glm::mat4 model, float lineWidth)
+void DebugRenderer::DrawCircle(glm::vec2 center, float radius) 
+{
+	int verticesAmount = 180;
+	GLfloat* vertices = new GLfloat[verticesAmount * 2];
+	for (int i = 0; i < verticesAmount * 2; i++) {
+		float angle = ((float)i / verticesAmount * 2) * M_PI * 2.0f;
+		vertices[i] = glm::cos(angle) * radius;
+		i += 1;
+		vertices[i] = glm::sin(angle) * radius;
+	}
+	GLuint* indices = new GLuint[verticesAmount * 2];
+
+	for (int i = 0; i < verticesAmount - 1; i++) {
+		indices[i] = i;
+		indices[i + 1] = i + 1;
+	}
+
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticesAmount * 2, &vertices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * verticesAmount * 2, &indices[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
+
+	numElements = verticesAmount * 2;
+	delete vertices;
+	delete indices;
+}
+
+void DebugRenderer::Render(glm::mat4 model, float lineWidth)
 {
 	shader->Use();
 	shader->SetMatrix4("model", model);
-	shader->SetMatrix4("view", view);
+	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+	shader->SetMatrix4("view", camera->GetViewMatrix());
+	shader->SetVec3Float("color", color);
 	glLineWidth(lineWidth);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_LINES, numElements, GL_UNSIGNED_INT, 0);

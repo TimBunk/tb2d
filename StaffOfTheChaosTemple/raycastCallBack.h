@@ -48,9 +48,9 @@ public:
 	/// @param shader Its best to give the debugRenderer shader or make your own one similar to that one
 	/// @param color The color of the line
 	/// @return void
-	void CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec4 color);
+	void CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color);
 
-	void ChangeColor(glm::vec4 color);
+	void ChangeColor(glm::vec3 color);
 
 	/// @brief Draws the line created by the function CreateLine
 	/// @param position The position of where the ray starts
@@ -70,13 +70,12 @@ public:
 	/// @return RaycastOutput
 	RaycastOutput GetOutput();
 private:
-	bool firstUpdate;
 	std::vector<Linkable*> linkables;
 	RaycastOutput ro; ///< @brief The raycastOutput received by GetOutput()
 	float lineWidth; ///< @brief the lineWidth that is used for drawing
 	Camera* camera; ///< @brief The camera is needed for drawing
 	Shader* shader; ///< @brief It's best to use the debugRenderer shader
-	glm::vec4 color; ///< @brief The color of the line
+	glm::vec3 color; ///< @brief The color of the line
 	GLuint VAO; ///< @brief VAO(Vertex Array Object) is needed for drawing and stores all of the VBO
 	GLuint VBO; ///< @brief VBO(Vertex Buffer Object) is needed for creating the VAO. The VBO stores all of the vertices and uv's
 };

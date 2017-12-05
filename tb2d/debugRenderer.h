@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "shader.h"
+#include "camera.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -17,7 +18,7 @@
 
 class  DebugRenderer
 {
-public:
+/*public:
 	DebugRenderer(glm::mat4 projection, glm::vec4 color);
 	virtual ~DebugRenderer();
 
@@ -30,6 +31,23 @@ private:
 	Shader* shader;
 	std::vector<glm::vec3> verts;
 	std::vector<GLuint> indices;
+	GLuint VBO, VAO, EBO;
+	int numElements;*/
+
+public:
+	DebugRenderer(Camera* camera, glm::vec3 color);
+	virtual ~DebugRenderer();
+
+	void DrawBox(GLfloat* vertices);
+	void DrawCircle(glm::vec2 center, float radius);
+
+	void Render(glm::mat4 model, float lineWidth);
+
+private:
+
+	Camera* camera;
+	Shader* shader;
+	glm::vec3 color;
 	GLuint VBO, VAO, EBO;
 	int numElements;
 };

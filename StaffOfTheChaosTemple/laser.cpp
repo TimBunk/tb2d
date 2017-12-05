@@ -6,7 +6,7 @@ Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shad
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);
 	raycast = new RaycastCallBack();
-	raycast->CreateLine(2500.0f, 50.0f, camera, debug, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	raycast->CreateLine(2500.0f, 50.0f, camera, debug, glm::vec3(1.0f, 1.0f, 1.0f));
 	direction = glm::vec2(0.0f, 0.0f);
 	width = 25.0f;
 	height = radius;
@@ -33,7 +33,7 @@ Laser::~Laser()
 void Laser::Update(double deltaTime)
 {
 	// Draw the ray's direction and length
-	raycast->ChangeColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	raycast->ChangeColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	raycast->Draw(localPosition, glm::atan(-direction.y, -direction.x));
 
 	// Shoot raycast
@@ -53,11 +53,11 @@ void Laser::Update(double deltaTime)
 			// Calculation reflection = d-(2*dot(d-n)*n)
 			reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
 			// Draw the reflection
-			raycast->ChangeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			raycast->ChangeColor(glm::vec3(1.0f, 0.0f, 0.0f));
 			raycast->Draw(glm::vec2(ro.point.x * B2Entity::m2p, ro.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
 
 			// Draw the normal
-			raycast->ChangeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			raycast->ChangeColor(glm::vec3(0.0f, 1.0f, 0.0f));
 			raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
 		}
 		else {

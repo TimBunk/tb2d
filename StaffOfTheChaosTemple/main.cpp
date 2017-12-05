@@ -63,8 +63,8 @@ GameState gameState;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("Staff of the Chaos Temple", true);
-	//window->Resize(800, 600);
+	window = new Window("Staff of the Chaos Temple", false);
+	window->Resize(800, 600);
 
 	rm = window->GetResourceManager();
 	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -85,7 +85,12 @@ int main() {
 	world->SetContactListener(contactListener);
 	world->SetAllowSleeping(false);
 
-	level1 = new Level1(1920, 1080);
+	level1 = new Level1(world, 1920, 1080, rm);
+
+	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	player->CreateBody(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
+	player->GiveTexture(rm->GetTexture("player"));
+	level1->SetFinish(player, 960, -200, 400, 100);
 
 	/*parent = new Sprite(rm->GetTexture("player"), rm->GetShader("defaultShader"), level1->GetCamera(), false);
 	parent->CreateBody(300, 300, glm::vec2(0.0f, 0.0f));
@@ -98,10 +103,6 @@ int main() {
 	child->localPosition = glm::vec2(300.0f, 300.0f);
 	child->localAngle = glm::radians(90.0f);
 	parent->AddChild(child);*/
-
-	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	player->CreateBody(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
-	player->GiveTexture(rm->GetTexture("player"));
 
 	wall = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
 	wall->CreateBody(960, 1080, 1920, 100, glm::vec2(0.0f, 0.0f), false, false, true);
@@ -160,7 +161,7 @@ int main() {
 	level1->AddChild(player);
 
 	gameState = _menu;
-	menu = new Menu(window->GetResourceManager(), input, 1920, 1080);
+	menu = new Menu(input, 1920, 1080, rm);
 
 	while (!window->ShouldClose()) {
 		// rendering commands

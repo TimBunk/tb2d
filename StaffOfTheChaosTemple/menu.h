@@ -22,7 +22,7 @@ public:
 	/// @param rm The resourceManager is needed for creating the buttons
 	/// @param input The input class is needed because the menu uses the escape key to exit the menu
 	/// @param camera The reason it takes a camera is for drawing the object with the view and projection matrix that can be received from the camera
-	Menu(ResourceManager* rm, Input* input, int screenWidthCamera, int screenHeightCamera);
+	Menu(Input* input, int screenWidthCamera, int screenHeightCamera, ResourceManager* rm);
 
 	/// @brief Destructor of the Menu
 	virtual ~Menu();

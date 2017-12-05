@@ -12,6 +12,7 @@
 #include "camera.h"
 #include "shader.h"
 #include "window.h"
+#include "debugRenderer.h"
 
 #include <Box2D/Box2D.h>
 
@@ -56,6 +57,8 @@ public:
 	/// @return void
 	virtual void CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation);
 
+	void EnableDebugRendering(glm::vec3 color);
+
 	/// @brief Give the B2Entity a texture that will be used while drawing
 	/// @param texture Specify the texture that you want to use for drawing
 	/// @return void
@@ -80,6 +83,8 @@ public:
 	/// @return void
 	void RemoveContact(B2Entity* contact);
 
+	bool Contact(B2Entity* contact);
+
 	/// @brief This function will set the b2Body active or deactive
 	/// @param active If true the body will be active othterwise it will be deactive
 	/// @return void
@@ -91,6 +96,7 @@ public:
 protected:
 	Camera* camera; ///< @brief Camera that is given through the constructor and is needed in order to draw this B2Entity
 	Shader* shader; ///< @brief Shader that is given through the constructor and is needed in order to draw this B2Entity. The shader needs at least to have three uniforms matrix4: model, projection, view. The VAO object expects 2 vertex position(x and y) and 2 uv position(x and y)
+	DebugRenderer* dr;
 
 	b2Body* body; ///< @brief The body needs to be initialized by calling CreateBody()
 	b2World* world; ///< @brief The world is needed in order for the body to work

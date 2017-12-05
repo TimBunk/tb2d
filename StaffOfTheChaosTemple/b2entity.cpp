@@ -5,6 +5,8 @@ B2Entity::B2Entity(Camera* camera, Shader* shader, b2World* world) : Entity::Ent
 	this->camera = camera;
 	this->shader = shader;
 	this->world = world;
+
+	dr = nullptr;
 	// Give all of the variables a value because it is bad to leave it not initialized
 	fixture = nullptr;
 	body = nullptr;
@@ -24,6 +26,9 @@ B2Entity::~B2Entity() {
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
+	}
+	if (dr != nullptr) {
+		delete dr;
 	}
 }
 
@@ -68,22 +73,27 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 
 void B2Entity::Draw() {
 	// Use the shader and draw the texture
-	if (body != nullptr && texture != nullptr) {
-		shader->Use();
-		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-		shader->SetMatrix4("view", camera->GetViewMatrix());
+	if (body != nullptr) {
 		glm::mat4 _model;
 		_model = glm::translate(_model, glm::vec3(GetGlobalPosition().x, GetGlobalPosition().y, 0.0f));
 		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
 		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));
-		shader->SetMatrix4("model", _model);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(VAO);
+		if (dr != nullptr) {
+			dr->Render(_model, 10.0f);
+		}
+		if (texture != nullptr) {
+			shader->Use();
+			shader->SetMatrix4("model", _model);
+			shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+			shader->SetMatrix4("view", camera->GetViewMatrix());
+			glActiveTexture(GL_TEXTURE0);
+			glBindVertexArray(VAO);
 
-		glBindTexture(GL_TEXTURE_2D, texture->GetId());
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+			glBindTexture(GL_TEXTURE_2D, texture->GetId());
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
 }
 
@@ -183,6 +193,28 @@ void B2Entity::CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dyna
 	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
 }
 
+void B2Entity::EnableDebugRendering(glm::vec3 color)
+{
+	if (body == nullptr) {
+		std::cout << "You can not enable debug rendering if you have not yet created a body!" << std::endl;
+		return;
+	}
+	if (dr != nullptr) {
+		delete dr;
+	}
+	dr = new DebugRenderer(camera, color);
+	GLfloat* vertices;
+	vertices = new GLfloat[8];
+	// position
+	vertices[0] = point[0].x; vertices[1] = point[0].y; // lower-left corner
+	vertices[2] = point[1].x; vertices[3] = point[1].y;  // lower-right corner
+	vertices[4] = point[2].x; vertices[5] = point[2].y; // upper-right corner
+	vertices[6] = point[3].x; vertices[7] = point[3].y;  // uper left corner
+	dr->DrawBox(vertices);
+	delete vertices;
+	//dr->DrawCircle(glm::vec2(0, 0), 540.0f * p2m);
+}
+
 void B2Entity::GiveTexture(Texture* texture) {
 	this->texture = texture;
 }
@@ -229,6 +261,17 @@ void B2Entity::RemoveContact(B2Entity* contact) {
 	}
 	// This cout line should never be called if it is something might be very wrong
 	std::cout << "You tried to remove a contact, but that contact could not be found!" << std::endl;
+}
+
+bool B2Entity::Contact(B2Entity * contact)
+{
+	int count = contacts.size();
+	for (int i = 0; i < count; i++) {
+		if (contacts[i] == contact) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void B2Entity::SetActive(bool active) {

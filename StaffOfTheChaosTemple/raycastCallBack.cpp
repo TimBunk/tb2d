@@ -8,14 +8,13 @@ RaycastCallBack::RaycastCallBack() : b2RayCastCallback::b2RayCastCallback() {
 	lineWidth = 0;
 	VAO = 0;
 	VBO = 0;
-	firstUpdate = false;
 }
 
 RaycastCallBack::~RaycastCallBack() {
 	
 }
 
-void RaycastCallBack::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec4 color) {
+void RaycastCallBack::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color) {
 	// Save all of the given parameters
 	this->camera = camera;
 	this->lineWidth = width;
@@ -41,7 +40,7 @@ void RaycastCallBack::CreateLine(float length, float width, Camera* camera, Shad
 	glBindVertexArray(0);
 }
 
-void RaycastCallBack::ChangeColor(glm::vec4 color)
+void RaycastCallBack::ChangeColor(glm::vec3 color)
 {
 	this->color = color;
 }
@@ -55,7 +54,7 @@ void RaycastCallBack::Draw(glm::vec2 position, float angle) {
 	shader->SetMatrix4("model", model);
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shader->SetMatrix4("view", camera->GetViewMatrix());
-	shader->SetVec4Float("color", color);
+	shader->SetVec3Float("color", color);
 	glLineWidth(lineWidth);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_LINES, 0, 2);
