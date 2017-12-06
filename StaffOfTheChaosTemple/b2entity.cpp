@@ -61,7 +61,6 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 	// If the body is intialized update the position and angle of the body
 	if (this->body != nullptr) {
 		body->SetTransform(b2Vec2(this->position.x * p2m, this->position.y * p2m), this->angle);
-		this->position = this->GetPositionInPixelsB2body();
 	}
 	// Update and draw all of the childeren and their childeren
 	for (int i = 0; i < entities.size(); i++) {
