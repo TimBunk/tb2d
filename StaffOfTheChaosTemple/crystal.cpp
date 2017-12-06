@@ -34,11 +34,7 @@ void Crystal::Draw()
 		}
 		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 		shader->SetMatrix4("view", camera->GetViewMatrix());
-		glm::mat4 _model;
-		_model = glm::translate(_model, glm::vec3(GetGlobalPosition().x, GetGlobalPosition().y, 0.0f));
-		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));
-		shader->SetMatrix4("model", _model);
+		shader->SetMatrix4("model", model);
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(VAO);
 		glBindTexture(GL_TEXTURE_2D, texture->GetId());

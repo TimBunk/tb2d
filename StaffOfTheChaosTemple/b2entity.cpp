@@ -74,16 +74,16 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 void B2Entity::Draw() {
 	// Use the shader and draw the texture
 	if (body != nullptr) {
-		glm::mat4 _model;
+		/*glm::mat4 _model;
 		_model = glm::translate(_model, glm::vec3(GetGlobalPosition().x, GetGlobalPosition().y, 0.0f));
 		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));
+		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));*/
 		if (dr != nullptr) {
-			dr->Render(_model, 10.0f);
+			dr->Render(model, 10.0f);
 		}
 		if (texture != nullptr) {
 			shader->Use();
-			shader->SetMatrix4("model", _model);
+			shader->SetMatrix4("model", model);
 			shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 			shader->SetMatrix4("view", camera->GetViewMatrix());
 			glActiveTexture(GL_TEXTURE0);
@@ -219,15 +219,15 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 	case box:
 		GLfloat* vertices;
 		vertices = new GLfloat[8];
-		vertices[0] = -width/2 * p2m; vertices[1] = -height/2 * p2m; // lower-left corner
-		vertices[2] = width/2 * p2m; vertices[3] = -height/2 * p2m;  // lower-right corner
-		vertices[4] = width/2 * p2m; vertices[5] = height/2 * p2m; // upper-right corner
-		vertices[6] = -width/2 * p2m; vertices[7] = height/2 * p2m;  // uper left corner
+		vertices[0] = -width/2; vertices[1] = -height/2; // lower-left corner
+		vertices[2] = width/2; vertices[3] = -height/2;  // lower-right corner
+		vertices[4] = width/2; vertices[5] = height/2; // upper-right corner
+		vertices[6] = -width/2; vertices[7] = height/2;  // uper left corner
 		dr->DrawBox(vertices);
 		delete vertices;
 		break;
 	case circle:
-		dr->DrawCircle(glm::vec2(0, 0), width / 2 * p2m);
+		dr->DrawCircle(glm::vec2(0, 0), width / 2);
 		break;
 	}
 }
@@ -316,10 +316,10 @@ void B2Entity::SetVertices(glm::vec2 pivot)
 	GLfloat* vertices;
 	vertices = new GLfloat[16];
 	// position
-	vertices[0] = (-width / 2 + pivot.x) * p2m; vertices[1] = (-height / 2 + pivot.y) * p2m; vertices[2] = 0.0f; vertices[3] = 0.0f;// lower-left corner
-	vertices[4] = (width / 2 + pivot.x) * p2m; vertices[5] = (-height / 2 + pivot.y) * p2m; vertices[6] = 1.0f; vertices[7] = 0.0f; // lower-right corner
-	vertices[8] = (width / 2 + pivot.x) * p2m; vertices[9] = (height / 2 + pivot.y) * p2m; vertices[10] = 1.0f; vertices[11] = 1.0f;// upper-right corner
-	vertices[12] = (-width / 2 + pivot.x) * p2m; vertices[13] = (height / 2 + pivot.y) * p2m; vertices[14] = 0.0f; vertices[15] = 1.0f; // uper left corner
+	vertices[0] = -width / 2 + pivot.x; vertices[1] = -height / 2 + pivot.y; vertices[2] = 0.0f; vertices[3] = 0.0f;// lower-left corner
+	vertices[4] = width / 2 + pivot.x; vertices[5] = -height / 2 + pivot.y; vertices[6] = 1.0f; vertices[7] = 0.0f; // lower-right corner
+	vertices[8] = width / 2 + pivot.x; vertices[9] = height / 2 + pivot.y; vertices[10] = 1.0f; vertices[11] = 1.0f;// upper-right corner
+	vertices[12] = -width / 2 + pivot.x; vertices[13] = height / 2 + pivot.y; vertices[14] = 0.0f; vertices[15] = 1.0f; // uper left corner
 	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
