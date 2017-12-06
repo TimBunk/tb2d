@@ -22,7 +22,8 @@ void Level1::SetFinish(Player * player, int x, int y, int width, int height)
 {
 	this->player = player;
 	this->player->SetCamera(camera);
-	finish->CreateBody(x, y, width, height, glm::vec2(0, 0), false, true, true);
+	finish->CreateBodyBox(x, y, width, height, glm::vec2(0, 0), false, true, true);
+	//finish->CreateBodyCircle(x, y, width / 2, false, true, true);
 	finish->EnableDebugRendering(glm::vec3(0.0f, 1.0f, 0.0f));
 	this->AddChild(finish);
 }

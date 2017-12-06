@@ -16,6 +16,11 @@
 
 #include <Box2D/Box2D.h>
 
+enum Shape {
+	box,
+	circle
+};
+
 /**
  * @brief The B2Entity class is the main entity for all of the box2D objects.
  */
@@ -55,7 +60,9 @@ public:
 	/// @param dynamic If true the body will be dynamic that means that it will be affected by physics if false it will be static and not affected by physics
 	/// @param sensor If true the body can overlap with the other body's but still detects collision
 	/// @return void
-	virtual void CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation);
+	virtual void CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation);
+
+	virtual void CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sensor, bool fixedRotation);
 
 	void EnableDebugRendering(glm::vec3 color);
 
@@ -94,10 +101,12 @@ public:
 	static float p2m;
 
 protected:
+	virtual void SetVertices(glm::vec2 pivot);
 	Camera* camera; ///< @brief Camera that is given through the constructor and is needed in order to draw this B2Entity
 	Shader* shader; ///< @brief Shader that is given through the constructor and is needed in order to draw this B2Entity. The shader needs at least to have three uniforms matrix4: model, projection, view. The VAO object expects 2 vertex position(x and y) and 2 uv position(x and y)
 	DebugRenderer* dr;
 
+	Shape shape;
 	b2Body* body; ///< @brief The body needs to be initialized by calling CreateBody()
 	b2World* world; ///< @brief The world is needed in order for the body to work
 	Texture* texture; ///< @brief texture is needed in order to draw correctly
@@ -107,7 +116,6 @@ protected:
 	GLuint EBO; ///< @brief EBO(Element Buffer Object) is used in order for the VAO to work. It stores all of the indices.
 
 	b2Fixture* fixture; ///< @brief The body makes use of only one fixture
-	b2Vec2 point[4]; ///< @brief the points are the vertices received from creating the body
 
 	std::vector<B2Entity*> contacts; ///< @brief A vector with all of the contacts that this B2Entity(fixture) is colliding with
 	int width; ///< @brief The width of the body you entered in CreateBody()

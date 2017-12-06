@@ -11,6 +11,7 @@ B2Entity::B2Entity(Camera* camera, Shader* shader, b2World* world) : Entity::Ent
 	fixture = nullptr;
 	body = nullptr;
 	texture = nullptr;
+	shape = Shape::box;
 	VBO = 0;
 	VAO = 0;
 	EBO = 0;
@@ -33,8 +34,7 @@ B2Entity::~B2Entity() {
 }
 
 void B2Entity::Update(double deltaTime) {
-	body->SetAwake(true);
-	body->SetActive(true);
+	
 }
 
 // This function is normally called by the parent
@@ -97,14 +97,12 @@ void B2Entity::Draw() {
 	}
 }
 
-void B2Entity::CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation) {
+void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation) {
+	shape = Shape::box;
 	// If the body was created make sure to delete everything as well
 	if (body != nullptr) {
 		body->DestroyFixture(fixture);
 		world->DestroyBody(body);
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
 	}
 	// Save the w and h for later use
 	width = w;
@@ -146,51 +144,64 @@ void B2Entity::CreateBody(int x, int y, int w, int h, glm::vec2 pivot, bool dyna
 	}
 	fixture->SetUserData(this);
 	body->SetActive(true);
-	for (int i = 0; i < 4; i++) {
-		point[i] = ((b2PolygonShape*)body->GetFixtureList()->GetShape())->m_vertices[i];
-		//std::cout << "point " << i << ": (" << point[i].x << ") (" << point[i].y << ")" << std::endl;
-	}
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// create vertices on the heap to make sure they won't get out of range
-	GLfloat* vertices;
-	vertices = new GLfloat[16];
-	// position
-	vertices[0] = point[0].x; vertices[1] = point[0].y; vertices[2] = 0.0f; vertices[3] = 0.0f;  // lower-left corner
-	vertices[4] = point[1].x; vertices[5] = point[1].y; vertices[6] = 1.0f; vertices[7]  = 0.0f;  // lower-right corner
-	vertices[8] = point[2].x; vertices[9] = point[2].y; vertices[10] = 1.0f; vertices[11] = 1.0f;  // upper-right corner
-	vertices[12] = point[3].x; vertices[13] = point[3].y; vertices[14] =  0.0f; vertices[15] =  1.0f;  // uper left corner
-
-	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	// create the indices on the stack to make sure they won't get out of range
-	unsigned int * indices;
-	indices = new unsigned int[6];
-	indices[0] = 0; indices[1] = 1; indices[2] = 3;
-	indices[3] = 1; indices[4] =  2; indices[5] = 3;
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-
-	// delete the vertices and indices created on the heap
-	delete vertices;
-	delete indices;
 
 	this->localPosition = glm::vec2(x, y);
 	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
+
+	SetVertices(pivot);
+}
+
+void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sensor, bool fixedRotation)
+{
+	shape = Shape::circle;
+	// If the body was created make sure to delete everything as well
+	if (body != nullptr) {
+		body->DestroyFixture(fixture);
+		world->DestroyBody(body);
+	}
+	// Save the w and h for later use
+	width = radius * 2.0f;
+	height = radius * 2.0f;
+	// Step 1 defina a body
+	b2BodyDef bodydef;
+	bodydef.position.Set(0.0f, 0.0f);
+	if (fixedRotation) {
+		bodydef.fixedRotation = true;
+	}
+	else {
+		bodydef.fixedRotation = false;
+	}
+	if (dynamic) {
+		bodydef.type = b2_dynamicBody;
+	}
+	else {
+		bodydef.type = b2_staticBody;
+	}
+
+	// Step 2 create a body
+	body = world->CreateBody(&bodydef);
+
+	// Step 3 create shape
+	b2CircleShape shape;
+	shape.m_radius = radius * p2m;
+	shape.m_type = shape.e_circle;
+	// step 4 create fixture
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &shape;
+	fixtureDef.density = 1.0;
+	fixtureDef.friction = 0.3f;
+	fixtureDef.restitution = 0.5f;
+	fixture = body->CreateFixture(&fixtureDef);
+	if (sensor) {
+		fixture->SetSensor(true);
+	}
+	fixture->SetUserData(this);
+	body->SetActive(true);
+
+	this->localPosition = glm::vec2(x, y);
+	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
+
+	SetVertices(glm::vec2(0,0));
 }
 
 void B2Entity::EnableDebugRendering(glm::vec3 color)
@@ -203,16 +214,22 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 		delete dr;
 	}
 	dr = new DebugRenderer(camera, color);
-	GLfloat* vertices;
-	vertices = new GLfloat[8];
-	// position
-	vertices[0] = point[0].x; vertices[1] = point[0].y; // lower-left corner
-	vertices[2] = point[1].x; vertices[3] = point[1].y;  // lower-right corner
-	vertices[4] = point[2].x; vertices[5] = point[2].y; // upper-right corner
-	vertices[6] = point[3].x; vertices[7] = point[3].y;  // uper left corner
-	dr->DrawBox(vertices);
-	delete vertices;
-	//dr->DrawCircle(glm::vec2(0, 0), 540.0f * p2m);
+	switch (shape)
+	{
+	case box:
+		GLfloat* vertices;
+		vertices = new GLfloat[8];
+		vertices[0] = -width/2 * p2m; vertices[1] = -height/2 * p2m; // lower-left corner
+		vertices[2] = width/2 * p2m; vertices[3] = -height/2 * p2m;  // lower-right corner
+		vertices[4] = width/2 * p2m; vertices[5] = height/2 * p2m; // upper-right corner
+		vertices[6] = -width/2 * p2m; vertices[7] = height/2 * p2m;  // uper left corner
+		dr->DrawBox(vertices);
+		delete vertices;
+		break;
+	case circle:
+		dr->DrawCircle(glm::vec2(0, 0), width / 2 * p2m);
+		break;
+	}
 }
 
 void B2Entity::GiveTexture(Texture* texture) {
@@ -279,4 +296,46 @@ void B2Entity::SetActive(bool active) {
 	if (body != NULL) {
 		body->SetActive(active);
 	}
+}
+
+void B2Entity::SetVertices(glm::vec2 pivot)
+{
+	if (VAO != 0) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	GLfloat* vertices;
+	vertices = new GLfloat[16];
+	// position
+	vertices[0] = (-width / 2 + pivot.x) * p2m; vertices[1] = (-height / 2 + pivot.y) * p2m; vertices[2] = 0.0f; vertices[3] = 0.0f;// lower-left corner
+	vertices[4] = (width / 2 + pivot.x) * p2m; vertices[5] = (-height / 2 + pivot.y) * p2m; vertices[6] = 1.0f; vertices[7] = 0.0f; // lower-right corner
+	vertices[8] = (width / 2 + pivot.x) * p2m; vertices[9] = (height / 2 + pivot.y) * p2m; vertices[10] = 1.0f; vertices[11] = 1.0f;// upper-right corner
+	vertices[12] = (-width / 2 + pivot.x) * p2m; vertices[13] = (height / 2 + pivot.y) * p2m; vertices[14] = 0.0f; vertices[15] = 1.0f; // uper left corner
+	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	unsigned int * indices;
+	indices = new unsigned int[6];
+	indices[0] = 0; indices[1] = 1; indices[2] = 3;
+	indices[3] = 1; indices[4] = 2; indices[5] = 3;
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
+	// set the vertices
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
+
+	// delete the vertices and indices created on the heap
+	delete vertices;
+	delete indices;
 }

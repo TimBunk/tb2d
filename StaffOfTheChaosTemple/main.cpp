@@ -88,7 +88,7 @@ int main() {
 	level1 = new Level1(world, 1920, 1080, rm);
 
 	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	player->CreateBody(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
+	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->GiveTexture(rm->GetTexture("player"));
 	level1->SetFinish(player, 960, -200, 400, 100);
 
@@ -105,15 +105,15 @@ int main() {
 	parent->AddChild(child);*/
 
 	wall = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall->CreateBody(960, 1080, 1920, 100, glm::vec2(0.0f, 0.0f), false, false, true);
+	wall->CreateBodyBox(960, 1080, 1920, 100, glm::vec2(0.0f, 0.0f), false, false, true);
 	wall->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall);
 	wall2 = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall2->CreateBody(0, 540, 100, 1080, glm::vec2(0.0f, 0.0f), false, false, true);
+	wall2->CreateBodyBox(0, 540, 100, 1080, glm::vec2(0.0f, 0.0f), false, false, true);
 	wall2->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall2);
 	wall3 = new B2Entity(level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	wall3->CreateBody(1920, 540, 100, 1080, glm::vec2(0.0f, 0.0f), false, false, true);
+	wall3->CreateBodyBox(1920, 540, 100, 1080, glm::vec2(0.0f, 0.0f), false, false, true);
 	wall3->GiveTexture(rm->GetTexture("wall"));
 	level1->AddChild(wall3);
 
@@ -135,24 +135,24 @@ int main() {
 	level1->AddChild(mirror3);
 
 	crystal = new Crystal(level1->GetCamera(), rm->GetShader("crystal"), world);
-	crystal->CreateBody(1400, 540, 70, 70, glm::vec2(0, 0), false, false, true);
+	crystal->CreateBodyBox(1400, 540, 70, 70, glm::vec2(0, 0), false, false, true);
 	crystal->GiveTexture(rm->GetTexture("crystal"));
 	level1->AddChild(crystal);
 
 	crystal2 = new Crystal(level1->GetCamera(), rm->GetShader("crystal"), world);
-	crystal2->CreateBody(1300, 640, 70, 70, glm::vec2(0, 0), false, false, true);
+	crystal2->CreateBodyBox(1300, 640, 70, 70, glm::vec2(0, 0), false, false, true);
 	crystal2->GiveTexture(rm->GetTexture("crystal"));
 	level1->AddChild(crystal2);
 
 	door = new Door(Direction::west, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	door->CreateBody(960, 900, 100, 50, glm::vec2(0, 0), false, false, true);
+	door->CreateBodyBox(960, 900, 100, 50, glm::vec2(0, 0), false, false, true);
 	door->GiveTexture(rm->GetTexture("player"));
 	door->Link(crystal);
 	door->Link(crystal2);
 	level1->AddChild(door);
 
 	door2 = new Door(Direction::east, level1->GetCamera(), rm->GetShader("defaultShader"), world);
-	door2->CreateBody(1060, 900, 100, 50, glm::vec2(0, 0), false, false, true);
+	door2->CreateBodyBox(1060, 900, 100, 50, glm::vec2(0, 0), false, false, true);
 	door2->GiveTexture(rm->GetTexture("player"));
 	door2->Link(crystal);
 	door2->Link(crystal2);
