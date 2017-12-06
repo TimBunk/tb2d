@@ -12,7 +12,6 @@
 #include <glfw3.h>
 
 #include "resourceManager.h"
-#include "text.h"
 #include "input.h"
 
 class Window {
