@@ -13,6 +13,7 @@ public:
 	virtual void Draw();
 	void SetTexture(Texture* texture);
 	void SetShader(Shader* shader);
+	virtual void SetCamera(Camera* camera);
 
 	int GetWidth();
 	int GetHeight();

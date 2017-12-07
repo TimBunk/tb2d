@@ -19,6 +19,8 @@ public:
 	void Update(double deltaTime);
 	void Shoot();
 
+	void SetCamera(Camera* camera);
+
 private:
 	float laserRange;
 	bool shooting;

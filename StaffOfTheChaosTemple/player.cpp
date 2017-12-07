@@ -3,7 +3,8 @@
 Player::Player(Input* input, ResourceManager* rm, int health, float speed, int damage, Camera * camera, Shader * shader, b2World * world) : Person::Person(health, speed, damage, camera, shader, world)
 {
 	this->input = input;
-	staff = new Staff(1000.0f, world, rm, 20, 90, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
+	staff = new Staff(1000.0f, world, rm, 100, 200, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
+	staff->CreateBody(200, 100, glm::vec2(0.0f, -50.0f));
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);
 }
@@ -98,4 +99,5 @@ void Player::Update(double deltaTime)
 void Player::SetCamera(Camera * camera)
 {
 	this->camera = camera;
+	staff->SetCamera(camera);
 }

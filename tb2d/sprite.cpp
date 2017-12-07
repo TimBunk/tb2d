@@ -47,6 +47,11 @@ void Sprite::SetShader(Shader * shader)
 	this->shader = shader;
 }
 
+void Sprite::SetCamera(Camera * camera)
+{
+	this->camera = camera;
+}
+
 int Sprite::GetWidth()
 {
 	int w = width * this->GetGlobalScale().x;
@@ -63,13 +68,13 @@ void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
 {
 	float vertices[] = {
 		// position										// uv's
-		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 0.0f,  // uper left corner
-		-width / 2 + pivot.x, -height / 2 + pivot.y,	0.0f, 1.0f,  // lower-left corner
-		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 1.0f,  // lower-right corner
+		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 1.0f,  // uper left corner
+		-width / 2 + pivot.x, -height / 2 + pivot.y,	0.0f, 0.0f,  // lower-left corner
+		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 0.0f,  // lower-right corner
 
-		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 1.0f,  // lower-right corner
-		width / 2 + pivot.x, height / 2 + pivot.y,		1.0f, 0.0f,  // upper-right corner
-		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 0.0f,  // uper left corner
+		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 0.0f,  // lower-right corner
+		width / 2 + pivot.x, height / 2 + pivot.y,		1.0f, 1.0f,  // upper-right corner
+		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 1.0f,  // uper left corner
 	};
 
 	if (VAO != 0) {
