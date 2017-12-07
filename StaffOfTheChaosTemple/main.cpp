@@ -87,7 +87,7 @@ int main() {
 
 	level1 = new Level1(world, 1920, 1080, rm);
 
-	player = new Player(input, rm, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	player = new Player(input, rm, 10, 10.0f, 1, level1->GetCamera(), rm->GetShader("defaultShader"), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->GiveTexture(rm->GetTexture("player"));
 	level1->SetFinish(player, 960, -200, 400, 100);

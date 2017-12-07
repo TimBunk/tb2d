@@ -1,9 +1,8 @@
 #include "player.h"
 
-Player::Player(Input* input, ResourceManager* rm, Camera * camera, Shader * shader, b2World * world) : B2Entity::B2Entity(camera, shader, world)
+Player::Player(Input* input, ResourceManager* rm, int health, float speed, int damage, Camera * camera, Shader * shader, b2World * world) : Person::Person(health, speed, damage, camera, shader, world)
 {
 	this->input = input;
-	this->rm = rm;
 	staff = new Staff(1000.0f, world, rm, 20, 90, rm->GetTexture("staff"), rm->GetShader("defaultShader"), camera);
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);

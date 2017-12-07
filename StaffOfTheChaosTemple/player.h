@@ -7,11 +7,12 @@
 #include "input.h"
 #include "staff.h"
 #include "rotator.h"
+#include "person.h"
 
-class Player : public B2Entity
+class Player : public Person
 {
 public:
-	Player(Input* input, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
+	Player(Input* input, ResourceManager* rm, int health, float speed, int damage, Camera* camera, Shader* shader, b2World* world);
 	~Player();
 
 	void Update(double deltaTime);
@@ -19,7 +20,6 @@ public:
 
 private:
 	Input* input;
-	ResourceManager* rm;
 	Staff* staff;
 };
 
