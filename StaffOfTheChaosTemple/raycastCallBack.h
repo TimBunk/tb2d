@@ -8,6 +8,8 @@
 #ifndef RAYCASTCALLBACK_H
 #define RAYCASTCALLBACK_H
 
+#include <algorithm>
+
 #include "b2entity.h"
 
 #include "shader.h"
@@ -21,11 +23,12 @@
 #include <Box2D/Box2D.h>
 
 /// @brief RaycastOutput is a struct you will receive whenever you call GetOutput(). It will give you all of the information of the hitted B2Entity by this raycast
-struct RaycastOutput {
+struct RaycastHit {
 	b2Fixture* fixture = nullptr;
 	b2Vec2 point = b2Vec2(0.0f, 0.0f);
 	b2Vec2 normal = b2Vec2(0.0f, 0.0f);
 	float32 fraction = 0.0f;
+	//bool operator()(const RaycastOutput& lhs, const RaycastOutput& rhs) const { lhs.fraction < rhs.fraction; }
 };
 
 /**
@@ -36,10 +39,15 @@ class RaycastCallBack : public b2RayCastCallback {
 public:
 	///< @brief Constructor of the RayCastCallBack
 	///< @param user You have to give the user of the raycast so that it won't collide with itself
-	RaycastCallBack();
+	RaycastCallBack(b2World* world);
 
 	///< @brief Destructor of the RayCastCallBack
 	virtual ~RaycastCallBack();
+
+	void Update(b2Vec2 startingPoint, b2Vec2 endPoint);
+
+	RaycastHit GetHit(int index);
+	int AmountOfHits();
 
 	/// @brief CreateLine is an optional function it is used for rendering a line that can help you visualize the raycast better
 	/// @param length The length of the line
@@ -66,12 +74,9 @@ public:
 	/// @return float32
 	float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction);
 
-	/// @brief This function returns all of the output received by the raycast
-	/// @return RaycastOutput
-	RaycastOutput GetOutput();
 private:
-	std::vector<Linkable*> linkables;
-	RaycastOutput ro; ///< @brief The raycastOutput received by GetOutput()
+	b2World* world;
+	std::vector<RaycastHit> hits;
 	float lineWidth; ///< @brief the lineWidth that is used for drawing
 	Camera* camera; ///< @brief The camera is needed for drawing
 	Shader* shader; ///< @brief It's best to use the debugRenderer shader

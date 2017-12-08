@@ -5,7 +5,7 @@ Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shad
 {
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);
-	raycast = new RaycastCallBack();
+	raycast = new RaycastCallBack(world);
 	raycast->CreateLine(2500.0f, 50.0f, camera, debug, glm::vec3(1.0f, 1.0f, 1.0f));
 	direction = glm::vec2(0.0f, 0.0f);
 	width = 25.0f;
@@ -39,39 +39,55 @@ void Laser::Update(double deltaTime)
 	// Shoot raycast
 	b2Vec2 globalPos = b2Vec2(localPosition.x * B2Entity::p2m, localPosition.y * B2Entity::p2m);
 	b2Vec2 destination = globalPos + b2Vec2(direction.x * B2Entity::p2m, direction.y * B2Entity::p2m);
-	world->RayCast(raycast, globalPos, destination);
-	RaycastOutput ro = raycast->GetOutput();
-
-	if (ro.fixture != nullptr) {
-		if (dynamic_cast<Mirror*>(static_cast<B2Entity*>(ro.fixture->GetUserData())) != NULL) {
+	raycast->Update(globalPos, destination);
+	//world->RayCast(raycast, globalPos, destination);
+	int hits = raycast->AmountOfHits();
+	for (int i = 0; i < hits; i++) {
+		RaycastHit rh = raycast->GetHit(i);
+		B2Entity* b = static_cast<B2Entity*>(rh.fixture->GetUserData());
+		// HIT MIRROR
+		if (dynamic_cast<Mirror*>(b) != NULL) {
 			hit = true;
-			hitPosition = ro.point;
+			hitPosition = rh.point;
 			// intersectionPoint is a vector from the ray's starting point and the hitted point
 			b2Vec2 intersectionPoint = globalPos - destination;
-			intersectionPoint *= ro.fraction;
+			intersectionPoint *= rh.fraction;
 
 			// Calculation reflection = d-(2*dot(d-n)*n)
-			reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, ro.normal) * ro.normal);
+			reflection = intersectionPoint - (2 * b2Dot(intersectionPoint, rh.normal) * rh.normal);
 			// Draw the reflection
 			raycast->ChangeColor(glm::vec3(1.0f, 0.0f, 0.0f));
-			raycast->Draw(glm::vec2(ro.point.x * B2Entity::m2p, ro.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
+			raycast->Draw(glm::vec2(rh.point.x * B2Entity::m2p, rh.point.y * B2Entity::m2p), glm::atan(reflection.y, reflection.x));
 
 			// Draw the normal
 			raycast->ChangeColor(glm::vec3(0.0f, 1.0f, 0.0f));
-			raycast->Draw(glm::vec2((ro.point.x + ro.normal.x) * B2Entity::m2p, (ro.point.y + ro.normal.y) * B2Entity::m2p), glm::atan(ro.normal.y, ro.normal.x));
+			raycast->Draw(glm::vec2((rh.point.x + rh.normal.x) * B2Entity::m2p, (rh.point.y + rh.normal.y) * B2Entity::m2p), glm::atan(rh.normal.y, rh.normal.x));
+			// Scale the laser by the distance of hit
+			localScale.y = rh.fraction;
+			return;
+
 		}
+		// HIT CRYSTAL
+		else if (dynamic_cast<Crystal*>(b) != NULL) {
+			// Activate the crystal
+			dynamic_cast<Crystal*>(b)->Hit();
+			continue;
+		}
+		// HIT B2ENTITY
 		else {
+			// Scale the laser by the distance of hit
+			localScale.y = rh.fraction;
 			hit = false;
+			hitPosition = b2Vec2(0.0f, 0.0f);
+			reflection = b2Vec2(0.0f, 0.0f);
+			return;
 		}
-		// Scale the laser by the distance of hit
-		localScale.y = ro.fraction;
 	}
-	else {
-		hit = false;
-		hitPosition = b2Vec2(0.0f, 0.0f);
-		reflection = b2Vec2(0.0f, 0.0f);
-		localScale.y = 1.0f;
-	}
+	hit = false;
+	hitPosition = b2Vec2(0.0f, 0.0f);
+	reflection = b2Vec2(0.0f, 0.0f);
+	localScale.y = 1.0f;
+		
 }
 
 void Laser::Draw()

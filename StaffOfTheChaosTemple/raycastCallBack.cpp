@@ -1,7 +1,8 @@
 #include "raycastCallBack.h"
 
-RaycastCallBack::RaycastCallBack() : b2RayCastCallback::b2RayCastCallback() {
+RaycastCallBack::RaycastCallBack(b2World* world) : b2RayCastCallback::b2RayCastCallback() {
 	// Initialize all variables with a value to avoid conflicts
+	this->world = world;
 	camera = nullptr;
 	shader = nullptr;
 	color = glm::vec4(0.0f);
@@ -12,6 +13,31 @@ RaycastCallBack::RaycastCallBack() : b2RayCastCallback::b2RayCastCallback() {
 
 RaycastCallBack::~RaycastCallBack() {
 	
+}
+
+void RaycastCallBack::Update(b2Vec2 startingPoint, b2Vec2 endPoint)
+{
+	hits.clear();
+	world->RayCast(this, startingPoint, endPoint);
+	if (hits.size() > 0) {
+		// Sort the hits by fraction from low to high
+		// The square brackets specify which variables are "captured" by the lambda, and how (by value or reference).
+		// More info on lamba's https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11
+		std::sort(hits.begin(), hits.end(), [](RaycastHit a, RaycastHit b) { return a.fraction < b.fraction; });
+	}
+}
+
+RaycastHit RaycastCallBack::GetHit(int index)
+{
+	if (hits.size() > index) {
+		return hits[index];
+	}
+	return RaycastHit();
+}
+
+int RaycastCallBack::AmountOfHits()
+{
+	return hits.size();
 }
 
 void RaycastCallBack::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color) {
@@ -62,25 +88,12 @@ void RaycastCallBack::Draw(glm::vec2 position, float angle) {
 }
 
 float32 RaycastCallBack::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
-	// The Raycast will detect the crystals but ingores them
-	B2Entity* b = static_cast<B2Entity*>(fixture->GetUserData());
-	if (dynamic_cast<Crystal*>(b) != NULL) {
-		Crystal* c = dynamic_cast<Crystal*>(b);
-		c->Hit();
-		linkables.push_back(c);
-		return -1;
-	}
-	// Set all of the values in a RaycastOutput struct that can be received by calling GetOutput()
-	ro.fixture = fixture;
-	ro.point = point;
-	ro.normal = normal;
-	ro.fraction = fraction;
-	return fraction;
-}
-
-RaycastOutput RaycastCallBack::GetOutput() {
-	// Return the RaycastOutput
-	RaycastOutput ro2 = ro;
-	ro.fixture = nullptr;
-	return ro2;
+	RaycastHit rh;
+	rh.fixture = fixture;
+	rh.point = point;
+	rh.normal = normal;
+	rh.fraction = fraction;
+	hits.push_back(rh);
+	// We return 1 to trick box2D in continueing shooting the raycast
+	return 1;
 }
