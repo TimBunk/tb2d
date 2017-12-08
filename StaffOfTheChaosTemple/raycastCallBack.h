@@ -12,7 +12,7 @@
 
 #include "shader.h"
 #include "window.h"
-#include "linkable.h"
+#include "crystal.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
