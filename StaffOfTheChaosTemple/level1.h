@@ -13,7 +13,15 @@ public:
 	void SetPlayer(Player* player);
 
 private:
-
+	B2Entity* wall;
+	B2Entity* wall2;
+	B2Entity* wall3;
+	Mirror* mirror;
+	Mirror* mirror2;
+	Crystal* crystal;
+	Crystal* crystal2;
+	Door* door;
+	Door* door2;
 };
 
 #endif // !LEVEL1_H

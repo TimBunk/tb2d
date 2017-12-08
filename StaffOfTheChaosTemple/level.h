@@ -2,6 +2,9 @@
 #define LEVEL_H
 
 #include "scene.h"
+#include "mirror.h"
+#include "crystal.h"
+#include "door.h"
 #include "player.h"
 
 class Level : public Scene
