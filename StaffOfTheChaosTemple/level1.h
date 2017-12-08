@@ -16,8 +16,10 @@ private:
 	B2Entity* wall;
 	B2Entity* wall2;
 	B2Entity* wall3;
+	B2Entity* wall4;
+	B2Entity* wall5;
+	B2Entity* wall6;
 	Mirror* mirror;
-	Mirror* mirror2;
 	Crystal* crystal;
 	Crystal* crystal2;
 	Door* door;
