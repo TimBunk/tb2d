@@ -1,9 +1,8 @@
 #include "door.h"
 
-Door::Door(Direction direction, Camera * camera, Shader * shader, b2World * world) : B2Entity::B2Entity(camera, shader, world)
+Door::Door(Direction direction, Camera * camera, Shader * shader, b2World * world) : Linkable::Linkable(camera, shader, world)
 {
 	this->direction = direction;
-	open = false;
 	openPosition = glm::vec2(0.0f, 0.0f);
 }
 
@@ -23,7 +22,7 @@ void Door::Update(double deltaTime)
 	}
 	// if all linkables are enabled start opening the door
 	if (isOpen) {
-		if (open == false) {
+		if (enabled == false) {
 			switch (direction)
 			{
 			case north:
@@ -40,10 +39,11 @@ void Door::Update(double deltaTime)
 				break;
 			}
 		}
-		open = true;
+		// Open and enable the door so that everything that this door is linked with also know it is open
+		enabled = true;
 	}
 	// Open the door by moving it its direction
-	if (open) {
+	if (enabled) {
 		switch (direction)
 		{
 		case north:

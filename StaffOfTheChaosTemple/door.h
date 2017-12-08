@@ -10,7 +10,7 @@ enum Direction {
 	west
 };
 
-class Door : public B2Entity
+class Door : public Linkable
 {
 public:
 	Door(Direction direction, Camera* camera, Shader* shader, b2World* world);
@@ -22,7 +22,6 @@ public:
 
 private:
 	std::vector<Linkable*> linkables;
-	bool open;
 	glm::vec2 openPosition;
 	Direction direction;
 };
