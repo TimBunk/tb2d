@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(Input* input, int health, float speed, int damage, Camera * camera, Shader * shader, b2World * world) : Person::Person(health, speed, damage, camera, shader, world)
+Player::Player(Input* input, int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
 {
 	this->input = input;
 	staff = new Staff(1000.0f, world, 100, 200, ResourceManager::GetTexture("staff"), camera);

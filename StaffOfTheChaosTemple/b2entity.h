@@ -8,11 +8,10 @@
 #define B2ENTITY_H
 
 #include "entity.h"
-#include "texture.h"
 #include "camera.h"
-#include "shader.h"
 #include "window.h"
 #include "debugRenderer.h"
+#include "resourceManager.h"
 
 #include <Box2D/Box2D.h>
 
@@ -30,7 +29,7 @@ public:
 	/// @param camera The reason it takes a camera is for drawing the object with the view and projection matrix that can be received from the camera
 	/// @param shader The shader is used for the drawing and the shader needs at least to have 3 uniforms matrix4: projection, view and model als the VAO needs to excist of 1. 2Dposition and 2. uv's
 	/// @param world The world is need for creating the body and deleting the box2D body
-	B2Entity(Camera* camera, Shader* shader, b2World* world);
+	B2Entity(Camera* camera, b2World* world);
 
 	/// @brief Destructor of the B2Entity
 	virtual ~B2Entity();
@@ -70,6 +69,8 @@ public:
 	/// @param texture Specify the texture that you want to use for drawing
 	/// @return void
 	virtual void GiveTexture(Texture* texture);
+
+	virtual void SetShader(Shader* shader);
 
 	glm::vec2 ApplyVelocityB2body(glm::vec2 velocity);
 

@@ -1,6 +1,6 @@
 #include "person.h"
 
-Person::Person(int health, float speed, int damage, Camera * camera, Shader * shader, b2World * world) : B2Entity::B2Entity(camera, shader, world)
+Person::Person(int health, float speed, int damage, Camera * camera, b2World * world) : B2Entity::B2Entity(camera, world)
 {
 	this->health = health;
 	this->speed = speed;

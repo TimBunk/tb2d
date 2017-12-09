@@ -1,11 +1,11 @@
 #include "b2entity.h"
 
-B2Entity::B2Entity(Camera* camera, Shader* shader, b2World* world) : Entity::Entity() {
+B2Entity::B2Entity(Camera* camera, b2World* world) : Entity::Entity() {
 	// Save all of the variables received from the constructor
 	this->camera = camera;
-	this->shader = shader;
 	this->world = world;
 
+	shader = ResourceManager::GetShader("defaultShader");
 	dr = nullptr;
 	// Give all of the variables a value because it is bad to leave it not initialized
 	fixture = nullptr;
@@ -233,6 +233,11 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 
 void B2Entity::GiveTexture(Texture* texture) {
 	this->texture = texture;
+}
+
+void B2Entity::SetShader(Shader * shader)
+{
+	this->shader = shader;
 }
 
 glm::vec2 B2Entity::ApplyVelocityB2body(glm::vec2 velocity)

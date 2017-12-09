@@ -5,7 +5,7 @@
 class Rotator : public B2Entity
 {
 public:
-	Rotator(Camera* camera, Shader* shader, b2World* world);
+	Rotator(Camera* camera, b2World* world);
 	~Rotator();
 
 	void Update(double deltaTime);

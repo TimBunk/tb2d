@@ -1,6 +1,6 @@
 #include "linkable.h"
 
-Linkable::Linkable(Camera * camera, Shader * shader, b2World * world) : B2Entity::B2Entity(camera, shader, world)
+Linkable::Linkable(Camera * camera, b2World * world) : B2Entity::B2Entity(camera, world)
 {
 	enabled = false;
 	hit = false;
