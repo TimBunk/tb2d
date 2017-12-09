@@ -81,7 +81,7 @@ int main() {
 
 	player = new Player(input, 10, 10.0f, 1, level1->GetCamera(), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
-	player->GiveTexture(ResourceManager::GetTexture("player"));
+	player->SetTexture(ResourceManager::GetTexture("player"));
 
 	level1->AddChild(player);
 	level2->AddChild(player);

@@ -68,7 +68,7 @@ public:
 	/// @brief Give the B2Entity a texture that will be used while drawing
 	/// @param texture Specify the texture that you want to use for drawing
 	/// @return void
-	virtual void GiveTexture(Texture* texture);
+	virtual void SetTexture(Texture* texture);
 
 	virtual void SetShader(Shader* shader);
 

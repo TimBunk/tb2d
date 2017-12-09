@@ -6,7 +6,7 @@ Mirror::Mirror(bool rotatable, Camera * camera, b2World * world) : B2Entity::B2E
 		this->CreateBodyBox(0.0f, 0.0f, 45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false, true);
 		rotator = new Rotator(camera, world);
 		rotator->CreateBodyBox(-22, 0, 90, 15, glm::vec2(45.0f, 0.0f), false, false, true);
-		rotator->GiveTexture(ResourceManager::GetTexture("player"));
+		rotator->SetTexture(ResourceManager::GetTexture("player"));
 		this->AddChild(rotator);
 	}
 	else {

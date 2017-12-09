@@ -231,7 +231,7 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 	}
 }
 
-void B2Entity::GiveTexture(Texture* texture) {
+void B2Entity::SetTexture(Texture* texture) {
 	this->texture = texture;
 }
 
