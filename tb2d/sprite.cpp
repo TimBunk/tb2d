@@ -1,8 +1,8 @@
 #include "sprite.h"
 
-Sprite::Sprite(Texture* texture, Shader* shader, Camera* camera, bool HUD) : Entity::Entity() {
+Sprite::Sprite(Texture* texture, Camera* camera, bool HUD) : Entity::Entity() {
 	this->texture = texture;
-	this->shader = shader;
+	this->shader = ResourceManager::GetShader("defaultShader");
 	this->camera = camera;
 	this->HUD = HUD;
 	VAO = 0;

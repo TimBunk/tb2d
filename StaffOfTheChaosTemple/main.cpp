@@ -27,7 +27,6 @@
 #include FT_FREETYPE_H
 
 Window* window;
-ResourceManager* rm;
 Input* input;
 
 Texture* texture;
@@ -59,17 +58,15 @@ int main() {
 	std::cout << "hello world" << std::endl;
 	window = new Window("Staff of the Chaos Temple", false);
 	window->Resize(800, 600);
+	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("player", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("wall", "textures/wall.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("staff", "textures/magic.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("laser", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("crystal", "textures/container2_specular.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
-	rm = window->GetResourceManager();
-	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("player", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("wall", "textures/wall.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("staff", "textures/magic.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("laser", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	rm->CreateTexture("crystal", "textures/container2_specular.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-
-	rm->CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
-	rm->CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
+	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
+	ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
 
 	input = window->GetInput();
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
@@ -79,12 +76,12 @@ int main() {
 	world->SetContactListener(contactListener);
 	world->SetAllowSleeping(false);
 
-	level1 = new Level1(world, 1920, 1080, rm);
-	level2 = new Level2(world, 1920, 1080, rm);
+	level1 = new Level1(world, 1920, 1080);
+	level2 = new Level2(world, 1920, 1080);
 
-	player = new Player(input, rm, 10, 10.0f, 1, level1->GetCamera(), rm->GetShader("defaultShader"), world);
+	player = new Player(input, 10, 10.0f, 1, level1->GetCamera(), ResourceManager::GetShader("defaultShader"), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
-	player->GiveTexture(rm->GetTexture("player"));
+	player->GiveTexture(ResourceManager::GetTexture("player"));
 
 	level1->AddChild(player);
 	level2->AddChild(player);
@@ -94,7 +91,7 @@ int main() {
 	level1->SetPlayer(player);
 
 	gameState = _menu;
-	menu = new Menu(input, 1920, 1080, rm);
+	menu = new Menu(input, 1920, 1080);
 
 	while (!window->ShouldClose()) {
 		// rendering commands
@@ -144,6 +141,7 @@ int main() {
 	delete level1;
 	delete level2;
 	delete contactListener;
+	ResourceManager::Destroy();
 	delete window;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;

@@ -7,7 +7,7 @@
 class Level1 : public Level
 {
 public:
-	Level1(b2World* world, int screenWidthCamera, int screenHeightCamera, ResourceManager* rm);
+	Level1(b2World* world, int screenWidthCamera, int screenHeightCamera);
 	~Level1();
 
 	void SetPlayer(Player* player);

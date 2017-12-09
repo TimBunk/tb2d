@@ -7,7 +7,7 @@
 class Laser : public Sprite
 {
 public:
-	Laser(b2World* world, Shader* debug, float radius, Texture* texture, Shader* shader, Camera* camera, bool HUD);
+	Laser(b2World* world, Shader* debug, float radius, Texture* texture, Camera* camera, bool HUD);
 	~Laser();
 
 	void Update(double deltaTime);

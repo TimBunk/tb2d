@@ -18,14 +18,13 @@
 
 class Scene : public Entity {
 public:
-	Scene(int screenWidthCamera, int screenHeightCamera, ResourceManager* rm);
+	Scene(int screenWidthCamera, int screenHeightCamera);
 	virtual ~Scene();
 
 	virtual void Update(double deltaTime);
 	Camera* GetCamera();
 protected:
 	Camera* camera;
-	ResourceManager* rm;
 private:
 
 };

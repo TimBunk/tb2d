@@ -7,7 +7,7 @@
 
 class Sprite : public Entity {
 public:
-	Sprite(Texture* texture, Shader* shader, Camera* camera, bool HUD);
+	Sprite(Texture* texture, Camera* camera, bool HUD);
 	virtual ~Sprite();
 
 	virtual void Draw();

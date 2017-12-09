@@ -1,19 +1,18 @@
 #include "button.h"
 
-Button::Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera, ResourceManager* rm) : Entity::Entity() {
+Button::Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera) : Entity::Entity() {
 	this->width = width;
 	this->height = height;
 	this->HUD = HUD;
 	this->color = color;
 	this->input = input;
 	this->camera = camera;
-	this->rm = rm;
 	this->text = nullptr;
 	if (HUD) {
-		shader = rm->GetShader("colorHUD");
+		shader = ResourceManager::GetShader("colorHUD");
 	}
 	else {
-		shader = rm->GetShader("color");
+		shader = ResourceManager::GetShader("color");
 	}
 	hover = false;
 	down = false;
@@ -116,10 +115,10 @@ void Button::CreateText(std::string text, int textSize, glm::vec3 color)
 		delete this->text;
 	}
 	if (HUD) {
-		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, rm->GetShader("defaultFreetypeHUD"), camera, true);
+		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, ResourceManager::GetShader("defaultFreetypeHUD"), camera, true);
 	}
 	else {
-		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, rm->GetShader("defaultFreetype"), camera, false);
+		this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, ResourceManager::GetShader("defaultFreetype"), camera, false);
 	}
 
 	// Drawing the text is needed in order to get the correct width and height

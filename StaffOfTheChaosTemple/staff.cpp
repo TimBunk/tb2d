@@ -1,13 +1,12 @@
 #include "staff.h"
 
-Staff::Staff(float laserRange, b2World* world, ResourceManager* rm, int width, int height, Texture* texture, Shader* shader, Camera* camera) : Sprite::Sprite(texture, shader, camera, false)
+Staff::Staff(float laserRange, b2World* world, int width, int height, Texture* texture, Camera* camera) : Sprite::Sprite(texture, camera, false)
 {
 	this->laserRange = laserRange;
 	this->world = world;
-	this->rm = rm;
 	// In order to make the lasers work we need atleast one already in the vector
-	lasers.push_back(new Laser(world, rm->GetShader("debug"), laserRange, rm->GetTexture("awesome"), shader, camera, false));
-	//this->CreateBody(height, width, glm::vec2(0.0f, 0.0f));
+	lasers.push_back(new Laser(world, ResourceManager::GetShader("debug"), laserRange, ResourceManager::GetTexture("awesome"), camera, false));
+	this->CreateBody(height, width, glm::vec2(0.0f, 0.0f));
 	shooting = false;
 }
 
@@ -42,7 +41,7 @@ void Staff::Update(double deltaTime)
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
 				if (i == lasers.size() && lasers[i - 1]->Hit()) {
-					lasers.push_back(new Laser(world, rm->GetShader("debug"), laserRange, rm->GetTexture("awesome"), shader, camera, false));
+					lasers.push_back(new Laser(world, ResourceManager::GetShader("debug"), laserRange, ResourceManager::GetTexture("awesome"), camera, false));
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);
 					direction *= laserRange;

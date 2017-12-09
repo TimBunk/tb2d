@@ -1,8 +1,7 @@
 #include "scene.h"
 
-Scene::Scene(int screenWidthCamera, int screenHeightCamera, ResourceManager* rm) : Entity::Entity() {
+Scene::Scene(int screenWidthCamera, int screenHeightCamera) : Entity::Entity() {
 	camera = new Camera(screenWidthCamera, screenHeightCamera);
-	this->rm = rm;
 }
 
 Scene::~Scene()

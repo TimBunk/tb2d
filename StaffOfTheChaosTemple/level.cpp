@@ -1,6 +1,6 @@
 #include "level.h"
 
-Level::Level(b2World * world, int screenWidthCamera, int screenHeightCamera, ResourceManager * rm) : Scene::Scene(screenWidthCamera, screenHeightCamera, rm)
+Level::Level(b2World * world, int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
 {
 	this->world = world;
 	finish = nullptr;
@@ -38,7 +38,7 @@ bool Level::IsFinished()
 
 void Level::CreateFinish(int x, int y, int width, int height)
 {
-	finish = new B2Entity(camera, rm->GetShader("defaultShader"), world);
+	finish = new B2Entity(camera, ResourceManager::GetShader("defaultShader"), world);
 	finish->CreateBodyBox(x, y, width, height, glm::vec2(0, 0), false, true, true);
 	finish->EnableDebugRendering(glm::vec3(0.0f, 1.0f, 0.0f));
 	this->AddChild(finish);

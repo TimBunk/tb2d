@@ -11,7 +11,6 @@
 #include <GL/glew.h>
 #include <glfw3.h>
 
-#include "resourceManager.h"
 #include "input.h"
 
 class Window {
@@ -27,7 +26,6 @@ public:
 	void Resize(int screenWidth, int screenHeight);
 
 	Input* GetInput();
-	ResourceManager* GetResourceManager();
 	double GetDeltaTime();
 
 	void SetBackgroundColor(glm::vec3 backgroundColor);
@@ -37,7 +35,6 @@ private:
 
 	GLFWwindow* window;
 	Input* input;
-	ResourceManager* rm;
 	glm::vec3 backgroundColor;
 
 	// deltaTime

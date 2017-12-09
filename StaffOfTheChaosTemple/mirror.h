@@ -7,7 +7,7 @@
 class Mirror : public B2Entity
 {
 public:
-	Mirror(bool rotatable, ResourceManager* rm, Camera* camera, Shader* shader, b2World* world);
+	Mirror(bool rotatable, Camera* camera, Shader* shader, b2World* world);
 	~Mirror();
 
 	void Update(double deltaTime);

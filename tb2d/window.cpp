@@ -45,7 +45,6 @@ Window::Window(const char* screenName, bool fullScreen) {
 
 
 	input = new Input(window, mode->width, mode->height);
-	rm = new ResourceManager();
 	// Initalize variables for deltaTime
 	deltaTime = 0.0f;
 	lastFrame = glfwGetTime();
@@ -55,7 +54,6 @@ Window::Window(const char* screenName, bool fullScreen) {
 
 
 Window::~Window() {
-	delete rm;
 	delete input;
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -107,10 +105,6 @@ void Window::Resize(int screenWidth, int screenHeight)
 Input * Window::GetInput()
 {
 	return input;
-}
-
-ResourceManager* Window::GetResourceManager() {
-	return rm;
 }
 
 double Window::GetDeltaTime() {

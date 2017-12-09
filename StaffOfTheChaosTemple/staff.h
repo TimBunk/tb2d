@@ -13,7 +13,7 @@
 class Staff : public Sprite
 {
 public:
-	Staff(float laserRange, b2World* world, ResourceManager* rm, int width, int height, Texture* texture, Shader* shader, Camera* camera);
+	Staff(float laserRange, b2World* world, int width, int height, Texture* texture, Camera* camera);
 	~Staff();
 
 	void Update(double deltaTime);
@@ -26,7 +26,6 @@ private:
 	bool shooting;
 	std::vector<Laser*> lasers;
 	b2World* world;
-	ResourceManager* rm;
 };
 
 #endif // !STAFF_H

@@ -1,6 +1,6 @@
 #include "menu.h"
 
-Menu::Menu(Input* input, int screenWidthCamera, int screenHeightCamera, ResourceManager* rm) : Scene::Scene(screenWidthCamera, screenHeightCamera, rm) {
+Menu::Menu(Input* input, int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera) {
 	// Initialize all of the variables
 	init = false;
 	start = false;
@@ -8,14 +8,14 @@ Menu::Menu(Input* input, int screenWidthCamera, int screenHeightCamera, Resource
 	quit = false;
 	this->input = input;
 	// Initialize all of the buttons
-	startButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera, rm);
+	startButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera);
 	startButton->CreateText("start", 96, glm::vec3(0, 0, 0));
 	startButton->localPosition = glm::vec2(camera->GetWidth() / 2, 750);
 	this->AddChild(startButton);
-	restartButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera, rm);
+	restartButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera);
 	restartButton->CreateText("restart", 96, glm::vec3(0, 0, 0));
 	restartButton->localPosition = glm::vec2(camera->GetWidth() / 2, 500);
-	quitButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera, rm);
+	quitButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), input, camera);
 	quitButton->CreateText("quit", 96, glm::vec3(0, 0, 0));
 	quitButton->localPosition = glm::vec2(camera->GetWidth() / 2, 250);
 	this->AddChild(quitButton);

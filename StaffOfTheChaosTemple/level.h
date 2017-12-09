@@ -10,7 +10,7 @@
 class Level : public Scene
 {
 public:
-	Level(b2World* world, int screenWidthCamera, int screenHeightCamera, ResourceManager* rm);
+	Level(b2World* world, int screenWidthCamera, int screenHeightCamera);
 	virtual ~Level();
 
 	virtual void Update(double deltaTime);

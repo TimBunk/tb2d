@@ -1,8 +1,8 @@
 #include "level2.h"
 
-Level2::Level2(b2World * world, int screenWidthCamera, int screenHeightCamera, ResourceManager * rm) : Level::Level(world, screenWidthCamera, screenHeightCamera, rm)
+Level2::Level2(b2World * world, int screenWidthCamera, int screenHeightCamera) : Level::Level(world, screenWidthCamera, screenHeightCamera)
 {
-	CreateFinish(960, 540, 400, 100);
+	CreateFinish(10000, 540, 400, 100);
 }
 
 Level2::~Level2()
