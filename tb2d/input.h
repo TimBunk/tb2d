@@ -11,25 +11,28 @@
 
 class Input {
 public:
-	Input(GLFWwindow* window, float screenWidth, float screenHeight);
-	virtual ~Input();
-	void Update();
+	static void Init(GLFWwindow* window, float screenWidth, float screenHeight);
+	static void Destroy();
 
-	void SetScreenWidthAndHeight(float screenWidth, float screenHeight);
-	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+	static glm::vec2 GetMousePositionScreenSpace(Camera* camera);
+	static glm::vec2 GetMousePositionWorldSpace(Camera* camera);
+	static bool MousePress(int mouse);
+	static bool MouseDown(int mouse);
+	static bool MouseUp(int mouse);
 
-	glm::vec2 GetMousePositionScreenSpace(Camera* camera);
-	glm::vec2 GetMousePositionWorldSpace(Camera* camera);
-	bool MousePress(int mouse);
-	bool MouseDown(int mouse);
-	bool MouseUp(int mouse);
-
-	bool KeyPress(int key);
-	bool KeyDown(int key);
-	bool KeyUp(int key);
+	static bool KeyPress(int key);
+	static bool KeyDown(int key);
+	static bool KeyUp(int key);
 private:
+	static Input* GetInstance();
+	Input(GLFWwindow* window, float screenWidth, float screenHeight);
+	~Input();
+
+	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 	void SetMouseState(int mouse);
 	void SetKeyState(int key);
+
+	static Input* _input;
 	GLFWwindow* window;
 	float screenWidth;
 	float screenHeight;
@@ -42,7 +45,6 @@ private:
 	bool keysPressed[348];
 	bool keysDown[348];
 	bool keysUp[348];
-	bool quit;
 };
 
 #endif // !INPUT_H

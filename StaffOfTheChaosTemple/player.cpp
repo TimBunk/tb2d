@@ -1,8 +1,7 @@
 #include "player.h"
 
-Player::Player(Input* input, int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
+Player::Player(int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
 {
-	this->input = input;
 	staff = new Staff(1000.0f, world, 100, 200, ResourceManager::GetTexture("staff"), camera);
 	staff->CreateBody(200, 100, glm::vec2(0.0f, -50.0f));
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
@@ -17,21 +16,21 @@ Player::~Player()
 void Player::Update(double deltaTime)
 {
 	// If mouse down start shooting a laser
-	if (input->MouseDown(GLFW_MOUSE_BUTTON_1)) {
+	if (Input::MouseDown(GLFW_MOUSE_BUTTON_1)) {
 		staff->Shoot();
 	}
 	// Movement player
 	glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
-	if (input->KeyDown(GLFW_KEY_W) || input->KeyDown(GLFW_KEY_UP)) {
+	if (Input::KeyDown(GLFW_KEY_W) || Input::KeyDown(GLFW_KEY_UP)) {
 		velocity.y += 1.0f;
 	}
-	if (input->KeyDown(GLFW_KEY_S) || input->KeyDown(GLFW_KEY_DOWN)) {
+	if (Input::KeyDown(GLFW_KEY_S) || Input::KeyDown(GLFW_KEY_DOWN)) {
 		velocity.y += -1.0f;
 	}
-	if (input->KeyDown(GLFW_KEY_A) || input->KeyDown(GLFW_KEY_LEFT)) {
+	if (Input::KeyDown(GLFW_KEY_A) || Input::KeyDown(GLFW_KEY_LEFT)) {
 		velocity.x += -1.0f;
 	}
-	if (input->KeyDown(GLFW_KEY_D) || input->KeyDown(GLFW_KEY_RIGHT)) {
+	if (Input::KeyDown(GLFW_KEY_D) || Input::KeyDown(GLFW_KEY_RIGHT)) {
 		velocity.x += 1.0f;
 	}
 	// The velocity has to be not equal to zero otherwise if I normalze the vec2 it will return nand-id
@@ -42,13 +41,13 @@ void Player::Update(double deltaTime)
 	localPosition = ApplyVelocityB2body(velocity);
 	camera->SetPosition(glm::vec2(GetGlobalPosition().x - camera->GetWidth()/2, GetGlobalPosition().y - camera->GetHeight()/2));
 	// Rotate the player towards the mouse
-	glm::vec2 direction = input->GetMousePositionWorldSpace(camera) - GetGlobalPosition();
+	glm::vec2 direction = Input::GetMousePositionWorldSpace(camera) - GetGlobalPosition();
 	glm::normalize(direction);
 	this->localAngle = std::atan2(direction.y, direction.x);
 	//std::cout << " player angle = " << (glm::atan(direction.y, direction.x) * 180.0f / M_PI) << std::endl;
 
 	// Rotate the staff towards the mouse
-	glm::vec2 directionStaff = (input->GetMousePositionWorldSpace(camera) - staff->GetGlobalPosition());
+	glm::vec2 directionStaff = (Input::GetMousePositionWorldSpace(camera) - staff->GetGlobalPosition());
 	glm::normalize(directionStaff);
 	staff->localAngle = std::atan2(directionStaff.y, directionStaff.x) + (90.0f * M_PI / 180.0f) - this->localAngle; //(90.0f * M_PI / 180.0f);
 	// Limit the angle to not go lower then 45 degrees

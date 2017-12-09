@@ -27,17 +27,11 @@
 #include FT_FREETYPE_H
 
 Window* window;
-Input* input;
-
-Texture* texture;
-
 Level1* level1;
 Level2* level2;
-
 ContactListener* contactListener;
 b2World* world;
 Player* player;
-
 Menu* menu;
 
 float B2Entity::m2p = 50.0f;
@@ -68,7 +62,6 @@ int main() {
 	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
 	ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
 
-	input = window->GetInput();
 	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
 	contactListener = new ContactListener();
@@ -79,7 +72,7 @@ int main() {
 	level1 = new Level1(world, 1920, 1080);
 	level2 = new Level2(world, 1920, 1080);
 
-	player = new Player(input, 10, 10.0f, 1, level1->GetCamera(), world);
+	player = new Player(10, 10.0f, 1, level1->GetCamera(), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->SetTexture(ResourceManager::GetTexture("player"));
 
@@ -91,8 +84,7 @@ int main() {
 	level1->SetPlayer(player);
 
 	gameState = _menu;
-	menu = new Menu(input, 1920, 1080);
-
+	menu = new Menu(1920, 1080);
 	while (!window->ShouldClose()) {
 		// rendering commands
 		window->Clear();
@@ -111,7 +103,7 @@ int main() {
 				levels[levelCounter]->SetPlayer(player);
 			}
 			// if escaped is pressed go back in to the menu
-			if (input->KeyPress(GLFW_KEY_ESCAPE)) {
+			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 				gameState = _menu;
 			}
 			break;
@@ -136,11 +128,11 @@ int main() {
 		// Swap buffers
 		window->SwapBuffers();
 	}
-	delete menu;
+	/*delete menu;
 	delete player;
 	delete level1;
 	delete level2;
-	delete contactListener;
+	delete contactListener;*/
 	ResourceManager::Destroy();
 	delete window;
 	std::cout << "Program succeeded" << std::endl;

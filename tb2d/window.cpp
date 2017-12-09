@@ -44,7 +44,7 @@ Window::Window(const char* screenName, bool fullScreen) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	input = new Input(window, mode->width, mode->height);
+	Input::Init(window, mode->width, mode->height);
 	// Initalize variables for deltaTime
 	deltaTime = 0.0f;
 	lastFrame = glfwGetTime();
@@ -54,14 +54,13 @@ Window::Window(const char* screenName, bool fullScreen) {
 
 
 Window::~Window() {
-	delete input;
+	Input::Destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 
 void Window::Update() {
 	CalculateFrameRate();
-	input->Update();
 }
 
 void Window::Clear() {
@@ -98,13 +97,10 @@ void FramebufferSize(GLFWwindow * window, int width, int height)
 
 void Window::Resize(int screenWidth, int screenHeight)
 {
-	input->SetScreenWidthAndHeight(screenWidth, screenHeight);
+	// Destroy and initalize the input again because otherwise the mouse position calculations will be wrong
+	Input::Destroy();
+	Input::Init(window, screenWidth, screenHeight);
 	glfwSetWindowSize(window, screenWidth, screenHeight);
-}
-
-Input * Window::GetInput()
-{
-	return input;
 }
 
 double Window::GetDeltaTime() {

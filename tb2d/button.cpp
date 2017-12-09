@@ -1,11 +1,10 @@
 #include "button.h"
 
-Button::Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera) : Entity::Entity() {
+Button::Button(int width, int height, bool HUD, glm::vec3 color, Camera* camera) : Entity::Entity() {
 	this->width = width;
 	this->height = height;
 	this->HUD = HUD;
 	this->color = color;
-	this->input = input;
 	this->camera = camera;
 	this->text = nullptr;
 	if (HUD) {
@@ -66,18 +65,16 @@ Button::~Button() {
 }
 
 void Button::Update(double deltaTime) {
-	float mouseX, mouseY;
+	glm::vec2 mousePos;
 	if (HUD) {
-		mouseX = input->GetMousePositionScreenSpace(camera).x;
-		mouseY = input->GetMousePositionScreenSpace(camera).y;
+		mousePos = Input::GetMousePositionScreenSpace(camera);
 	}
 	else {
-		mouseX = input->GetMousePositionWorldSpace(camera).x;
-		mouseY = input->GetMousePositionWorldSpace(camera).y;
+		mousePos = Input::GetMousePositionWorldSpace(camera);
 	}
-	if (mouseX >= (this->localPosition.x - (this->width/2 * scale.x)) && mouseX <= (this->localPosition.x + (this->width/2 * scale.x)) && mouseY >= (this->localPosition.y - (this->height/2 * scale.y)) && mouseY <= (this->localPosition.y + (this->height/2 * scale.y))) {
+	if (mousePos.x >= (this->localPosition.x - (this->width/2 * scale.x)) && mousePos.x <= (this->localPosition.x + (this->width/2 * scale.x)) && mousePos.y >= (this->localPosition.y - (this->height/2 * scale.y)) && mousePos.y <= (this->localPosition.y + (this->height/2 * scale.y))) {
 		hover = true;
-		if (input->MousePress(0)) {
+		if (Input::MousePress(0)) {
 			down = true;
 		}
 		else {

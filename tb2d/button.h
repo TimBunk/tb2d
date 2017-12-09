@@ -7,7 +7,7 @@
 
 class Button : public Entity {
 public:
-	Button(int width, int height, bool HUD, glm::vec3 color, Input* input, Camera* camera);
+	Button(int width, int height, bool HUD, glm::vec3 color, Camera* camera);
 	virtual ~Button();
 
 	void Update(double deltaTime);
@@ -23,7 +23,6 @@ public:
 
 private:
 	int width, height;
-	Input* input;
 	Camera* camera;
 	Text* text;
 	glm::vec3 color;

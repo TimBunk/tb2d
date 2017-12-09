@@ -25,7 +25,6 @@ public:
 	void CloseWindow();
 	void Resize(int screenWidth, int screenHeight);
 
-	Input* GetInput();
 	double GetDeltaTime();
 
 	void SetBackgroundColor(glm::vec3 backgroundColor);
@@ -34,7 +33,6 @@ private:
 	void CalculateFrameRate();
 
 	GLFWwindow* window;
-	Input* input;
 	glm::vec3 backgroundColor;
 
 	// deltaTime

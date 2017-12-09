@@ -1,43 +1,33 @@
 #include "input.h"
 
-Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
-	this->window = window;
-	this->screenWidth = screenWidth;
-	this->screenHeight = screenHeight;
-	mousePosition = glm::vec2(0.0f, 0.0f);
-	for (int i = 0; i<348; i++) {
-		keysPressed[i] = false;
-		keysDown[i] = false;
-		keysUp[i] = true;
-		if (i < 8) {
-			mousePressed[i] = false;
-			mouseDown[i] = false;
-			mouseUp[i] = true;
-		}
-	}
-	
-	// A hacky kinda way to get events working for member functions
-	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
-	glfwSetWindowUserPointer(window, this);
-	auto func = [](GLFWwindow* window, double xpos, double ypos)
-	{
-		static_cast<Input*>(glfwGetWindowUserPointer(window))->MouseCallback(window, xpos, ypos);
-	};
-	glfwSetCursorPosCallback(window, func);
-}
+Input* Input::_input = nullptr;
 
-Input::~Input() {
-
-}
-
-void Input::Update() {
-
-}
-
-void Input::SetScreenWidthAndHeight(float screenWidth, float screenHeight)
+void Input::Init(GLFWwindow * window, float screenWidth, float screenHeight)
 {
-	this->screenWidth = screenWidth;
-	this->screenHeight = screenHeight;
+	if (Input::_input == nullptr) {
+		Input::_input = new Input(window, screenWidth, screenHeight);
+		return;
+	}
+	std::cout << "Input is already initialized!" << std::endl;
+}
+
+Input* Input::GetInstance()
+{
+	if (Input::_input != nullptr) {
+		return Input::_input;
+	}
+	std::cout << "Input has not yet been intialized" << std::endl;
+	return nullptr;
+}
+
+void Input::Destroy()
+{
+	if (Input::_input != nullptr) {
+		delete Input::_input;
+		Input::_input = nullptr;
+		return;
+	}
+	std::cout << "You need to initialize the input before destroying it!" << std::endl;
 }
 
 void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
@@ -48,39 +38,44 @@ void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
 }
 
 glm::vec2 Input::GetMousePositionScreenSpace(Camera* camera) {
+	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionScreenSpace;
-	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/screenWidth*mousePosition.x, ((camera->GetHeight()/screenHeight*mousePosition.y) - camera->GetHeight()) * -1);
+	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/input->screenWidth*input->mousePosition.x, ((camera->GetHeight()/input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1);
 	return mousePositionScreenSpace;
 }
 
 glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
+	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionWorldSpace;
-	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / screenWidth*mousePosition.x + camera->GetPosition().x, ((camera->GetHeight() / screenHeight*mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y);
+	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / input->screenWidth*input->mousePosition.x + camera->GetPosition().x, ((camera->GetHeight() / input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y);
 	return mousePositionWorldSpace;
 }
 
 bool Input::MousePress(int mouse) {
+	Input* input = Input::GetInstance();
 	// Check if the mousepressed is already true and if so it first has to become false again by releasing the mouse
-	if (mousePressed[mouse]) {
-		SetMouseState(mouse);
-		if (mousePressed[mouse]) {
+	if (input->mousePressed[mouse]) {
+		input->SetMouseState(mouse);
+		if (input->mousePressed[mouse]) {
 			return false;
 		}
 	}
 	else {
-		SetMouseState(mouse);
+		input->SetMouseState(mouse);
 	}
-	return mousePressed[mouse];
+	return input->mousePressed[mouse];
 }
 
 bool Input::MouseDown(int mouse) {
-	SetMouseState(mouse);
-	return mouseDown[mouse];
+	Input* input = Input::GetInstance();
+	input->SetMouseState(mouse);
+	return input->mouseDown[mouse];
 }
 
 bool Input::MouseUp(int mouse) {
-	SetMouseState(mouse);
-	return mouseUp[mouse];
+	Input* input = Input::GetInstance();
+	input->SetMouseState(mouse);
+	return input->mouseUp[mouse];
 }
 
 void Input::SetMouseState(int mouse)
@@ -103,27 +98,30 @@ void Input::SetMouseState(int mouse)
 }
 
 bool Input::KeyPress(int key) {
+	Input* input = Input::GetInstance();
 	// Check if the keypressed is already true and if so it first has to become false again by releasing the key
-	if (keysPressed[key]) {
-		SetKeyState(key);
-		if (keysPressed[key]) {
+	if (input->keysPressed[key]) {
+		input->SetKeyState(key);
+		if (input->keysPressed[key]) {
 			return false;
 		}
 	}
 	else {
-		SetKeyState(key);
+		input->SetKeyState(key);
 	}
-	return keysPressed[key];
+	return input->keysPressed[key];
 }
 
 bool Input::KeyDown(int key) {
-	SetKeyState(key);
-	return keysDown[key];
+	Input* input = Input::GetInstance();
+	input->SetKeyState(key);
+	return input->keysDown[key];
 }
 
 bool Input::KeyUp(int key) {
-	SetKeyState(key);
-	return keysUp[key];
+	Input* input = Input::GetInstance();
+	input->SetKeyState(key);
+	return input->keysUp[key];
 }
 
 void Input::SetKeyState(int key)
@@ -145,3 +143,30 @@ void Input::SetKeyState(int key)
 	keysUp[key] = true;
 }
 
+Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
+	this->window = window;
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
+	mousePosition = glm::vec2(0.0f, 0.0f);
+	for (int i = 0; i<348; i++) {
+		keysPressed[i] = false;
+		keysDown[i] = false;
+		keysUp[i] = true;
+		if (i < 8) {
+			mousePressed[i] = false;
+			mouseDown[i] = false;
+			mouseUp[i] = true;
+		}
+	}
+
+	// A hacky kinda way to get events working for member functions
+	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
+	glfwSetWindowUserPointer(window, this);
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+		static_cast<Input*>(glfwGetWindowUserPointer(window))->MouseCallback(window, xpos, ypos);
+	});
+}
+
+Input::~Input() {
+
+}
