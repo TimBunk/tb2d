@@ -66,6 +66,8 @@ int Sprite::GetHeight()
 
 void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
 {
+	this->height = height;
+	this->width = width;
 	float vertices[] = {
 		// position										// uv's
 		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 1.0f,  // uper left corner
