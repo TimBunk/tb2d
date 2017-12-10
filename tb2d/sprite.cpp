@@ -5,17 +5,12 @@ Sprite::Sprite(Texture* texture, Camera* camera, bool HUD) : Entity::Entity() {
 	this->shader = ResourceManager::GetShader("defaultShader");
 	this->camera = camera;
 	this->HUD = HUD;
-	VAO = 0;
-	VBO = 0;
 	width = 0;
 	height = 0;
 }
 
 Sprite::~Sprite() {
-	if (VAO != 0) {
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-	}
+	
 }
 
 void Sprite::Draw()
@@ -25,10 +20,12 @@ void Sprite::Draw()
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
-	shader->SetMatrix4("model", model);
+	// Create a local model for the scaling otherwise all of the childeren will get the wrong scaling
+	glm::mat4 _model = glm::scale(model, glm::vec3(width * GetGlobalScale().x, height * GetGlobalScale().y, 0.0f));
+	shader->SetMatrix4("model", _model);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(VAO);
+	glBindVertexArray(quadData.VAO);
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -68,33 +65,5 @@ void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
 {
 	this->height = height;
 	this->width = width;
-	float vertices[] = {
-		// position										// uv's
-		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 1.0f,  // uper left corner
-		-width / 2 + pivot.x, -height / 2 + pivot.y,	0.0f, 0.0f,  // lower-left corner
-		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 0.0f,  // lower-right corner
-
-		width / 2 + pivot.x, -height / 2 + pivot.y,		1.0f, 0.0f,  // lower-right corner
-		width / 2 + pivot.x, height / 2 + pivot.y,		1.0f, 1.0f,  // upper-right corner
-		-width / 2 + pivot.x, height / 2 + pivot.y,		0.0f, 1.0f,  // uper left corner
-	};
-
-	if (VAO != 0) {
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-	}
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
+	quadData = ResourceManager::GetQuad(pivot);
 }

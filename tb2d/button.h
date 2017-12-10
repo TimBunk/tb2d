@@ -27,7 +27,7 @@ private:
 	Text* text;
 	glm::vec3 color;
 	Shader* shader;
-	GLuint VBO, VAO, EBO;
+	QuadData quadData;
 
 	bool HUD;
 	bool hover;

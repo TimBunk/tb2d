@@ -102,7 +102,6 @@ public:
 	static float p2m;
 
 protected:
-	virtual void SetVertices(glm::vec2 pivot);
 	Camera* camera; ///< @brief Camera that is given through the constructor and is needed in order to draw this B2Entity
 	Shader* shader; ///< @brief Shader that is given through the constructor and is needed in order to draw this B2Entity. The shader needs at least to have three uniforms matrix4: model, projection, view. The VAO object expects 2 vertex position(x and y) and 2 uv position(x and y)
 	DebugRenderer* dr;
@@ -112,9 +111,7 @@ protected:
 	b2World* world; ///< @brief The world is needed in order for the body to work
 	Texture* texture; ///< @brief texture is needed in order to draw correctly
 
-	GLuint VAO; ///< @brief VAO(Vertex Array Object) is required in order to use the shader this will automatically be created when creating a body
-	GLuint VBO; ///< @brief VBO(Vertex Buffer Object) is used in order for the VAO to work. It stores all of the vertices and uv's
-	GLuint EBO; ///< @brief EBO(Element Buffer Object) is used in order for the VAO to work. It stores all of the indices.
+	QuadData quadData;
 
 	b2Fixture* fixture; ///< @brief The body makes use of only one fixture
 

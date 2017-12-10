@@ -66,7 +66,6 @@ void Entity::UpdateChilderen(Entity * parent, double deltaTime)
 		model = parent->model;
 		model = glm::translate(model, glm::vec3(localPosition.x, localPosition.y, 0.0f));
 		model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(localScale.x, localScale.y, 1.0f));
 		this->position = model[3];
 		this->angle = glm::atan(model[0][1], model[0][0]);
 		this->scale = this->localScale * parent->scale;
@@ -78,7 +77,6 @@ void Entity::UpdateChilderen(Entity * parent, double deltaTime)
 		model = glm::mat4();
 		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
 		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(scale.x, scale.y, 1.0f));
 	}
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->Draw();

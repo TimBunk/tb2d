@@ -24,6 +24,7 @@ private:
 	glm::vec2 direction;
 	b2Vec2 hitPosition;
 	b2Vec2 reflection;
+	GLuint VAO, VBO;
 	b2World* world;
 };
 

@@ -34,11 +34,15 @@ void Crystal::Draw()
 		}
 		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 		shader->SetMatrix4("view", camera->GetViewMatrix());
-		shader->SetMatrix4("model", model);
+		glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
+		shader->SetMatrix4("model", _model);
+
 		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(VAO);
+		glBindVertexArray(quadData.VAO);
 		glBindTexture(GL_TEXTURE_2D, texture->GetId());
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Set the currently binded VAO and texture to 0
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

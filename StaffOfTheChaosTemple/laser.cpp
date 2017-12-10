@@ -6,7 +6,7 @@ Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Came
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);
 	raycast = new RaycastCallBack(world);
-	raycast->CreateLine(2500.0f, 50.0f, camera, debug, glm::vec3(1.0f, 1.0f, 1.0f));
+	raycast->CreateLine(radius, 50.0f, camera, debug, glm::vec3(1.0f, 1.0f, 1.0f));
 	direction = glm::vec2(0.0f, 0.0f);
 	width = 25.0f;
 	height = radius;
@@ -28,6 +28,8 @@ Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Came
 Laser::~Laser()
 {
 	delete raycast;
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
 }
 
 void Laser::Update(double deltaTime)
@@ -122,23 +124,6 @@ void Laser::Draw()
 
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-
-	shader->Use();
-	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-	if (!HUD) {
-		shader->SetMatrix4("view", camera->GetViewMatrix());
-	}
-	shader->SetMatrix4("model", model);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(VAO);
-	glBindTexture(GL_TEXTURE_2D, texture->GetId());
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	// Set the currently binded VAO and texture to 0
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

@@ -6,7 +6,6 @@ Staff::Staff(float laserRange, b2World* world, int width, int height, Texture* t
 	this->world = world;
 	// In order to make the lasers work we need atleast one already in the vector
 	lasers.push_back(new Laser(world, ResourceManager::GetShader("debug"), laserRange, ResourceManager::GetTexture("awesome"), camera, false));
-	this->CreateBody(height, width, glm::vec2(0.0f, 0.0f));
 	shooting = false;
 }
 

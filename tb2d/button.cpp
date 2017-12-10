@@ -15,48 +15,7 @@ Button::Button(int width, int height, bool HUD, glm::vec3 color, Camera* camera)
 	}
 	hover = false;
 	down = false;
-	VAO = 0;
-	VBO = 0;
-	EBO = 0;
-
-	// Create the vertex array object
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// create vertices on the stack to make sure they won't get out of range
-	GLfloat* vertices;
-	vertices = new GLfloat[8];
-	// position
-	vertices[0] = -width/2; vertices[1] = -height/2; // lower-left corner
-	vertices[2] = width/2; vertices[3] = -height/2; // lower-right corner
-	vertices[4] = width/2; vertices[5] = height/2; // upper-right corner
-	vertices[6] = -width/2; vertices[7] = height/2; // uper left corner
-
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	// create the indices on the stack to make sure they won't get out of range
-	unsigned int * indices;
-	indices = new unsigned int[6];
-	indices[0] = 0; indices[1] = 1; indices[2] = 3;
-	indices[3] = 1; indices[4] =  2; indices[5] = 3;
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-
-	// delete the vertices and indices created on the stack
-	delete vertices;
-	delete indices;
+	quadData = ResourceManager::GetQuad(glm::vec2(0, 0));
 }
 Button::~Button() {
 	if (text != nullptr) {
@@ -94,9 +53,10 @@ void Button::Draw() {
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
-	shader->SetMatrix4("model", model);
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glm::mat4 _model = glm::scale(model, glm::vec3(width * GetGlobalScale().x, height * GetGlobalScale().y, 0.0f));
+	shader->SetMatrix4("model", _model);
+	glBindVertexArray(quadData.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 }
 

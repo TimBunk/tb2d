@@ -23,8 +23,7 @@ protected:
 	Shader* shader;
 	Camera* camera;
 	int width, height;
-	GLuint VAO;
-	GLuint VBO;
+	QuadData quadData;
 	Texture* texture;
 	bool HUD;
 

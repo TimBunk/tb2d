@@ -12,9 +12,6 @@ B2Entity::B2Entity(Camera* camera, b2World* world) : Entity::Entity() {
 	body = nullptr;
 	texture = nullptr;
 	shape = Shape::box;
-	VBO = 0;
-	VAO = 0;
-	EBO = 0;
 	width = 0;
 	height = 0;
 }
@@ -24,9 +21,6 @@ B2Entity::~B2Entity() {
 	if (body != nullptr) {
 		body->DestroyFixture(fixture);
 		world->DestroyBody(body);
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
 	}
 	if (dr != nullptr) {
 		delete dr;
@@ -73,23 +67,22 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 void B2Entity::Draw() {
 	// Use the shader and draw the texture
 	if (body != nullptr) {
-		/*glm::mat4 _model;
-		_model = glm::translate(_model, glm::vec3(GetGlobalPosition().x, GetGlobalPosition().y, 0.0f));
-		_model = glm::rotate(_model, GetGlobalAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-		_model = glm::scale(_model, glm::vec3(m2p, m2p, 1.0f));*/
 		if (dr != nullptr) {
 			dr->Render(model, 10.0f);
 		}
 		if (texture != nullptr) {
 			shader->Use();
-			shader->SetMatrix4("model", model);
+			glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
+			shader->SetMatrix4("model", _model);
 			shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 			shader->SetMatrix4("view", camera->GetViewMatrix());
-			glActiveTexture(GL_TEXTURE0);
-			glBindVertexArray(VAO);
 
+			glActiveTexture(GL_TEXTURE0);
+			glBindVertexArray(quadData.VAO);
 			glBindTexture(GL_TEXTURE_2D, texture->GetId());
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			// Set the currently binded VAO and texture to 0
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
@@ -130,7 +123,7 @@ void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool d
 	// pivot has to go times -1 because box2d sets the pivot point the otherway around then I want it
 	pivot *= -1;
 	// the reason for dividing by 2 is because box2D draws from the center
-	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m, b2Vec2(pivot.x * p2m, pivot.y * p2m), 0.0f);
+	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m, b2Vec2(pivot.x * width * p2m, pivot.y * height * p2m), 0.0f);
 	// step 4 create fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
@@ -147,7 +140,7 @@ void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool d
 	this->localPosition = glm::vec2(x, y);
 	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
 
-	SetVertices(pivot);
+	quadData = ResourceManager::GetQuad(pivot);
 }
 
 void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sensor, bool fixedRotation)
@@ -200,7 +193,7 @@ void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sen
 	this->localPosition = glm::vec2(x, y);
 	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
 
-	SetVertices(glm::vec2(0,0));
+	quadData = ResourceManager::GetQuad(glm::vec2(0,0));
 }
 
 void B2Entity::EnableDebugRendering(glm::vec3 color)
@@ -300,46 +293,4 @@ void B2Entity::SetActive(bool active) {
 	if (body != NULL) {
 		body->SetActive(active);
 	}
-}
-
-void B2Entity::SetVertices(glm::vec2 pivot)
-{
-	if (VAO != 0) {
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
-	}
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	GLfloat* vertices;
-	vertices = new GLfloat[16];
-	// position
-	vertices[0] = -width / 2 + pivot.x; vertices[1] = -height / 2 + pivot.y; vertices[2] = 0.0f; vertices[3] = 0.0f;// lower-left corner
-	vertices[4] = width / 2 + pivot.x; vertices[5] = -height / 2 + pivot.y; vertices[6] = 1.0f; vertices[7] = 0.0f; // lower-right corner
-	vertices[8] = width / 2 + pivot.x; vertices[9] = height / 2 + pivot.y; vertices[10] = 1.0f; vertices[11] = 1.0f;// upper-right corner
-	vertices[12] = -width / 2 + pivot.x; vertices[13] = height / 2 + pivot.y; vertices[14] = 0.0f; vertices[15] = 1.0f; // uper left corner
-	glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	unsigned int * indices;
-	indices = new unsigned int[6];
-	indices[0] = 0; indices[1] = 1; indices[2] = 3;
-	indices[3] = 1; indices[4] = 2; indices[5] = 3;
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-
-	// delete the vertices and indices created on the heap
-	delete vertices;
-	delete indices;
 }

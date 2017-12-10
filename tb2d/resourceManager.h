@@ -11,6 +11,32 @@
 
 #include <GL/glew.h>
 
+struct CompareVectors2 {
+	float x = 0.0f;
+	float y = 0.0f;
+	// Compare a vector two and check if it is lower than
+	bool operator<(const CompareVectors2& rhs) const
+	{
+		if (x < rhs.x)
+		{
+			return true;
+		}
+		else if (x == rhs.x)
+		{
+			if (y < rhs.y)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+
+struct QuadData {
+	GLuint VAO = 0;
+	GLuint VBO = 0;
+};
+
 class ResourceManager {
 public:
 	static void Destroy();
@@ -23,6 +49,10 @@ public:
 	static void CreateTexture(std::string nameOfTexture, const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType);
 	static Texture* GetTexture(std::string name);
 
+	// NOTE the vertices are in a normalized space. The pivot point is by default at the center.
+	// Example to set pivot point in the top left: glm::vec2(-0.5f, 0.5f)
+	static QuadData GetQuad(glm::vec2 pivot);
+
 private:
 	static ResourceManager* GetInstance();
 	ResourceManager();
@@ -31,6 +61,7 @@ private:
 	static ResourceManager* rm;
 	std::map<std::string, Shader*> shaders;
 	std::map<std::string, Texture*> textures;
+	std::map<CompareVectors2, QuadData> quads;
 };
 
 #endif // !RESOURCEMANGER_H
