@@ -137,8 +137,8 @@ void B2Entity::CreateCircleCollider(int radius, bool dynamic, bool sensor)
 		world->DestroyBody(body);
 	}
 	// Save the w and h for later use
-	width = radius * 2.0f;
-	height = radius * 2.0f;
+	colliderWidth = radius * 2.0f;
+	colliderHeight = radius * 2.0f;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(0.0f, 0.0f);
@@ -186,15 +186,15 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 	case box:
 		GLfloat* vertices;
 		vertices = new GLfloat[8];
-		vertices[0] = -width/2; vertices[1] = -height/2; // lower-left corner
-		vertices[2] = width/2; vertices[3] = -height/2;  // lower-right corner
-		vertices[4] = width/2; vertices[5] = height/2; // upper-right corner
-		vertices[6] = -width/2; vertices[7] = height/2;  // uper left corner
+		vertices[0] = -colliderWidth/2; vertices[1] = -colliderHeight/2; // lower-left corner
+		vertices[2] = colliderWidth /2; vertices[3] = -colliderHeight /2;  // lower-right corner
+		vertices[4] = colliderWidth /2; vertices[5] = colliderHeight /2; // upper-right corner
+		vertices[6] = -colliderWidth /2; vertices[7] = colliderHeight /2;  // uper left corner
 		dr->DrawBox(vertices);
 		delete vertices;
 		break;
 	case circle:
-		dr->DrawCircle(glm::vec2(0, 0), width / 2);
+		dr->DrawCircle(glm::vec2(0, 0), colliderWidth / 2);
 		break;
 	}
 }
