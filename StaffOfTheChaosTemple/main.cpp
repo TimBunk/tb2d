@@ -69,23 +69,20 @@ int main() {
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	//world->SetContactListener(contactListener);
 	world->SetAllowSleeping(false);
-
-	//level1 = new Level1(world, 1920, 1080);
-	level2 = new Level2(world, 1920, 1080);
-
-	player = new Player(10, 10.0f, 1, level2->GetCamera(), world);
+	level1 = new Level1(world, 1920, 1080);
+	//level2 = new Level2(world, 1920, 1080);
+	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), level1->GetCamera(), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
-	player->SetTexture(ResourceManager::GetTexture("player"));
 
-	//level1->AddChild(player);
-	level2->AddChild(player);
+	level1->AddChild(player);
+	//level2->AddChild(player);
 
-	//levels.push_back(level1);
-	levels.push_back(level2);
-	level2->SetPlayer(player);
+	levels.push_back(level1);
+	//levels.push_back(level2);
+	level1->SetPlayer(player);
 
 	// Update the levels once to set everything in place and then set the contactlistener to avoid conflicts and crashes
-	level2->Update(window->GetDeltaTime());
+	level1->Update(window->GetDeltaTime());
 	world->SetContactListener(contactListener);
 
 	gameState = _menu;
@@ -135,8 +132,8 @@ int main() {
 	}
 	delete menu;
 	delete player;
-	//delete level1;
-	delete level2;
+	delete level1;
+	//delete level2;
 	delete contactListener;
 	ResourceManager::Destroy();
 	delete window;

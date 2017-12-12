@@ -6,7 +6,7 @@
 class Person : public B2Entity
 {
 public:
-	Person(int health, float speed, int damage, Camera * camera, b2World * world);
+	Person(int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world);
 	~Person();
 
 	void Damage(int damage);

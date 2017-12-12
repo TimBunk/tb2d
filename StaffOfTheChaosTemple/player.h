@@ -12,7 +12,7 @@
 class Player : public Person
 {
 public:
-	Player(int health, float speed, int damage, Camera* camera, b2World* world);
+	Player(int health, float speed, int damage, int width, int height, Texture* texture, Camera* camera, b2World* world);
 	~Player();
 
 	void Update(double deltaTime);

@@ -6,7 +6,7 @@
 class Crystal : public Linkable
 {
 public:
-	Crystal(Camera* camera, b2World* world);
+	Crystal(int width, int height, Texture* texture, Camera* camera, b2World* world);
 	~Crystal();
 
 	void Update(double deltaTime);

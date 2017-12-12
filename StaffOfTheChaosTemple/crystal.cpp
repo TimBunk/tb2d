@@ -1,6 +1,6 @@
 #include "crystal.h"
 
-Crystal::Crystal(Camera * camera, b2World * world) : Linkable::Linkable(camera, world)
+Crystal::Crystal(int width, int height, Texture* texture, Camera * camera, b2World * world) : Linkable::Linkable(width, height, texture, camera, world)
 {
 
 }

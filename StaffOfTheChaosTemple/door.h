@@ -13,7 +13,7 @@ enum Direction {
 class Door : public Linkable
 {
 public:
-	Door(Direction direction, Camera* camera, b2World* world);
+	Door(Direction direction, int width, int height, Texture* texture, Camera* camera, b2World* world);
 	~Door();
 
 	void Update(double deltaTime);

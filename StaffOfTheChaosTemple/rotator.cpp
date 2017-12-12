@@ -1,6 +1,6 @@
 #include "rotator.h"
 
-Rotator::Rotator(Camera * camera, b2World * world) : B2Entity::B2Entity(camera, world)
+Rotator::Rotator(int width, int height, glm::vec2 pivot, Texture* texture, Camera * camera, b2World * world) : B2Entity::B2Entity(width, height, pivot, texture, camera, world)
 {
 	rotation = 0.0f;
 }

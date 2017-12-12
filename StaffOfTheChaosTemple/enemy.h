@@ -7,7 +7,7 @@
 class Enemy : public Person
 {
 public:
-	Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, Camera * camera, b2World * world);
+	Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world);
 	~Enemy();
 
 	void Update(double deltaTime);

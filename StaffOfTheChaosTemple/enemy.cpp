@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
+Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world) : Person::Person(health, speed, damage, width, height, texture, camera, world)
 {
 	this->player = player;
 	this->lineOfSight = lineOfSight;
@@ -8,7 +8,7 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 	this->forceFromObstacles = forceFromAbstacles;
 	raycast = new RaycastCallBack(world);
 	raycast->CreateLine(lineOfSight, 10.0f, camera, ResourceManager::GetShader("debug"), glm::vec3(1, 0, 0));
-	distanceObjects = new B2Entity(camera, world);
+	distanceObjects = new B2Entity(width, height, glm::vec2(0,0), nullptr, camera, world);
 	distanceObjects->CreateBodyCircle(0, 0, 125, true, true, true);
 	distanceObjects->EnableDebugRendering(glm::vec3(1, 0, 0));
 	this->AddChild(distanceObjects);

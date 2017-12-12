@@ -1,8 +1,7 @@
 #include "b2entity.h"
 
-B2Entity::B2Entity(Camera* camera, b2World* world) : Entity::Entity() {
+B2Entity::B2Entity(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, b2World* world) : Sprite::Sprite(width, height, pivot, texture, camera, false) {
 	// Save all of the variables received from the constructor
-	this->camera = camera;
 	this->world = world;
 
 	shader = ResourceManager::GetShader("defaultShader");
@@ -25,10 +24,6 @@ B2Entity::~B2Entity() {
 	if (dr != nullptr) {
 		delete dr;
 	}
-}
-
-void B2Entity::Update(double deltaTime) {
-	
 }
 
 // This function is normally called by the parent
@@ -222,15 +217,6 @@ void B2Entity::EnableDebugRendering(glm::vec3 color)
 		dr->DrawCircle(glm::vec2(0, 0), width / 2);
 		break;
 	}
-}
-
-void B2Entity::SetTexture(Texture* texture) {
-	this->texture = texture;
-}
-
-void B2Entity::SetShader(Shader * shader)
-{
-	this->shader = shader;
 }
 
 glm::vec2 B2Entity::ApplyVelocityB2body(glm::vec2 velocity)
