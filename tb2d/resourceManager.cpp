@@ -72,7 +72,6 @@ QuadData ResourceManager::GetQuad(glm::vec2 pivot)
 	CompareVectors2 _pivot = { pivot.x, pivot.y };
 	// Search for an excisting quad
 	if (_rm->quads.find(_pivot) != _rm->quads.end()) {
-		std::cout << "Found a fitting quad" << std::endl;
 		return _rm->quads[_pivot];
 	}
 	float vertices[] = {
@@ -101,7 +100,6 @@ QuadData ResourceManager::GetQuad(glm::vec2 pivot)
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
-	std::cout << "Could not find the quad so we had to create a new one" << std::endl;
 	QuadData qd = { VAO, VBO };
 	_rm->quads[_pivot] = qd;
 	return qd;
@@ -129,7 +127,6 @@ ResourceManager::~ResourceManager()
 	// Delete VAO's and VBO's
 	std::map<CompareVectors2, QuadData>::iterator it3 = quads.begin();
 	while (it3 != quads.end()) {
-		std::cout << "deleted quad" << std::endl;
 		glDeleteVertexArrays(1, &(*it3).second.VAO);
 		glDeleteBuffers(1, &(*it3).second.VBO);
 		it3 = quads.erase(it3);
