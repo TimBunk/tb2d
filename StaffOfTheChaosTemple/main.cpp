@@ -58,6 +58,7 @@ int main() {
 	ResourceManager::CreateTexture("staff", "textures/magic.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	ResourceManager::CreateTexture("laser", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	ResourceManager::CreateTexture("crystal", "textures/container2_specular.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
 	ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
@@ -66,22 +67,26 @@ int main() {
 
 	contactListener = new ContactListener();
 	world = new b2World(b2Vec2(0.0f, 0.0f));
-	world->SetContactListener(contactListener);
+	//world->SetContactListener(contactListener);
 	world->SetAllowSleeping(false);
 
-	level1 = new Level1(world, 1920, 1080);
+	//level1 = new Level1(world, 1920, 1080);
 	level2 = new Level2(world, 1920, 1080);
 
-	player = new Player(10, 10.0f, 1, level1->GetCamera(), world);
+	player = new Player(10, 10.0f, 1, level2->GetCamera(), world);
 	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
 	player->SetTexture(ResourceManager::GetTexture("player"));
 
-	level1->AddChild(player);
+	//level1->AddChild(player);
 	level2->AddChild(player);
 
-	levels.push_back(level1);
+	//levels.push_back(level1);
 	levels.push_back(level2);
-	level1->SetPlayer(player);
+	level2->SetPlayer(player);
+
+	// Update the levels once to set everything in place and then set the contactlistener to avoid conflicts and crashes
+	level2->Update(window->GetDeltaTime());
+	world->SetContactListener(contactListener);
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
@@ -128,11 +133,11 @@ int main() {
 		// Swap buffers
 		window->SwapBuffers();
 	}
-	/*delete menu;
+	delete menu;
 	delete player;
-	delete level1;
+	//delete level1;
 	delete level2;
-	delete contactListener;*/
+	delete contactListener;
 	ResourceManager::Destroy();
 	delete window;
 	std::cout << "Program succeeded" << std::endl;

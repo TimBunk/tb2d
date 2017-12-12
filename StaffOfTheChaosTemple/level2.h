@@ -2,6 +2,7 @@
 #define LEVEL2_H
 
 #include "level.h"
+#include "enemy.h"
 
 class Level2 : public Level
 {
@@ -12,7 +13,10 @@ public:
 	void SetPlayer(Player* player);
 
 private:
-
+	Enemy* enemy;
+	Enemy* enemy1;
+	Enemy* enemy2;
+	B2Entity* wall;
 };
 
 #endif // !LEVEL2_H
