@@ -11,9 +11,9 @@ Level2::Level2(b2World * world, int screenWidthCamera, int screenHeightCamera) :
 
 Level2::~Level2()
 {
-	/*delete enemy;
+	delete enemy;
 	delete enemy1;
-	delete enemy2;*/
+	delete enemy2;
 	delete wall;
 }
 
@@ -29,17 +29,20 @@ void Level2::SetPlayer(Player * player)
 	enemy->localPosition = glm::vec2(0, -300);
 	enemy->CreateBoxCollider(100, 100, glm::vec2(0, 0), true, false);
 	enemy->EnableDebugRendering(glm::vec3(0, 1, 0));
+	enemy->UpdateChilderen(this, 0.0f);
 	this->AddChild(enemy);
 
 	enemy1 = new Enemy(player, 900.0f, 0.1f, 0.5f, 1, 5, 1, 100, 100, ResourceManager::GetTexture("enemy"), camera, world);
-	enemy1->localPosition = glm::vec2(400, -300);
+	enemy1->localPosition = glm::vec2(1, -300);
 	enemy1->CreateBoxCollider(100, 100, glm::vec2(0, 0), true, false);
 	enemy1->EnableDebugRendering(glm::vec3(0, 1, 0));
+	enemy1->UpdateChilderen(this, 0.0f);
 	this->AddChild(enemy1);
 
 	enemy2 = new Enemy(player, 900.0f, 0.1f, 0.5f, 1, 5, 1, 100, 100, ResourceManager::GetTexture("enemy"), camera, world);
 	enemy2->localPosition = glm::vec2(800, -300);
 	enemy2->CreateBoxCollider(100, 100, glm::vec2(0, 0), true, false);
 	enemy2->EnableDebugRendering(glm::vec3(0, 1, 0));
+	enemy2->UpdateChilderen(this, 0.0f);
 	this->AddChild(enemy2);
 }
