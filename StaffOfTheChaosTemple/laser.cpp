@@ -75,6 +75,11 @@ void Laser::Update(double deltaTime)
 			dynamic_cast<Crystal*>(b)->Hit();
 			continue;
 		}
+		// HIT SENSOR
+		else if (rh.fixture->IsSensor()) {
+			// IGNORE IT
+			continue;
+		}
 		// HIT B2ENTITY
 		else {
 			// Scale the laser by the distance of hit
