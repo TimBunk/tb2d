@@ -53,21 +53,16 @@ public:
 	/// @param dynamic If true the body will be dynamic that means that it will be affected by physics if false it will be static and not affected by physics
 	/// @param sensor If true the body can overlap with the other body's but still detects collision
 	/// @return void
-	virtual void CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation);
+	virtual void CreateBoxCollider(int w, int h, glm::vec2 pivot, bool dynamic, bool sensor);
 
-	virtual void CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sensor, bool fixedRotation);
+	virtual void CreateCircleCollider(int radius, bool dynamic, bool sensor);
 
 	void EnableDebugRendering(glm::vec3 color);
 
 	glm::vec2 ApplyVelocityB2body(glm::vec2 velocity);
 
-	/// @brief Get the position from the box2d body but in pixels instead of meters
-	///	@return glm::vec2
-	glm::vec2 GetPositionInPixelsB2body();
-
-	/// @brief Get the angle from the b2Body. !Note that the angle is in radians
-	/// @return float
-	float GetAngleB2body();
+	int GetColliderWidth();
+	int GetColliderHeight();
 
 	/// @brief A contact will be added whenever this b2Entity fixture collided with an other fixture
 	/// @brief The ContactListener class takes care of adding the contacts to this class. You can access the contacts by the a vector named contacts that is protected for this class
@@ -93,6 +88,7 @@ public:
 protected:
 	DebugRenderer* dr;
 	Shape shape;
+	int colliderWidth, colliderHeight;
 	b2Body* body; ///< @brief The body needs to be initialized by calling CreateBody()
 	b2World* world; ///< @brief The world is needed in order for the body to work
 	b2Fixture* fixture; ///< @brief The body makes use of only one fixture

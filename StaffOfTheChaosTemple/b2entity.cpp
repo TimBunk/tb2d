@@ -11,8 +11,8 @@ B2Entity::B2Entity(int width, int height, glm::vec2 pivot, Texture* texture, Cam
 	body = nullptr;
 	texture = nullptr;
 	shape = Shape::box;
-	width = 0;
-	height = 0;
+	colliderWidth = 0;
+	colliderHeight = 0;
 }
 
 B2Entity::~B2Entity() {
@@ -84,7 +84,7 @@ void B2Entity::Draw() {
 	}
 }
 
-void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool dynamic, bool sensor, bool fixedRotation) {
+void B2Entity::CreateBoxCollider(int w, int h, glm::vec2 pivot, bool dynamic, bool sensor) {
 	shape = Shape::box;
 	// If the body was created make sure to delete everything as well
 	if (body != nullptr) {
@@ -92,17 +92,12 @@ void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool d
 		world->DestroyBody(body);
 	}
 	// Save the w and h for later use
-	width = w;
-	height = h;
+	colliderWidth = w;
+	colliderHeight = h;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(0.0f, 0.0f);
-	if (fixedRotation) {
-		bodydef.fixedRotation = true;
-	}
-	else {
-		bodydef.fixedRotation = false;
-	}
+	bodydef.fixedRotation = true;
 	if (dynamic) {
 		bodydef.type = b2_dynamicBody;
 	}
@@ -118,7 +113,7 @@ void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool d
 	// pivot has to go times -1 because box2d sets the pivot point the otherway around then I want it
 	pivot *= -1;
 	// the reason for dividing by 2 is because box2D draws from the center
-	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m, b2Vec2(pivot.x * width * p2m, pivot.y * height * p2m), 0.0f);
+	shape.SetAsBox(w / 2 * p2m, h / 2 * p2m, b2Vec2((pivot.x * width * p2m) * -1, (pivot.y * height * p2m) * -1), 0.0f);
 	// step 4 create fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &shape;
@@ -131,14 +126,9 @@ void B2Entity::CreateBodyBox(int x, int y, int w, int h, glm::vec2 pivot, bool d
 	}
 	fixture->SetUserData(this);
 	body->SetActive(true);
-
-	this->localPosition = glm::vec2(x, y);
-	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
-
-	quadData = ResourceManager::GetQuad(pivot);
 }
 
-void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sensor, bool fixedRotation)
+void B2Entity::CreateCircleCollider(int radius, bool dynamic, bool sensor)
 {
 	shape = Shape::circle;
 	// If the body was created make sure to delete everything as well
@@ -152,12 +142,7 @@ void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sen
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(0.0f, 0.0f);
-	if (fixedRotation) {
-		bodydef.fixedRotation = true;
-	}
-	else {
-		bodydef.fixedRotation = false;
-	}
+	bodydef.fixedRotation = true;
 	if (dynamic) {
 		bodydef.type = b2_dynamicBody;
 	}
@@ -184,11 +169,6 @@ void B2Entity::CreateBodyCircle(int x, int y, int radius, bool dynamic, bool sen
 	}
 	fixture->SetUserData(this);
 	body->SetActive(true);
-
-	this->localPosition = glm::vec2(x, y);
-	body->SetTransform(b2Vec2(x * p2m, y * p2m), 0.0f);
-
-	quadData = ResourceManager::GetQuad(glm::vec2(0,0));
 }
 
 void B2Entity::EnableDebugRendering(glm::vec3 color)
@@ -229,20 +209,14 @@ glm::vec2 B2Entity::ApplyVelocityB2body(glm::vec2 velocity)
 	return pos;
 }
 
-glm::vec2 B2Entity::GetPositionInPixelsB2body()
+int B2Entity::GetColliderWidth()
 {
-	// Get the position directly from the box2d body and it will automatically be converted to pixels for you
-	glm::vec2 pos;
-	pos = glm::vec2(body->GetPosition().x * m2p, body->GetPosition().y * m2p);
-	return pos;
+	return colliderWidth;
 }
 
-float B2Entity::GetAngleB2body()
+int B2Entity::GetColliderHeight()
 {
-	// Get the angle in radians from the body
-	float angle;
-	angle = body->GetAngle();
-	return angle;
+	return colliderHeight;
 }
 
 void B2Entity::AddContact(B2Entity* contact) {

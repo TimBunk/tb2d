@@ -72,7 +72,7 @@ int main() {
 	level1 = new Level1(world, 1920, 1080);
 	//level2 = new Level2(world, 1920, 1080);
 	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), level1->GetCamera(), world);
-	player->CreateBodyBox(960, 0, 100, 100, glm::vec2(0.0f, 0.0f), true, false, false);
+	player->CreateBoxCollider(100, 100, glm::vec2(0.0f, 0.0f), true, false);
 
 	level1->AddChild(player);
 	//level2->AddChild(player);
