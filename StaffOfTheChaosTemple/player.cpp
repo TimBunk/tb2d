@@ -2,8 +2,7 @@
 
 Player::Player(int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
 {
-	staff = new Staff(1000.0f, world, 100, 200, ResourceManager::GetTexture("staff"), camera);
-	staff->CreateBody(200, 100, glm::vec2(0.0f, -0.5f));
+	staff = new Staff(1000.0f, world, 100, 200, glm::vec2(0.0f, -0.5f), ResourceManager::GetTexture("staff"), camera);
 	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
 	this->AddChild(staff);
 }

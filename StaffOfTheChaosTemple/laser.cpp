@@ -1,7 +1,7 @@
 #include "laser.h"
 #include "mirror.h"
 
-Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Camera* camera, bool HUD) : Sprite::Sprite(texture, camera, HUD)
+Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Camera* camera, bool HUD) : Sprite::Sprite(0.0f, 0.0f, glm::vec2(0,0), texture, camera, HUD)
 {
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);

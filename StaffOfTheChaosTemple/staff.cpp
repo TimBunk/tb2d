@@ -1,6 +1,6 @@
 #include "staff.h"
 
-Staff::Staff(float laserRange, b2World* world, int width, int height, Texture* texture, Camera* camera) : Sprite::Sprite(texture, camera, false)
+Staff::Staff(float laserRange, b2World* world, int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera) : Sprite::Sprite(width, height, pivot, texture, camera, false)
 {
 	this->laserRange = laserRange;
 	this->world = world;

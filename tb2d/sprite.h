@@ -7,7 +7,7 @@
 
 class Sprite : public Entity {
 public:
-	Sprite(Texture* texture, Camera* camera, bool HUD);
+	Sprite(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, bool HUD);
 	virtual ~Sprite();
 
 	virtual void Draw();
@@ -18,7 +18,6 @@ public:
 	int GetWidth();
 	int GetHeight();
 
-	void CreateBody(int height, int width, glm::vec2 pivot);
 protected:
 	Shader* shader;
 	Camera* camera;

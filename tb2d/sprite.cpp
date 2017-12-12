@@ -1,12 +1,14 @@
 #include "sprite.h"
 
-Sprite::Sprite(Texture* texture, Camera* camera, bool HUD) : Entity::Entity() {
+Sprite::Sprite(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, bool HUD) : Entity::Entity()
+{
+	this->width = width;
+	this->height = height;
+	this->quadData = ResourceManager::GetQuad(pivot);
 	this->texture = texture;
 	this->shader = ResourceManager::GetShader("defaultShader");
 	this->camera = camera;
 	this->HUD = HUD;
-	width = 0;
-	height = 0;
 }
 
 Sprite::~Sprite() {
@@ -59,11 +61,4 @@ int Sprite::GetHeight()
 {
 	int h = height * this->GetGlobalScale().y;
 	return h;
-}
-
-void Sprite::CreateBody(int height, int width, glm::vec2 pivot)
-{
-	this->height = height;
-	this->width = width;
-	quadData = ResourceManager::GetQuad(pivot);
 }
