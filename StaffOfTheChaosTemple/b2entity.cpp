@@ -288,6 +288,11 @@ bool B2Entity::Contact(B2Entity * contact)
 	return false;
 }
 
+std::vector<B2Entity*> B2Entity::GetAllContacts()
+{
+	return contacts;
+}
+
 void B2Entity::SetActive(bool active) {
 	// Set active or deactive but only if the body is initialized
 	if (body != NULL) {

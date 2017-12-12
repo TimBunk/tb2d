@@ -93,6 +93,8 @@ public:
 
 	bool Contact(B2Entity* contact);
 
+	std::vector<B2Entity*> GetAllContacts();
+
 	/// @brief This function will set the b2Body active or deactive
 	/// @param active If true the body will be active othterwise it will be deactive
 	/// @return void
