@@ -1,9 +1,11 @@
 #include "enemy.h"
 
-Enemy::Enemy(Player* player, float lineOfSight, int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
+Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, Camera * camera, b2World * world) : Person::Person(health, speed, damage, camera, world)
 {
 	this->player = player;
 	this->lineOfSight = lineOfSight;
+	this->forceTowardsPlayer = forceTowardsPlayer;
+	this->forceFromObstacles = forceFromAbstacles;
 	raycast = new RaycastCallBack(world);
 	raycast->CreateLine(lineOfSight, 10.0f, camera, ResourceManager::GetShader("debug"), glm::vec3(1, 0, 0));
 	distanceObjects = new B2Entity(camera, world);
@@ -39,7 +41,7 @@ void Enemy::Update(double deltaTime)
 			if (b == player) {
 				// hitted player
 				lastPositionPlayer = player->GetGlobalPosition();
-				acceleration += (glm::normalize(lastPositionPlayer - position) * 0.1f);
+				acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 				playerHit = true;
 				continue;
 			}
@@ -54,14 +56,14 @@ void Enemy::Update(double deltaTime)
 		}
 	}
 	if (!playerHit && glm::length(position - lastPositionPlayer) > 125.0f) {
-		acceleration += (glm::normalize(lastPositionPlayer - position) * 0.1f);
+		acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 	}
 
 	std::vector<B2Entity*> inRangeObjects = distanceObjects->GetAllContacts();
 	for (int i = 0; i < inRangeObjects.size(); i++) {
 		if (inRangeObjects[i] != this && inRangeObjects[i] != player) {
 			// hitted a wall or something
-			acceleration += (glm::normalize(position - inRangeObjects[i]->GetGlobalPosition()) * 0.2f);
+			acceleration += (glm::normalize(position - inRangeObjects[i]->GetGlobalPosition()) * forceFromObstacles);
 		}
 	}
 	if (acceleration.x != 0 || acceleration.y != 0) {
