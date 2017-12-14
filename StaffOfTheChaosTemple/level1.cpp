@@ -6,32 +6,34 @@ Level1::Level1(b2World* world, int screenWidthCamera, int screenHeightCamera) : 
 	CreateFinish(960, 1200, 480, 100);
 
 	// Intialize all of the variables
-	wall = new B2Entity(720, 100, glm::vec2(0,0), ResourceManager::GetTexture("wall"), camera, world);
+	wall = new B2Entity(720, 750, glm::vec2(0,0), ResourceManager::GetTexture("wall"), camera, world);
 	wall->localPosition = glm::vec2(360, 1080);
 	wall->CreateBoxCollider(720, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall);
-	wall2 = new B2Entity(100, 1080, glm::vec2(0, 0), ResourceManager::GetTexture("wall"), camera, world);
+	wall2 = new B2Entity(1080, 750, glm::vec2(0, 0), ResourceManager::GetTexture("wall"), camera, world);
 	wall2->localPosition = glm::vec2(0, 540);
-	wall2->CreateBoxCollider(100, 1080, glm::vec2(0.0f, 0.0f), false, false);
+	wall2->localAngle = glm::radians(90.0f);
+	wall2->CreateBoxCollider(1080, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall2);
-	wall3 = new B2Entity(100, 1080, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall3 = new B2Entity(1080, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
 	wall3->localPosition = glm::vec2(1920, 540);
-	wall3->CreateBoxCollider(100, 1080, glm::vec2(0.0f, 0.0f), false, false);
+	wall3->localAngle = glm::radians(90.0f);
+	wall3->CreateBoxCollider(1080, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall3);
-	wall4 = new B2Entity(1920, 100, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall4 = new B2Entity(1920, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
 	wall4->localPosition = glm::vec2(960, 0);
 	wall4->CreateBoxCollider(1920, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall4);
-	wall5 = new B2Entity(700, 100, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall5 = new B2Entity(700, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
 	wall5->localPosition = glm::vec2(1530, 540);
 	wall5->CreateBoxCollider(700, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall5);
-	wall6 = new B2Entity(720, 100, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall6 = new B2Entity(720, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
 	wall6->localPosition = glm::vec2(1560, 1080);
 	wall6->CreateBoxCollider(720, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall6);
 
-	mirror = new Mirror(true, 45.0f, 240.0f, ResourceManager::GetTexture("laser"), camera, world);
+	mirror = new Mirror(true, 45.0f, 240.0f, ResourceManager::GetTexture("mirror"), camera, world);
 	mirror->localPosition = glm::vec2(700.0f, 540.0f);
 	mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
 	mirror->SetRotation(-90.0f);
@@ -48,15 +50,18 @@ Level1::Level1(b2World* world, int screenWidthCamera, int screenHeightCamera) : 
 	crystal2->SetShader(ResourceManager::GetShader("crystal"));
 	AddChild(crystal2);
 
-	door = new Door(Direction::west, 240, 100, ResourceManager::GetTexture("player"), camera, world);
-	door->localPosition = glm::vec2(840, 1080);
-	door->CreateBoxCollider(240, 100, glm::vec2(0, 0), false, false);
+	door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door"), camera, world);
+	door->localPosition = glm::vec2(695, 1080);
+	door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
+	door->EnableDebugRendering(glm::vec3(1, 0, 1));
 	door->Link(crystal);
 	door->Link(crystal2);
 	AddChild(door);
-	door2 = new Door(Direction::east, 240, 100, ResourceManager::GetTexture("player"), camera, world);
-	door2->localPosition = glm::vec2(1080, 1080);
-	door2->CreateBoxCollider(240, 100, glm::vec2(0, 0), false, false);
+	door2 = new Door(Direction::east, 550, 550, ResourceManager::GetTexture("door"), camera, world);
+	door2->localPosition = glm::vec2(1225, 1080);
+	door2->localAngle = glm::radians(180.0f);
+	door2->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
+	door2->EnableDebugRendering(glm::vec3(1, 0, 1));
 	door2->Link(door);
 	AddChild(door2);
 }
@@ -68,6 +73,7 @@ Level1::~Level1()
 	delete wall3;
 	delete wall4;
 	delete wall5;
+	delete wall6;
 	delete door;
 	delete door2;
 	delete crystal;

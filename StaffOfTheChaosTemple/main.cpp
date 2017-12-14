@@ -53,12 +53,15 @@ int main() {
 	window = new Window("Staff of the Chaos Temple", false);
 	window->Resize(800, 600);
 	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("player", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("wall", "textures/wall.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("staff", "textures/magic.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("laser", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("crystal", "textures/container2_specular.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("wall", "textures/wall.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("staff", "textures/staff.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("laser", "textures/laser.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("crystal", "textures/crystal.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 
 	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
 	ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
@@ -69,21 +72,22 @@ int main() {
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	//world->SetContactListener(contactListener);
 	world->SetAllowSleeping(false);
-	//level1 = new Level1(world, 1920, 1080);
-	level2 = new Level2(world, 1920, 1080);
-	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), level2->GetCamera(), world);
-	player->CreateBoxCollider(200, 200, glm::vec2(0.0f, 0.0f), true, false);
+	level1 = new Level1(world, 1920, 1080);
+	//level2 = new Level2(world, 1920, 1080);
+	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), level1->GetCamera(), world);
+	player->CreateCircleCollider(40.0f, true, false);
+	//player->CreateBoxCollider(100, 100, glm::vec2(0.0f, 0.0f), true, false);
 	player->EnableDebugRendering(glm::vec3(1, 0, 0));
 
-	//level1->AddChild(player);
-	level2->AddChild(player);
+	level1->AddChild(player);
+	//level2->AddChild(player);
 
-	//levels.push_back(level1);
-	levels.push_back(level2);
-	level2->SetPlayer(player);
+	levels.push_back(level1);
+	//levels.push_back(level2);
+	level1->SetPlayer(player);
 
 	// Update the levels once to set everything in place and then set the contactlistener to avoid conflicts and crashes
-	level2->Update(window->GetDeltaTime());
+	level1->Update(window->GetDeltaTime());
 	world->SetContactListener(contactListener);
 
 	gameState = _menu;
@@ -133,8 +137,8 @@ int main() {
 	}
 	delete menu;
 	delete player;
-	//delete level1;
-	delete level2;
+	delete level1;
+	//delete level2;
 	delete contactListener;
 	ResourceManager::Destroy();
 	delete window;

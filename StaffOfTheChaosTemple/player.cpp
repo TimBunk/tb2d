@@ -2,8 +2,9 @@
 
 Player::Player(int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world) : Person::Person(health, speed, damage, width, height, texture, camera, world)
 {
-	staff = new Staff(1000.0f, world, 100, 200, glm::vec2(0.0f, -0.5f), ResourceManager::GetTexture("staff"), camera);
-	staff->localAngle = (90.0f * M_PI / 180.0f);//(90.0f * M_PI / 180.0f);
+	staff = new Staff(1000.0f, world, 100, 200, glm::vec2(0.0f, -0.0f), ResourceManager::GetTexture("staff"), camera);
+	staff->localPosition.x = -25;
+	staff->localPosition.y = -50;
 	this->AddChild(staff);
 }
 
@@ -40,21 +41,20 @@ void Player::Update(double deltaTime)
 	localPosition = ApplyVelocityB2body(velocity);
 	camera->SetPosition(glm::vec2(GetGlobalPosition().x - camera->GetWidth()/2, GetGlobalPosition().y - camera->GetHeight()/2));
 	// Rotate the player towards the mouse
-	glm::vec2 direction = Input::GetMousePositionWorldSpace(camera) - GetGlobalPosition();
-	glm::normalize(direction);
-	this->localAngle = std::atan2(direction.y, direction.x);
-	//std::cout << " player angle = " << (glm::atan(direction.y, direction.x) * 180.0f / M_PI) << std::endl;
-
+	glm::vec2 mousePos = Input::GetMousePositionWorldSpace(camera);
+	glm::vec2 direction = mousePos - GetGlobalPosition();
+	this->localAngle = std::atan2(direction.y, direction.x) + glm::radians(180.0f);
 	// Rotate the staff towards the mouse
-	glm::vec2 directionStaff = (Input::GetMousePositionWorldSpace(camera) - staff->GetGlobalPosition());
-	glm::normalize(directionStaff);
-	staff->localAngle = std::atan2(directionStaff.y, directionStaff.x) + (90.0f * M_PI / 180.0f) - this->localAngle; //(90.0f * M_PI / 180.0f);
-	// Limit the angle to not go lower then 45 degrees
-	if (staff->localAngle < M_PI_4) {
-		staff->localAngle = M_PI_4;
+	glm::vec2 dirStaff = mousePos - glm::vec2(staff->GetGlobalPosition().x, staff->GetGlobalPosition().y);
+	staff->localAngle = glm::atan(dirStaff.y, dirStaff.x) - localAngle + glm::radians(180.0f);
+	// There is a issue where sometimes the angle goes to a really high number and doing -360.0f fixes it from going to high
+	if (glm::degrees(staff->localAngle) > 10.0f) {
+		staff->localAngle = glm::radians(glm::degrees(staff->localAngle) - 360.0f);
 	}
-	// std::cout << " staff angle = " << staff->localAngle * 180.f / M_PI << std::endl;
-	staff->localPosition = glm::vec2(0.0f, 120.0f);
+	// The angle of the staff cant go any lower then -35 degrees otherwise the player will hit itself
+	if (glm::degrees(staff->localAngle) < -35.0f) {
+		staff->localAngle = glm::radians(-35.0f);
+	}
 
 	for (int i = 0; i < contacts.size(); i++) {
 		//std::cout << "contact amount = " << contacts.size() << std::endl;

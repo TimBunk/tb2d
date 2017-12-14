@@ -1,7 +1,7 @@
 #include "laser.h"
 #include "mirror.h"
 
-Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Camera* camera, bool HUD) : Sprite::Sprite(0.0f, 0.0f, glm::vec2(0,0), texture, camera, HUD)
+Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Camera* camera, bool HUD) : Sprite::Sprite(0.0f, 0.0f, glm::vec2(0, 0), texture, camera, HUD)
 {
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);
@@ -94,7 +94,7 @@ void Laser::Update(double deltaTime)
 	hitPosition = b2Vec2(0.0f, 0.0f);
 	reflection = b2Vec2(0.0f, 0.0f);
 	localScale.y = 1.0f;
-		
+
 }
 
 void Laser::Draw()
@@ -102,13 +102,13 @@ void Laser::Draw()
 	// Update VBO
 	GLfloat vertices[6][4] = {
 		// Vertex positions		// uv positions
-		{ -width/2.0f, 0.0f,	0.0f, 0.0f }, // lower left
-		{ width/2.0f, 0.0f,		1.0f, 0.0f }, // lower right
-		{ -width/2.0f, -height,	0.0f, localScale.y * height / width }, // top left
+		{ -width / 2.0f, 0.0f,	0.0f, 0.0f }, // lower left
+		{ width / 2.0f, 0.0f,		1.0f, 0.0f }, // lower right
+		{ -width / 2.0f, -height,	0.0f, localScale.y * height / width }, // top left
 
-		{ width/2.0f, 0.0f,		1.0f, 0.0f }, // lower right
-		{ width/2.0f, -height,	1.0f, localScale.y * height / width }, // top right
-		{ -width/2.0f, -height,	0.0f, localScale.y * height / width }, // top left
+		{ width / 2.0f, 0.0f,		1.0f, 0.0f }, // lower right
+		{ width / 2.0f, -height,	1.0f, localScale.y * height / width }, // top right
+		{ -width / 2.0f, -height,	0.0f, localScale.y * height / width }, // top left
 	};
 
 	shader->Use();

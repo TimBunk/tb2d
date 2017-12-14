@@ -22,7 +22,7 @@ void Staff::Update(double deltaTime)
 {
 	if (shooting) {
 		shooting = false;
-		float angleStaff = GetGlobalAngle() + (90.0f * M_PI / 180.0f);
+		float angleStaff = GetGlobalAngle();
 		glm::vec2 direction;
 		direction.x = glm::cos(angleStaff);
 		direction.y = glm::sin(angleStaff);
@@ -30,7 +30,7 @@ void Staff::Update(double deltaTime)
 		direction *= laserRange;
 		direction = direction * -1.0f;
 		lasers[0]->localPosition = this->GetGlobalPosition();
-		lasers[0]->localAngle = this->GetGlobalAngle();
+		lasers[0]->localAngle = this->GetGlobalAngle() - (90.0f * M_PI / 180.0f);
 		lasers[0]->SetDirection(direction);
 		lasers[0]->Update(deltaTime);
 		lasers[0]->Draw();
@@ -68,8 +68,8 @@ void Staff::Update(double deltaTime)
 				// If a laser does not hit anything delete every laser that comes after it
 				else if (i > 0 && lasers[i - 1]->Hit() == false) {
 					//int j = lasers.size();
-					while (lasers.size() > i ) {
-						delete lasers[lasers.size()-1];
+					while (lasers.size() > i) {
+						delete lasers[lasers.size() - 1];
 						lasers.pop_back();
 					}
 					// Break out of the while loop otherwise the program will crash
