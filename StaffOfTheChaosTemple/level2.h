@@ -17,6 +17,7 @@ private:
 	Enemy* enemy1;
 	Enemy* enemy2;
 	B2Entity* wall;
+	Mirror* mirror;
 };
 
 #endif // !LEVEL2_H
