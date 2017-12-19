@@ -45,11 +45,6 @@ Window::Window(const char* screenName, bool fullScreen) {
 
 
 	Input::Init(window, mode->width, mode->height);
-	// Initalize variables for deltaTime
-	deltaTime = 0.0f;
-	lastFrame = glfwGetTime();
-	totalTime = 0.0f;
-	fpsCount = 0;
 }
 
 
@@ -57,10 +52,6 @@ Window::~Window() {
 	Input::Destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
-}
-
-void Window::Update() {
-	CalculateFrameRate();
 }
 
 void Window::Clear() {
@@ -103,24 +94,6 @@ void Window::Resize(int screenWidth, int screenHeight)
 	glfwSetWindowSize(window, screenWidth, screenHeight);
 }
 
-double Window::GetDeltaTime() {
-	return deltaTime;
-}
-
 void Window::SetBackgroundColor(glm::vec3 backgroundColor) {
 	this->backgroundColor = backgroundColor;
-}
-
-void Window::CalculateFrameRate() {
-	double currentFrame = glfwGetTime();
-	deltaTime = (currentFrame - lastFrame);
-	lastFrame = currentFrame;
-	fpsCount++;
-	// Print the fps once the totalTime reached 1 second
-	totalTime += deltaTime;
-	if (totalTime >= 1.0f) {
-		totalTime -= 1.0f;
-		std::cout << "fps: " << fpsCount << std::endl;
-		fpsCount = 0;
-	}
 }

@@ -18,28 +18,18 @@ public:
 	Window(const char* screenName, bool fullScreen);
 	virtual ~Window();
 
-	void Update();
 	void Clear();
 	void SwapBuffers();
 	int ShouldClose();
 	void CloseWindow();
 	void Resize(int screenWidth, int screenHeight);
 
-	double GetDeltaTime();
-
 	void SetBackgroundColor(glm::vec3 backgroundColor);
 
 private:
-	void CalculateFrameRate();
 
 	GLFWwindow* window;
 	glm::vec3 backgroundColor;
-
-	// deltaTime
-	double deltaTime;
-	double lastFrame;
-	double totalTime;
-	int fpsCount;
 };
 
 #endif // !WINDOW_H
