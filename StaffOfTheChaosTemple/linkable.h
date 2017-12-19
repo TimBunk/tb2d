@@ -1,7 +1,7 @@
 #ifndef LINKABLE_H
 #define LINKABLE_H
 
-#include "b2entity.h"
+#include "box2Dclasses/b2entity.h"
 
 class Linkable : public B2Entity
 {
