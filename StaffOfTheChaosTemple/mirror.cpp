@@ -11,6 +11,11 @@ Mirror::Mirror(bool rotatable, int width, int height, Texture* texture, Camera *
 	else {
 		rotator = nullptr;
 	}
+	notHitableArea = new B2Entity(width + 2, height, glm::vec2(0, 0), nullptr, camera, world);
+	notHitableArea->CreateBoxCollider(width, height + 20, glm::vec2(0, 0), false, false);
+	notHitableArea->EnableDebugRendering(glm::vec3(1, 0, 1));
+	notHitableArea->localPosition.x = -2.0f;
+	AddChild(notHitableArea);
 }
 
 Mirror::~Mirror()
@@ -18,6 +23,7 @@ Mirror::~Mirror()
 	if (rotator != nullptr) {
 		delete rotator;
 	}
+	delete notHitableArea;
 }
 
 void Mirror::Update(double deltaTime)

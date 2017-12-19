@@ -15,6 +15,7 @@ public:
 
 private:
 	Rotator* rotator;
+	B2Entity* notHitableArea;
 };
 
 #endif // !MIRROR_H
