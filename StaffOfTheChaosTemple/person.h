@@ -1,7 +1,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include "b2entity.h"
+#include "box2Dclasses/b2entity.h"
 
 class Person : public B2Entity
 {
