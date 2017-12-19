@@ -10,77 +10,82 @@
 #include "window.h"
 #include "sprite.h"
 #include "scene.h"
+#include "box2Dclasses/b2entity.h"
 #include "button.h"
+#include "renderManager.h"
+#include "core.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-Window* window;
-ResourceManager* rm;
-Texture* texture;
-Shader* shaderFreetype;
-Shader* shader;
-Scene* scene;
-Sprite* sprite;
-Input* input;
-Button* button;
+float B2Entity::m2p = 50.0f;
+float B2Entity::p2m = 1.0f / B2Entity::m2p;
 
-Text* text;
+Core* core;
 
+Scene* scene1;
+const int amount = 10000;
+Sprite* sprite[amount];
+const int amount2 = 10000;
+Sprite* sprite2[amount2];
+
+float scale = 1.0f;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("testProject", false);
-	window->Resize(800, 600);
 
-	rm = window->GetResourceManager();
-	rm->CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	core = new Core("testScene", false);
+	core->ResizeWindow(800, 800);
+	core->SetWindowBackgroundColor(glm::vec3(1, 1, 0));
 
-	scene = new Scene(1920, 1080);
-	sprite = new Sprite(250, 250, rm->GetTexture("awesome"), rm->GetShader("defaultShader"), scene->GetCamera(), false);
-	sprite->localPosition = glm::vec2(125.0f, 540.0f);
-	scene->AddChild(sprite);
-	text = new Text("This is sample text", 96, "fonts/OpenSans-Regular.ttf", glm::vec3(0.5f, 0.8f, 0.2f), rm->GetShader("defaultFreetype"), scene->GetCamera(), false);
-	text->localPosition = glm::vec2(0.0f, 540.0f);
-	scene->AddChild(text);
+	ResourceManager::CreateTexture("crate", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("crate2", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateShader("defaultShaderInstancing", "shaders\\defaultShaderInstancing.vs", "shaders\\defaultShader.fs");
 
-	//scene->GetCamera()->SetPosition(glm::vec2(-960.0f, -540.0f));
-
-	input = window->GetInput();
-	button = new Button(500, 100, true, glm::vec3(1.0f, 0.0f, 0.0f), input, scene->GetCamera(), rm);
-	button->localPosition = glm::vec2(960, 540);
-	scene->AddChild(button);
-	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
-
-	while (!window->ShouldClose()) {
-		// rendering commands
-		window->Clear();
-		window->Update();
-
-		// Draw the texture on the screen
-		scene->UpdateChilderen(NULL, 0.0f);
-
-		if (button->Hover()) {
-			button->SetColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		}
-		else {
-			button->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-
-		if (input->KeyPress(GLFW_KEY_SPACE)) {
-			//text->localPosition = glm::vec2(text->GetGlobalPosition().x, text->GetGlobalPosition().y - (text->GetHeight() / 2));
-			//text->localScale = glm::vec2(0.8f, 0.8f);
-			scene->GetCamera()->PositionAdd(glm::vec2(50.0f, 0.0f));
-			button->CreateText("Start", 48, glm::vec3(0.0f, 0.0f, 1.0f));
-		}
-
-		window->SwapBuffers();
+	scene1 = new Scene(800, 800);
+	for (int i = 0; i < amount; i++) {
+		sprite[i] = new Sprite(20, 20, glm::vec2(0, 0), ResourceManager::GetTexture("crate"), scene1->GetCamera(), false);
+		sprite[i]->SetShader(ResourceManager::GetShader("defaultShaderInstancing"));
+		sprite[i]->SetInstancedRenderer("crate");
+		sprite[i]->localPosition = glm::vec2((std::rand() % 400) * -1, std::rand() % 800 - 400);
+		//std::cout << "sprite[" << i << "]->localPosition.x = " << sprite[i]->localPosition.x << " .y = " << sprite[i]->localPosition.y << std::endl;
+		scene1->AddChild(sprite[i]);
 	}
-	delete button;
-	delete text;
-	delete scene;
-	delete sprite;
-	delete window;
+	for (int i = 0; i < amount2; i++) {
+		sprite2[i] = new Sprite(20, 20, glm::vec2(0, 0), ResourceManager::GetTexture("crate2"), scene1->GetCamera(), false);
+		sprite2[i]->SetShader(ResourceManager::GetShader("defaultShaderInstancing"));
+		sprite2[i]->SetInstancedRenderer("crate2");
+		sprite2[i]->localPosition = glm::vec2(std::rand() % 400, std::rand() % 800 - 400);
+		//std::cout << "sprite[" << i << "]->localPosition.x = " << sprite[i]->localPosition.x << " .y = " << sprite[i]->localPosition.y << std::endl;
+		scene1->AddChild(sprite2[i]);
+	}
+
+	while (core->IsActive()) {
+
+		core->Run(scene1);
+
+		if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+			core->Close();
+		}
+		if (Input::KeyDown(GLFW_KEY_UP)) {
+			scale += core->GetDeltaTime() / 2;
+			scene1->GetCamera()->SetScale(scale);
+		}
+		else if (Input::KeyDown(GLFW_KEY_DOWN)) {
+			scale -= core->GetDeltaTime() / 2;
+			scene1->GetCamera()->SetScale(scale);
+		}
+	}
+
+
+	for (int i = 0; i < amount; i++) {
+		delete sprite[i];
+	}
+	for (int i = 0; i < amount2; i++) {
+		delete sprite2[i];
+	}
+	delete scene1;
+	delete core;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;
 }
