@@ -80,6 +80,12 @@ add_definitions(
 )
 
 set(TB2DSOURCE
+  tb2d/box2Dclasses/b2entity.cpp
+  tb2d/box2Dclasses/b2entity.h
+  tb2d/box2Dclasses/contactListener.cpp
+  tb2d/box2Dclasses/contactListener.h
+  tb2d/box2Dclasses/raycast.cpp
+  tb2d/box2Dclasses/raycast.h
   tb2d/texture.cpp
   tb2d/texture.h
   tb2d/shader.cpp
@@ -106,6 +112,12 @@ set(TB2DSOURCE
   tb2d/button.cpp
   tb2d/sprite.h
   tb2d/sprite.cpp
+  tb2d/renderer.h
+  tb2d/renderer.cpp
+  tb2d/renderManager.h
+  tb2d/renderManager.cpp
+  tb2d/core.h
+  tb2d/core.cpp
 )
 
 ####################################################################
@@ -166,12 +178,6 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/door.cpp
     StaffOfTheChaosTemple/linkable.h
     StaffOfTheChaosTemple/linkable.cpp
-    StaffOfTheChaosTemple/b2entity.h
-    StaffOfTheChaosTemple/b2entity.cpp
-    StaffOfTheChaosTemple/contactListener.h
-    StaffOfTheChaosTemple/contactListener.cpp
-    StaffOfTheChaosTemple/raycastCallBack.h
-    StaffOfTheChaosTemple/raycastCallBack.cpp
     StaffOfTheChaosTemple/level.h
     StaffOfTheChaosTemple/level.cpp
     StaffOfTheChaosTemple/level1.h
@@ -220,31 +226,9 @@ endif()
 ####################################################################
 if (USE_TEST_PROJECT)
   add_executable(testProject
-    tb2d/button.h
-    tb2d/button.cpp
-    tb2d/input.h
-    tb2d/input.cpp
-    tb2d/window.h
-    tb2d/window.cpp
-    tb2d/sprite.cpp
-    tb2d/sprite.h
-    tb2d/scene.cpp
-    tb2d/scene.h
-    tb2d/camera.cpp
-    tb2d/camera.h
-    tb2d/text.cpp
-    tb2d/text.h
-    tb2d/entity.cpp
-    tb2d/entity.h
-    tb2d/resourceManager.cpp
-    tb2d/resourceManager.h
-    tb2d/texture.cpp
-    tb2d/texture.h
-    tb2d/shader.cpp
-    tb2d/shader.h
+    ${TB2DSOURCE}
     testProject/main.cpp
   )
-  #set_target_properties(testProject PROPERTIES LINKER_LANGUAGE C)
   target_link_libraries(testProject
     ${BOX2D_LIB}
     ${ALL_GRAPHICS_LIBS}
@@ -265,6 +249,14 @@ if (USE_TEST_PROJECT)
   )
   file(
     COPY tb2d/fonts
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY StaffOfTheChaosTemple/shaders
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
+  file(
+    COPY StaffOfTheChaosTemple/textures
     DESTINATION ${CMAKE_BINARY_DIR}
   )
 endif()
