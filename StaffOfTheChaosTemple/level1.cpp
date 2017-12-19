@@ -1,9 +1,10 @@
 #include "level1.h"
 
-Level1::Level1(b2World* world, int screenWidthCamera, int screenHeightCamera) : Level::Level(world, screenWidthCamera, screenHeightCamera)
+Level1::Level1(int screenWidthCamera, int screenHeightCamera) : Level::Level(screenWidthCamera, screenHeightCamera)
 {
-	// Set the finish
-	CreateFinish(960, 1200, 480, 100);
+	this->player->localPosition = glm::vec2(1000.0f, 100.0f);
+	// We need to update the player otherwise the position will not be set because of the player using velocity and the velocity overrride it's position
+	this->player->UpdateChilderen(this, 0.0f);
 
 	// Intialize all of the variables
 	wall = new B2Entity(720, 750, glm::vec2(0,0), ResourceManager::GetTexture("wall"), camera, world);
@@ -64,6 +65,9 @@ Level1::Level1(b2World* world, int screenWidthCamera, int screenHeightCamera) : 
 	door2->EnableDebugRendering(glm::vec3(1, 0, 1));
 	door2->Link(door);
 	AddChild(door2);
+
+	// Set the finish
+	CreateFinish(960, 1200, 480, 100);
 }
 
 Level1::~Level1()
@@ -79,13 +83,4 @@ Level1::~Level1()
 	delete crystal;
 	delete crystal2;
 	delete mirror;
-}
-
-void Level1::SetPlayer(Player * player)
-{
-	this->player = player;
-	this->player->localPosition = glm::vec2(1000.0f, 100.0f);
-	// We need to update the player otherwise the position will not be set because of the player using velocity and the velocity overrride it's position
-	this->player->UpdateChilderen(this, 0.0f);
-	this->player->SetCamera(camera);
 }

@@ -6,22 +6,24 @@
 #include "crystal.h"
 #include "door.h"
 #include "player.h"
+#include "box2Dclasses/contactListener.h"
 
 class Level : public Scene
 {
 public:
-	Level(b2World* world, int screenWidthCamera, int screenHeightCamera);
+	Level(int screenWidthCamera, int screenHeightCamera);
 	virtual ~Level();
 
 	virtual void Update(double deltaTime);
-
-	virtual void SetPlayer(Player* player);
 	bool IsFinished();
+
+	b2World* GetB2World();
 
 protected:
 	void CreateFinish(int x, int y, int width, int height);
 
 	b2World* world;
+	ContactListener* contactListener;
 	Player* player;
 	B2Entity* finish;
 	bool finished;

@@ -1,30 +1,35 @@
 #include "level.h"
 
-Level::Level(b2World * world, int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
+Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
 {
-	this->world = world;
 	finish = nullptr;
 	finished = false;
-	player = nullptr;
+
+	contactListener = new ContactListener();
+	world = new b2World(b2Vec2(0.0f, 0.0f));
+	world->SetAllowSleeping(false);
+
+	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), camera, world);
+	player->CreateCircleCollider(40.0f, true, false);
+	player->EnableDebugRendering(glm::vec3(1, 0, 0));
+	AddChild(player);
 }
 
 Level::~Level()
 {
 	delete finish;
+	delete player;
+	delete world;
+	delete contactListener;
 }
 
 void Level::Update(double deltaTime)
 {
-	this->UpdateChilderen(this, deltaTime);
 	if (finish->Contact(player)) {
 		std::cout << "FINISH" << std::endl;
 		finished = true;
 	}
-}
-
-void Level::SetPlayer(Player * player)
-{
-	this->player = player;
+	world->Step(deltaTime, 8, 3);
 }
 
 bool Level::IsFinished()
@@ -36,6 +41,11 @@ bool Level::IsFinished()
 	return false;
 }
 
+b2World * Level::GetB2World()
+{
+	return world;
+}
+
 void Level::CreateFinish(int x, int y, int width, int height)
 {
 	finish = new B2Entity(width, height, glm::vec2(0,0), nullptr, camera, world);
@@ -43,4 +53,5 @@ void Level::CreateFinish(int x, int y, int width, int height)
 	finish->CreateBoxCollider(width, height, glm::vec2(0, 0), false, true);
 	finish->EnableDebugRendering(glm::vec3(0.0f, 1.0f, 0.0f));
 	this->AddChild(finish);
+	world->SetContactListener(contactListener);
 }

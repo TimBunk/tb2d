@@ -7,10 +7,8 @@
 class Level2 : public Level
 {
 public:
-	Level2(b2World* world, int screenWidthCamera, int screenHeightCamera);
+	Level2(int screenWidthCamera, int screenHeightCamera);
 	~Level2();
-
-	void SetPlayer(Player* player);
 
 private:
 	Enemy* enemy;
