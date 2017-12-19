@@ -6,7 +6,7 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 	this->lineOfSight = lineOfSight;
 	this->forceTowardsPlayer = forceTowardsPlayer;
 	this->forceFromObstacles = forceFromAbstacles;
-	raycast = new RaycastCallBack(world);
+	raycast = new Raycast(world);
 	raycast->CreateLine(lineOfSight, 10.0f, camera, ResourceManager::GetShader("debug"), glm::vec3(1, 0, 0));
 	distanceObjects = new B2Entity(width, height, glm::vec2(0,0), nullptr, camera, world);
 	distanceObjects->CreateCircleCollider(125, true, true);

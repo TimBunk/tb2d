@@ -2,7 +2,7 @@
 #define ENEMY_H
 
 #include "player.h"
-#include "raycastCallBack.h"
+#include "box2Dclasses/raycast.h"
 
 class Enemy : public Person
 {
@@ -20,7 +20,7 @@ private:
 	float forceTowardsPlayer;
 	float forceFromObstacles;
 	B2Entity* distanceObjects;
-	RaycastCallBack* raycast;
+	Raycast* raycast;
 };
 
 #endif // !ENEMY_H
