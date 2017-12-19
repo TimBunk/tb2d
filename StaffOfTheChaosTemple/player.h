@@ -3,7 +3,6 @@
 
 #include <cmath>
 
-#include "b2entity.h"
 #include "input.h"
 #include "staff.h"
 #include "rotator.h"
