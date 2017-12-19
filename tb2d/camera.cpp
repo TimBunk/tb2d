@@ -2,7 +2,7 @@
 
 Camera::Camera(int width, int height)
 {
-	projection = glm::ortho(0.0f, ((float)width), 0.0f, ((float)height), -50.0f, 50.0f);
+	projection = glm::ortho(((float)width) / 2 * -1, ((float)width)/2, ((float)height)/2 * -1, ((float)height)/2, -50.0f, 50.0f);
 	position = glm::vec2(0.0f, 0.0f);
 	angle = 0.0f;
 	scale = 1.0f;
