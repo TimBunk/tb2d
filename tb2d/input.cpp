@@ -40,14 +40,14 @@ void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
 glm::vec2 Input::GetMousePositionScreenSpace(Camera* camera) {
 	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionScreenSpace;
-	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/input->screenWidth*input->mousePosition.x, ((camera->GetHeight()/input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1);
+	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/input->screenWidth*input->mousePosition.x - camera->GetWidth() / 2, ((camera->GetHeight()/input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 - camera->GetHeight() / 2);
 	return mousePositionScreenSpace;
 }
 
 glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
 	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionWorldSpace;
-	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / input->screenWidth*input->mousePosition.x + camera->GetPosition().x, ((camera->GetHeight() / input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y);
+	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / input->screenWidth*input->mousePosition.x + camera->GetPosition().x - camera->GetWidth() / 2, ((camera->GetHeight() / input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y - camera->GetHeight() / 2);
 	return mousePositionWorldSpace;
 }
 
