@@ -10,14 +10,14 @@ Menu::Menu(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenW
 	// Initialize all of the buttons
 	startButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
 	startButton->CreateText("start", 96, glm::vec3(0, 0, 0));
-	startButton->localPosition = glm::vec2(camera->GetWidth() / 2, 750);
+	startButton->localPosition = glm::vec2(0, 210);
 	this->AddChild(startButton);
 	restartButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
 	restartButton->CreateText("restart", 96, glm::vec3(0, 0, 0));
-	restartButton->localPosition = glm::vec2(camera->GetWidth() / 2, 500);
+	restartButton->localPosition = glm::vec2(0, -40);
 	quitButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
 	quitButton->CreateText("quit", 96, glm::vec3(0, 0, 0));
-	quitButton->localPosition = glm::vec2(camera->GetWidth() / 2, 250);
+	quitButton->localPosition = glm::vec2(0, -290);
 	this->AddChild(quitButton);
 }
 
