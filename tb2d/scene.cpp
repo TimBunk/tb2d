@@ -9,10 +9,6 @@ Scene::~Scene()
 	delete camera;
 }
 
-void Scene::Update(double deltaTime) {
-	this->UpdateChilderen(this, deltaTime);
-}
-
 Camera * Scene::GetCamera()
 {
 	return camera;

@@ -21,10 +21,10 @@ public:
 	Scene(int screenWidthCamera, int screenHeightCamera);
 	virtual ~Scene();
 
-	virtual void Update(double deltaTime);
 	Camera* GetCamera();
 protected:
 	Camera* camera;
+
 private:
 
 };
