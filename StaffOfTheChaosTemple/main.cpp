@@ -9,12 +9,12 @@
 #include <glm-0.9.8.4\glm\gtx\matrix_decompose.hpp>
 
 #include "window.h"
-#include "contactListener.h"
+#include "box2Dclasses/contactListener.h"
 #include "sprite.h"
 #include "scene.h"
 #include "menu.h"
 #include "button.h"
-#include "b2entity.h"
+#include "box2Dclasses/b2entity.h"
 #include "player.h"
 #include "level1.h"
 #include "level2.h"
@@ -22,16 +22,14 @@
 #include "rotator.h"
 #include "crystal.h"
 #include "door.h"
+#include "core.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-Window* window;
+Core* core;
 Level1* level1;
 Level2* level2;
-ContactListener* contactListener;
-b2World* world;
-Player* player;
 Menu* menu;
 
 float B2Entity::m2p = 50.0f;
@@ -50,8 +48,10 @@ std::vector<Level*> levels;
 
 int main() {
 	std::cout << "hello world" << std::endl;
-	window = new Window("Staff of the Chaos Temple", false);
-	window->Resize(800, 600);
+	core = new Core("Staff of the Chaos Temple", false);
+	core->ResizeWindow(800, 600);
+	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
+
 	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
 	ResourceManager::CreateTexture("wall", "textures/wall.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
@@ -66,46 +66,25 @@ int main() {
 	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
 	ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
 
-	window->SetBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
+	level1 = new Level1(1920, 1080);
+	level2 = new Level2(1920, 1080);
 
-	contactListener = new ContactListener();
-	world = new b2World(b2Vec2(0.0f, 0.0f));
-	world->SetAllowSleeping(false);
-
-	//level1 = new Level1(world, 1920, 1080);
-	level2 = new Level2(world, 1920, 1080);
-	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), level2->GetCamera(), world);
-	player->CreateCircleCollider(40.0f, true, false);
-	player->EnableDebugRendering(glm::vec3(1, 0, 0));
-
-	//level1->AddChild(player);
-	level2->AddChild(player);
-
+	levels.push_back(level1);
 	levels.push_back(level2);
-	level2->SetPlayer(player);
-
-	// Update the levels once to set everything in place and then set the contactlistener to avoid conflicts and crashes
-	level2->Update(window->GetDeltaTime());
-	world->SetContactListener(contactListener);
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
-	while (!window->ShouldClose()) {
-		// rendering commands
-		window->Clear();
-		// You have to update the window because the window will calculate the deltaTime and it updates the input
-		window->Update();
+	while (core->IsActive()) {
 
 		switch (gameState)
 		{
 		case _game:
-			levels[levelCounter]->Update(window->GetDeltaTime());
+			core->Run(levels[levelCounter]);
 			if (levels[levelCounter]->IsFinished()) {
 				levelCounter++;
 				if (levelCounter == levels.size()) {
 					levelCounter = 0;
 				}
-				levels[levelCounter]->SetPlayer(player);
 			}
 			// if escaped is pressed go back in to the menu
 			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
@@ -113,7 +92,7 @@ int main() {
 			}
 			break;
 		case _menu:
-			menu->Update(window->GetDeltaTime());
+			core->Run(menu);
 			// If start is pressed start the game
 			if (menu->Start()) {
 				gameState = _game;
@@ -123,23 +102,15 @@ int main() {
 			}
 			else if (menu->Quit()) {
 				// exit the application
-				window->CloseWindow();
+				core->Close();
 			}
 			break;
 		}
-		
-		// Update the box2D world by the deltaTime
-		world->Step(window->GetDeltaTime(), 8, 3);
-		// Swap buffers
-		window->SwapBuffers();
 	}
 	delete menu;
-	delete player;
-	//delete level1;
+	delete level1;
 	delete level2;
-	delete contactListener;
-	ResourceManager::Destroy();
-	delete window;
+	delete core;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;
 }
