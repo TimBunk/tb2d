@@ -39,7 +39,7 @@ void Player::Update(double deltaTime)
 		velocity *= 10.0f;
 	}
 	localPosition = ApplyVelocityB2body(velocity);
-	camera->SetPosition(glm::vec2(GetGlobalPosition().x - camera->GetWidth()/2, GetGlobalPosition().y - camera->GetHeight()/2));
+	camera->SetPosition(GetGlobalPosition());
 	// Rotate the player towards the mouse
 	glm::vec2 mousePos = Input::GetMousePositionWorldSpace(camera);
 	glm::vec2 direction = mousePos - GetGlobalPosition();
