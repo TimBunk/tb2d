@@ -1,8 +1,8 @@
 #ifndef LASER_H
 #define LASER_H
 
-#include "sprite.h"
-#include "raycastCallBack.h"
+#include "crystal.h"
+#include "box2Dclasses/raycast.h"
 
 class Laser : public Sprite
 {
@@ -20,7 +20,7 @@ public:
 
 private:
 	bool hit;
-	RaycastCallBack* raycast;
+	Raycast* raycast;
 	glm::vec2 direction;
 	b2Vec2 hitPosition;
 	b2Vec2 reflection;

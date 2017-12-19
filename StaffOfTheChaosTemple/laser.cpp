@@ -5,7 +5,7 @@ Laser::Laser(b2World* world, Shader* debug, float radius, Texture* texture, Came
 {
 	this->world = world;
 	reflection = b2Vec2(0.0f, 0.0f);
-	raycast = new RaycastCallBack(world);
+	raycast = new Raycast(world);
 	raycast->CreateLine(radius, 50.0f, camera, debug, glm::vec3(1.0f, 1.0f, 1.0f));
 	direction = glm::vec2(0.0f, 0.0f);
 	width = 25.0f;
