@@ -10,7 +10,6 @@ public:
 	~Crystal();
 
 	void Update(double deltaTime);
-	void Draw();
 
 private:
 	
