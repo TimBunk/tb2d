@@ -19,6 +19,9 @@ public:
 	void SetShader(Shader* shader);
 	virtual void SetCamera(Camera* camera);
 	void SetInstancedRenderer(std::string name);
+	void SetPivot(glm::vec2 pivot);
+	void SetUvCoordinates(float x, float y);
+	void SetColor(glm::vec4 color);
 
 	int GetWidth();
 	int GetHeight();
@@ -31,6 +34,7 @@ protected:
 	QuadData quadData;
 	Renderer* renderer;
 	Texture* texture;
+	glm::vec4 color;
 	bool HUD;
 
 private:
