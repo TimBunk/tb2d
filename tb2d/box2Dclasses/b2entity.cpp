@@ -60,26 +60,29 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 }
 
 void B2Entity::Draw() {
-	// Use the shader and draw the texture
+	if (renderer != nullptr) {
+		// If a renderer was found just update VBO of the renderer by the data of this sprite
+		renderer->UpdateVBO(this);
+	}
+	else if (texture != nullptr) {
+		shader->Use();
+		glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
+		shader->SetMatrix4("model", _model);
+		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
+		shader->SetMatrix4("view", camera->GetViewMatrix());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(quadData.VAO);
+		glBindTexture(GL_TEXTURE_2D, texture->GetId());
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Set the currently binded VAO and texture to 0
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 	if (body != nullptr) {
 		if (dr != nullptr) {
 			dr->Render(model, 10.0f);
-		}
-		if (texture != nullptr) {
-			shader->Use();
-			glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
-			shader->SetMatrix4("model", _model);
-			shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-			shader->SetMatrix4("view", camera->GetViewMatrix());
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindVertexArray(quadData.VAO);
-			glBindTexture(GL_TEXTURE_2D, texture->GetId());
-
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			// Set the currently binded VAO and texture to 0
-			glBindVertexArray(0);
-			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 }
