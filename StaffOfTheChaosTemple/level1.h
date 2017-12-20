@@ -11,6 +11,7 @@ public:
 	~Level1();
 
 private:
+	Sprite* floor;
 	B2Entity* wall;
 	B2Entity* wall2;
 	B2Entity* wall3;

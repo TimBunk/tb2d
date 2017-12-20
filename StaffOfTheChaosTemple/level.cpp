@@ -12,7 +12,6 @@ Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(scree
 	player = new Player(10, 10.0f, 1, 100, 100, ResourceManager::GetTexture("player"), camera, world);
 	player->CreateCircleCollider(40.0f, true, false);
 	player->EnableDebugRendering(glm::vec3(1, 0, 0));
-	AddChild(player);
 }
 
 Level::~Level()
@@ -54,4 +53,5 @@ void Level::CreateFinish(int x, int y, int width, int height)
 	finish->EnableDebugRendering(glm::vec3(0.0f, 1.0f, 0.0f));
 	this->AddChild(finish);
 	world->SetContactListener(contactListener);
+	AddChild(player);
 }

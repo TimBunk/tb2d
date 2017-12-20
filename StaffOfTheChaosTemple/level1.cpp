@@ -7,48 +7,62 @@ Level1::Level1(int screenWidthCamera, int screenHeightCamera) : Level::Level(scr
 	this->player->UpdateChilderen(this, 0.0f);
 
 	// Intialize all of the variables
-	wall = new B2Entity(720, 750, glm::vec2(0,0), ResourceManager::GetTexture("wall"), camera, world);
+	floor = new Sprite(5000, 5000, glm::vec2(0,0), ResourceManager::GetTexture("floor"), camera, false);
+	floor->localPosition = glm::vec2(1500, 2000);
+	floor->SetInstancedRenderer("floor");
+	floor->SetUvCoordinates(floor->GetWidth() / 900.0f, floor->GetHeight() / 900.0f);
+	AddChild(floor);
+	wall = new B2Entity(720, 750, glm::vec2(0,0), nullptr, camera, world);
 	wall->localPosition = glm::vec2(360, 1080);
+	wall->SetInstancedRenderer("wall");
 	wall->CreateBoxCollider(720, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall);
-	wall2 = new B2Entity(1080, 750, glm::vec2(0, 0), ResourceManager::GetTexture("wall"), camera, world);
+	wall2 = new B2Entity(1080, 750, glm::vec2(0, 0), nullptr, camera, world);
 	wall2->localPosition = glm::vec2(0, 540);
 	wall2->localAngle = glm::radians(90.0f);
+	wall2->SetInstancedRenderer("wall");
 	wall2->CreateBoxCollider(1080, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall2);
-	wall3 = new B2Entity(1080, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall3 = new B2Entity(1080, 750, glm::vec2(0.0f, 0.0f), nullptr, camera, world);
 	wall3->localPosition = glm::vec2(1920, 540);
 	wall3->localAngle = glm::radians(90.0f);
+	wall3->SetInstancedRenderer("wall");
 	wall3->CreateBoxCollider(1080, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall3);
-	wall4 = new B2Entity(1920, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall4 = new B2Entity(1920, 750, glm::vec2(0.0f, 0.0f), nullptr, camera, world);
 	wall4->localPosition = glm::vec2(960, 0);
+	wall4->SetInstancedRenderer("wall");
 	wall4->CreateBoxCollider(1920, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall4);
-	wall5 = new B2Entity(700, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall5 = new B2Entity(700, 750, glm::vec2(0.0f, 0.0f), nullptr, camera, world);
 	wall5->localPosition = glm::vec2(1530, 540);
+	wall5->SetInstancedRenderer("wall");
 	wall5->CreateBoxCollider(700, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall5);
-	wall6 = new B2Entity(720, 750, glm::vec2(0.0f, 0.0f), ResourceManager::GetTexture("wall"), camera, world);
+	wall6 = new B2Entity(720, 750, glm::vec2(0.0f, 0.0f), nullptr, camera, world);
 	wall6->localPosition = glm::vec2(1560, 1080);
+	wall6->SetInstancedRenderer("wall");
 	wall6->CreateBoxCollider(720, 100, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(wall6);
 
-	mirror = new Mirror(true, 45.0f, 240.0f, ResourceManager::GetTexture("mirror"), camera, world);
+	mirror = new Mirror(true, 45.0f, 240.0f, nullptr, camera, world);
 	mirror->localPosition = glm::vec2(700.0f, 540.0f);
-	mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
 	mirror->SetRotation(-90.0f);
+	mirror->SetInstancedRenderer("mirror");
+	mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
 	AddChild(mirror);
 
-	crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal"), camera, world);
+	crystal = new Crystal(70, 70, nullptr, camera, world);
 	crystal->localPosition = glm::vec2(1530, 270);
+	crystal->SetInstancedRenderer("crystal");
 	crystal->CreateBoxCollider(70, 70, glm::vec2(0, 0), false, false);
-	crystal->SetShader(ResourceManager::GetShader("crystal"));
+	//crystal->SetShader(ResourceManager::GetShader("crystal"));
 	AddChild(crystal);
-	crystal2 = new Crystal(70, 70, ResourceManager::GetTexture("crystal"), camera, world);
+	crystal2 = new Crystal(70, 70, nullptr, camera, world);
 	crystal2->localPosition = glm::vec2(1530, 810);
+	crystal2->SetInstancedRenderer("crystal");
 	crystal2->CreateBoxCollider(70, 70, glm::vec2(0, 0), false, false);
-	crystal2->SetShader(ResourceManager::GetShader("crystal"));
+	//crystal2->SetShader(ResourceManager::GetShader("crystal"));
 	AddChild(crystal2);
 
 	door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door"), camera, world);
@@ -72,6 +86,7 @@ Level1::Level1(int screenWidthCamera, int screenHeightCamera) : Level::Level(scr
 
 Level1::~Level1()
 {
+	delete floor;
 	delete wall;
 	delete wall2;
 	delete wall3;
