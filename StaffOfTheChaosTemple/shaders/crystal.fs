@@ -1,11 +1,13 @@
 #version 440 core
 in vec2 textureCoord;
-out vec4 color;
+in vec4 _color;
+
+out vec4 crystal;
 
 uniform sampler2D ourTexture;
-uniform vec4 glow;
 
 void main() {
-  color = texture(ourTexture, textureCoord);
-  color += glow;
+  crystal = texture(ourTexture, textureCoord);
+  vec4 glow = crystal * _color;
+  crystal += glow;
 }
