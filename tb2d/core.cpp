@@ -25,10 +25,10 @@ void Core::Run(Scene * scene)
 	window->Clear();
 	CalculateFrameRate();
 
+	RenderManager::Render(scene->GetCamera());
 	RenderManager::ClearRenderers();
 	scene->Update(deltaTime);
 	scene->UpdateChilderen(NULL, deltaTime);
-	RenderManager::Render(scene->GetCamera());
 
 	window->SwapBuffers();
 }
