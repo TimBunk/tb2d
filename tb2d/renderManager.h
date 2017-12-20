@@ -9,7 +9,7 @@ public:
 	static void Initalize();
 	static void Destroy();
 
-	static void CreateRenderer(std::string name, Shader* shader, bool hud);
+	static void CreateRenderer(int layer, std::string name, Shader* shader, bool hud);
 	static Renderer* GetRenderer(std::string name);
 	static void ClearRenderers();
 	static void Render(Camera* camera);
@@ -19,7 +19,9 @@ private:
 	RenderManager();
 	~RenderManager();
 
-	std::map<std::string, Renderer*> renderers;
+	std::vector<std::map<std::string, Renderer*>> renderers;
+	//std::map<int, std::map<std::string, Renderer*>> renderers;
+	//std::map<std::string, Renderer*> renderers;
 };
 
 #endif // !RENDERMANAGER_H
