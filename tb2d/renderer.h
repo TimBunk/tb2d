@@ -35,13 +35,15 @@ private:
 	GLuint VAO;
 	GLuint VBO_position;
 	GLuint EBO_position;
+	GLuint VBO_model;
 	GLuint VBO_uv;
 	GLuint EBO_uv;
-	GLuint VBO_model;
+	GLuint VBO_color;
 
 	std::vector<glm::vec2> positions;
 	std::vector<glm::mat4> matrices;
 	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec4> colors;
 };
 
 #endif // !RENDERER_H

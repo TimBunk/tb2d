@@ -9,6 +9,7 @@ Renderer::Renderer(Shader* shader, bool hud)
 	texture = nullptr;
 	VBO_uv = 0;
 	EBO_uv = 0;
+	VBO_color = 0;
 
 	GLuint indices[] = {
 		0, 1, 3,
@@ -63,6 +64,9 @@ Renderer::~Renderer()
 		glDeleteBuffers(1, &VBO_uv);
 		glDeleteBuffers(1, &EBO_uv);
 	}
+	if (VBO_color != 0) {
+		glDeleteBuffers(1, &VBO_color);
+	}
 }
 
 void Renderer::Clear()
@@ -71,6 +75,9 @@ void Renderer::Clear()
 	matrices.clear();
 	if (VBO_uv != 0) {
 		uvs.clear();
+	}
+	if (VBO_color != 0) {
+		colors.clear();
 	}
 	drawCount = 0;
 }
@@ -87,6 +94,9 @@ void Renderer::UpdateVBO(Entity * entity)
 		// Get the uv positions from the sprite
 		if (VBO_uv != 0) {
 			uvs.insert(uvs.end(), sprite->uvPositions.begin(), sprite->uvPositions.end());
+		}
+		if (VBO_color != 0) {
+			colors.push_back(sprite->color);
 		}
 		// Increate the counter
 		drawCount++;
@@ -117,6 +127,10 @@ void Renderer::Render(Camera* camera)
 		glBindTexture(GL_TEXTURE_2D, texture->GetId());
 		glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
 		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STREAM_DRAW);
+	}
+	if (VBO_color != 0) {
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
+		glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec4), &colors[0], GL_STREAM_DRAW);
 	}
 	// Unbind the buffer
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -159,5 +173,19 @@ void Renderer::AddAttributeUV(Texture* texture)
 
 void Renderer::AddInstanceAttributeColor()
 {
+	// Bind the VAO
+	glBindVertexArray(VAO);
 
+	// Generate and bind the uv
+	glGenBuffers(1, &VBO_color);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
+	// Set attribute pointer for the position
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
+	// Enable instancing for this vertextAttribPoitner
+	glVertexAttribDivisor(6, 1);
+
+	// Unbind the VAO and VBO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
