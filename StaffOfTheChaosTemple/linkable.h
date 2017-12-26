@@ -6,7 +6,7 @@
 class Linkable : public B2Entity
 {
 public:
-	Linkable(int width, int height, Texture* texture, Camera* camera, b2World* world);
+	Linkable(int width, int height, unsigned int textureID, b2World* world);
 	~Linkable();
 
 	void Hit();

@@ -46,7 +46,7 @@ public:
 	static Shader* GetShader(std::string name);
 
 	// Example: CreateTexture("texture", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	static void CreateTexture(std::string nameOfTexture, const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType);
+	static void CreateTexture(std::string nameOfTexture, const char* filePath, TextureWrap textureWrap, TextureFilter textureFilter, MipmapFilter mipmapFilter);
 	static Texture* GetTexture(std::string name);
 
 	// NOTE the vertices are in a normalized space. The pivot point is by default at the center.

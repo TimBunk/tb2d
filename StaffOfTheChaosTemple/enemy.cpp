@@ -1,16 +1,16 @@
 #include "enemy.h"
 
-Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world) : Person::Person(health, speed, damage, width, height, texture, camera, world)
+Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World * world) : Person::Person(health, speed, damage, width, height, textureID, world)
 {
 	this->player = player;
 	this->lineOfSight = lineOfSight;
 	this->forceTowardsPlayer = forceTowardsPlayer;
 	this->forceFromObstacles = forceFromAbstacles;
 	raycast = new Raycast(world);
-	raycast->CreateLine(lineOfSight, 10.0f, camera, ResourceManager::GetShader("debug"), glm::vec3(1, 0, 0));
-	distanceObjects = new B2Entity(width, height, glm::vec2(0,0), nullptr, camera, world);
+	//raycast->CreateLine(lineOfSight, 10.0f, camera, ResourceManager::GetShader("defaultColor"), glm::vec3(1, 0, 0));
+	distanceObjects = new B2Entity(width, height, 0, world);
 	distanceObjects->CreateCircleCollider(125, true, true);
-	distanceObjects->EnableDebugRendering(glm::vec3(1, 0, 0));
+	distanceObjects->SetDebugColor(glm::vec3(1, 0, 0));
 	this->AddChild(distanceObjects);
 }
 
@@ -29,7 +29,7 @@ void Enemy::Update(double deltaTime)
 	diff += position;
 	raycast->Update(b2Vec2(position.x * p2m, position.y * p2m), b2Vec2(diff.x * p2m, diff.y * p2m));
 	float _angle = (angle - M_PI);
-	raycast->Draw(position, _angle);
+	//raycast->Draw(position, _angle);
 
 	glm::vec2 acceleration;
 	bool playerHit = false;

@@ -55,7 +55,7 @@ public:
 	/// @param shader Its best to give the debugRenderer shader or make your own one similar to that one
 	/// @param color The color of the line
 	/// @return void
-	void CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color);
+	//void CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color);
 
 	void ChangeColor(glm::vec3 color);
 
@@ -63,7 +63,7 @@ public:
 	/// @param position The position of where the ray starts
 	/// @param angle The angle of where the raycast is poiting
 	/// @return void
-	void Draw(glm::vec2 position, float angle);
+	//void Draw(glm::vec2 position, float angle);
 
 	/// @brief ReportFixture looks if the raycast is hitting something note that this raycast ignores sensors and enenmy's.
 	/// @param fixture The fixture is the fixture hit by the raycast that will be received from the b2World

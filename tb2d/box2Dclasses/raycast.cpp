@@ -40,7 +40,7 @@ int Raycast::AmountOfHits()
 	return hits.size();
 }
 
-void Raycast::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color) {
+/*void Raycast::CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color) {
 	// Save all of the given parameters
 	this->camera = camera;
 	this->lineWidth = width;
@@ -64,14 +64,14 @@ void Raycast::CreateLine(float length, float width, Camera* camera, Shader* shad
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
-}
+}*/
 
 void Raycast::ChangeColor(glm::vec3 color)
 {
 	this->color = color;
 }
 
-void Raycast::Draw(glm::vec2 position, float angle) {
+/*void Raycast::Draw(glm::vec2 position, float angle) {
 	// Draw the line according to the debugRendere's shader
 	shader->Use();
 	glm::mat4 model;
@@ -85,7 +85,7 @@ void Raycast::Draw(glm::vec2 position, float angle) {
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_LINES, 0, 2);
 	glBindVertexArray(0);
-}
+}*/
 
 float32 Raycast::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
 	RaycastHit rh;

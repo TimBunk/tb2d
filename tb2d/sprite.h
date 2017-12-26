@@ -4,42 +4,42 @@
 #include "entity.h"
 #include "camera.h"
 #include "resourceManager.h"
+//#include "renderer.h"
 #include "renderManager.h"
 
 class Sprite : public Entity {
-// Give the Renderer class acces to everything from the renderer
-friend class Renderer;
-
 public:
-	Sprite(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, bool HUD);
+	Sprite(int width, int height, unsigned int textureID);
 	virtual ~Sprite();
 
 	virtual void Draw();
-	void SetTexture(Texture* texture);
-	void SetShader(Shader* shader);
-	virtual void SetCamera(Camera* camera);
-	void SetInstancedRenderer(std::string name);
-	void SetPivot(glm::vec2 pivot);
-	void SetUvCoordinates(float x, float y);
-	void SetColor(glm::vec4 color);
 
-	int GetWidth();
-	int GetHeight();
+	// SETTERS
+	void SetRenderer(Renderer* renderer)			{ this->renderer = renderer; };
+	void SetTextureID(unsigned int textureID)		{ this->textureID = textureID; };
+	void SetRepeatableUV(glm::vec2 repeat)			{ this->repeatUV = repeat; };
+	void SetPivot(glm::vec2 pivot)					{ this->pivot = pivot; };
+	void SetColor(glm::vec4 color)					{ this->color = color; };
+	void SetWidth(int width)						{ this->width = width; };
+	void SetHeight(int height)						{ this->height = height; };
+	// GETTERS
+	unsigned int	GetTextureID()		{ return textureID; };
+	glm::vec2		GetRepeatableUV()	{ return repeatUV; };
+	glm::vec2		GetPivot()			{ return pivot; };
+	glm::vec4		GetColor()			{ return color; };
+	int				GetWidth()			{ return width; };
+	int				GetHeight()			{ return height; };
 
 protected:
-	Shader* shader;
-	Camera* camera;
-	int width, height;
+	unsigned int textureID;
+	glm::vec2 repeatUV;
 	glm::vec2 pivot;
-	QuadData quadData;
-	Renderer* renderer;
-	Texture* texture;
 	glm::vec4 color;
-	bool HUD;
+	int width, height;
+	Renderer* renderer;
 
 private:
-	std::vector<glm::vec2> vertexPositions;
-	std::vector<glm::vec2> uvPositions;
+	
 };
 
 #endif // !SPRITE_H

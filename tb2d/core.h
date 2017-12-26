@@ -3,6 +3,7 @@
 
 #include "window.h"
 #include "renderManager.h"
+#include "debugRenderer.h"
 #include "resourceManager.h"
 #include "scene.h"
 

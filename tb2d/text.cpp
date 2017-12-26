@@ -124,6 +124,9 @@ void Text::Draw()
 	if (!HUD) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
+	else {
+		shader->SetMatrix4("view", glm::mat4());
+	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
 

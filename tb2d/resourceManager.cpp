@@ -7,17 +7,11 @@ ResourceManager* ResourceManager::GetInstance()
 	if (ResourceManager::rm == nullptr) {
 		ResourceManager::rm = new ResourceManager();
 		// The default shader
-		ResourceManager::CreateShader("defaultShader", "shaders\\defaultShader.vs", "shaders\\defaultShader.fs");
-		// The default HUD shader
-		ResourceManager::CreateShader("defaultHUD", "shaders\\defaultHUD.vs", "shaders\\defaultShader.fs");
+		ResourceManager::CreateShader("default", "shaders\\basic.vs", "shaders\\basic.fs");
 		// The default freetype shader
-		ResourceManager::CreateShader("defaultFreetype", "shaders\\defaultFreetype.vs", "shaders\\defaultFreetype.fs");
-		// The default freetypeHUD shader
-		ResourceManager::CreateShader("defaultFreetypeHUD", "shaders\\defaultFreetypeHUD.vs", "shaders\\defaultFreetype.fs");
-		// The color shader
-		ResourceManager::CreateShader("color", "shaders\\color.vs", "shaders\\color.fs");
-		// The colorHUD shader
-		ResourceManager::CreateShader("colorHUD", "shaders\\colorHUD.vs", "shaders\\colorHUD.fs");
+		ResourceManager::CreateShader("defaultFreetype", "shaders\\defaultShader.vs", "shaders\\defaultFreetype.fs");
+		/*// Debug Renderer
+		ResourceManager::CreateShader("debugRenderer", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");*/
 	}
 	return ResourceManager::rm;
 }
@@ -48,10 +42,10 @@ Shader * ResourceManager::GetShader(std::string name)
 	return nullptr;
 }
 
-void ResourceManager::CreateTexture(std::string nameOfTexture, const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType)
+void ResourceManager::CreateTexture(std::string nameOfTexture, const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, MipmapFilter mipmapFilter)
 {
 	Texture* texture;
-	texture = new Texture(filePath, textureWrap, textureFilter, textureType);
+	texture = new Texture(filePath, textureWrap, textureFilter, mipmapFilter);
 	ResourceManager::GetInstance()->textures[nameOfTexture] = texture;
 }
 

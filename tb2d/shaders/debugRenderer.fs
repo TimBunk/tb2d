@@ -1,9 +1,9 @@
 #version 440 core
 
-out vec4 theColor;
+in vec3 theColor;
 
-uniform vec3 color;
+out vec4 color;
 
 void main() {
-  theColor = vec4(color.xyz, 1.0f);
+  color = vec4(theColor, 1.0f);
 }

@@ -6,15 +6,6 @@ Renderer::Renderer(Shader* shader, bool hud)
 	this->shader = shader;
 	this->hud = hud;
 	drawCount = 0;
-	texture = nullptr;
-	VBO_uv = 0;
-	EBO_uv = 0;
-	VBO_color = 0;
-
-	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3,
-	};
 	
 	// Generate and bind the VAO
 	glGenVertexArrays(1, &VAO);
@@ -23,169 +14,160 @@ Renderer::Renderer(Shader* shader, bool hud)
 	// Generate and bind the positions
 	glGenBuffers(1, &VBO_position);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_position);
-	// Generate the indices for the positions
-	glGenBuffers(1, &EBO_position);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_position);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STREAM_DRAW);
 	// Set attribute pointer for the position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
+
+	// Generate and bind the positions
+	glGenBuffers(1, &VBO_texture);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_texture);
+	// Set attribute pointer for the position
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat), (GLvoid*)0);
+
+	// Generate and bind the color
+	glGenBuffers(1, &VBO_color);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
+	// Set attribute pointer for the color
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
 
 	// Gererate the model buffer
 	glGenBuffers(1, &VBO_model);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_model);
 	// set attribute pointers for matrix (4 times vec4)
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)0);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(sizeof(glm::vec4)));
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(2 * sizeof(glm::vec4)));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)0);
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(3 * sizeof(glm::vec4)));
-
-	glVertexAttribDivisor(1, 1);
-	glVertexAttribDivisor(2, 1);
-	glVertexAttribDivisor(3, 1);
-	glVertexAttribDivisor(4, 1);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(sizeof(glm::vec4)));
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(2 * sizeof(glm::vec4)));
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (GLvoid*)(3 * sizeof(glm::vec4)));
 
 	// Unbind the VAO and VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	for (int i = 0; i < 32; i++) {
+		activeTextureArray[i] = i;
+	}
 }
 
 Renderer::~Renderer()
 {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_position);
-	glDeleteBuffers(1, &EBO_position);
+	glDeleteBuffers(1, &VBO_texture);
+	glDeleteBuffers(1, &VBO_color);
 	glDeleteBuffers(1, &VBO_model);
-	if (VBO_uv != 0) {
-		glDeleteBuffers(1, &VBO_uv);
-		glDeleteBuffers(1, &EBO_uv);
-	}
-	if (VBO_color != 0) {
-		glDeleteBuffers(1, &VBO_color);
-	}
 }
 
-void Renderer::Clear()
+void Renderer::Submit(Sprite* sprite)
 {
-	positions.clear();
-	matrices.clear();
-	if (VBO_uv != 0) {
-		uvs.clear();
-	}
-	if (VBO_color != 0) {
-		colors.clear();
-	}
-	drawCount = 0;
-}
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, 0.0f, 0.0f));// lower left
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// lower right
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y)); // upper left
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// lower right
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// upper right
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y)); // upper left
 
-void Renderer::UpdateVBO(Entity * entity)
-{
-	if (dynamic_cast<Sprite*>(entity) != NULL) {
-		Sprite* sprite = dynamic_cast<Sprite*>(entity);
-		// Get the vertex positions from the sprite
-		positions.insert(positions.end(), sprite->vertexPositions.begin(), sprite->vertexPositions.end());
-		// Get the model matrix from the sprite
-		sprite->model = glm::scale(sprite->model, glm::vec3(sprite->width * sprite->scale.x, sprite->height * sprite->scale.y, 0.0f));
-		matrices.push_back(sprite->model);
-		// Get the uv positions from the sprite
-		if (VBO_uv != 0) {
-			uvs.insert(uvs.end(), sprite->uvPositions.begin(), sprite->uvPositions.end());
+	int id = 0;
+	if (sprite->GetTextureID() > 0) {
+		bool found = false;
+		for (; id < textureSlots.size(); id++) {
+			if (sprite->GetTextureID() == textureSlots[id]) {
+				found = true;
+				break;
+			}
 		}
-		if (VBO_color != 0) {
-			colors.push_back(sprite->color);
+		if (found == false) {
+			if (textureSlots.size() == 32) {
+				std::cout << "above 32 textures! " << std::endl;
+				//Render();
+			}
+			textureSlots.push_back(sprite->GetTextureID());
 		}
-		// Increate the counter
-		drawCount++;
 	}
+	else {
+		id = -1;
+	}
+
+	// Get the model matrix from the sprite
+	glm::mat4 model = sprite->GetModelMatrix();
+	model = glm::scale(model, glm::vec3(sprite->GetWidth() * sprite->GetGlobalScale().x, sprite->GetHeight() * sprite->GetGlobalScale().y, 0.0f));
+	// Push back 6 times because we have 6 vertices
+	for (int i = 0; i < 6; i++) {
+		textures.push_back((GLfloat(id) + 1.0f));
+		colors.push_back(sprite->GetColor());
+		matrices.push_back(model);
+	}
+	// Increate the counter
+	drawCount++;
 }
 
 void Renderer::Render(Camera* camera)
 {
-	if (drawCount == 0) { return; };
+	// If there is nothing to draw
+	if (drawCount == 0) { return; }; 
+
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	if (!hud) {
 		shader->SetMatrix4("view", camera->GetViewMatrix());
 	}
+	else {
+		shader->SetMatrix4("view", glm::mat4());
+	}
+
+	/*for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			std::cout << "testModel[" << i << "][" << j << "] = " << testModel[i][j] << std::endl;
+		}
+	}*/
+
+	shader->SetIntArray("textures", activeTextureArray, 32);
+	//shader->SetIntArray("textures", &textureSlots[0], textureSlots.size());
 
 	// Bind the VAO
-	//glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
-	//glBindTexture(GL_TEXTURE_2D, texture->GetId());
+
+	for (int i = 0; i < textureSlots.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, textureSlots[i]);
+	}
 
 	// Fill all of the buffers with their data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_position);
-	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2), &positions[0], GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec4), &positions[0], GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_texture);
+	glBufferData(GL_ARRAY_BUFFER, textures.size() * sizeof(GLfloat), &textures[0], GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
+	glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec4), &colors[0], GL_STREAM_DRAW);
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_model);
 	glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(glm::mat4), &matrices[0], GL_STREAM_DRAW);
-	if (VBO_uv != 0) {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture->GetId());
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
-		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STREAM_DRAW);
-	}
-	if (VBO_color != 0) {
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
-		glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec4), &colors[0], GL_STREAM_DRAW);
-	}
+
 	// Unbind the buffer
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	//glDrawArraysInstanced(GL_TRIANGLES, 0, 6, count);
-	glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, drawCount);
+	// bind texture and draw elements
+	glDrawArrays(GL_TRIANGLES, 0, drawCount * 6);
+	//glDrawArraysInstanced(GL_TRIANGLES, 0, drawCount * 6, 1);
+	//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, drawCount);
 
-	// Unbind the VAO
+	// Unbind the VAO and texture
 	glBindVertexArray(0);
-	if (VBO_uv != 0) {
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-}
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-void Renderer::AddAttributeUV(Texture* texture)
-{
-	this->texture = texture;
-	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3,
-	};
-	// Bind the VAO
-	glBindVertexArray(VAO);
+	// Clear all of the data
+	positions.clear();
+	textures.clear();
+	colors.clear();
+	matrices.clear();
 
-	// Generate and bind the uv
-	glGenBuffers(1, &VBO_uv);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
-	// Generate the indices for the uv
-	glGenBuffers(1, &EBO_uv);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_uv);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STREAM_DRAW);
-	// Set attribute pointer for the position
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-
-	// Unbind the VAO and VBO
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
-
-void Renderer::AddInstanceAttributeColor()
-{
-	// Bind the VAO
-	glBindVertexArray(VAO);
-
-	// Generate and bind the uv
-	glGenBuffers(1, &VBO_color);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
-	// Set attribute pointer for the position
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
-	// Enable instancing for this vertextAttribPoitner
-	glVertexAttribDivisor(6, 1);
-
-	// Unbind the VAO and VBO
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	textureSlots.clear();
+	drawCount = 0;
 }

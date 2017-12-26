@@ -1,11 +1,12 @@
 #include "staff.h"
 
-Staff::Staff(float laserRange, b2World* world, int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera) : Sprite::Sprite(width, height, pivot, texture, camera, false)
+Staff::Staff(float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
 	this->laserRange = laserRange;
 	this->world = world;
 	// In order to make the lasers work we need atleast one already in the vector
-	lasers.push_back(new Laser(world, ResourceManager::GetShader("debug"), laserRange, ResourceManager::GetTexture("awesome"), camera, false));
+	lasers.push_back(new Laser(25.0f, laserRange, ResourceManager::GetTexture("crystal")->GetId(), world));
+	lasers[0]->SetPivot(glm::vec2(0.0f, -0.5f));
 	shooting = false;
 }
 
@@ -33,6 +34,7 @@ void Staff::Update(double deltaTime)
 		lasers[0]->localAngle = this->GetGlobalAngle() - (90.0f * M_PI / 180.0f);
 		lasers[0]->SetDirection(direction);
 		lasers[0]->Update(deltaTime);
+		lasers[0]->UpdateChilderen(NULL, deltaTime);
 		lasers[0]->Draw();
 		// Check if the first laser hits
 		int i = 1;
@@ -40,7 +42,8 @@ void Staff::Update(double deltaTime)
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
 				if (i == lasers.size() && lasers[i - 1]->Hit()) {
-					lasers.push_back(new Laser(world, ResourceManager::GetShader("debug"), laserRange, ResourceManager::GetTexture("awesome"), camera, false));
+					lasers.push_back(new Laser(25.0f, laserRange, ResourceManager::GetTexture("crystal")->GetId(), world));
+					lasers[i]->SetPivot(glm::vec2(0.0f, -0.5f));
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);
 					direction *= laserRange;
@@ -49,6 +52,7 @@ void Staff::Update(double deltaTime)
 					lasers[i]->localAngle = glm::atan(direction.y * -1, direction.x * -1) - (90.0f * M_PI / 180.0f);
 					lasers[i]->localPosition = lasers[i - 1]->GetHitPosition();
 					lasers[i]->Update(deltaTime);
+					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
 					i++;
 				}
@@ -62,6 +66,7 @@ void Staff::Update(double deltaTime)
 					lasers[i]->localAngle = glm::atan(direction.y * -1, direction.x * -1) - (90.0f * M_PI / 180.0f);
 					lasers[i]->localPosition = lasers[i - 1]->GetHitPosition();
 					lasers[i]->Update(deltaTime);
+					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
 					i++;
 				}
@@ -91,12 +96,4 @@ void Staff::Update(double deltaTime)
 void Staff::Shoot()
 {
 	shooting = true;
-}
-
-void Staff::SetCamera(Camera * camera)
-{
-	this->camera = camera;
-	for (int i = 0; i < lasers.size(); i++) {
-		lasers[i]->SetCamera(camera);
-	}
 }

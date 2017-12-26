@@ -1,18 +1,17 @@
 #include "b2entity.h"
 
-B2Entity::B2Entity(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, b2World* world) : Sprite::Sprite(width, height, pivot, texture, camera, false) {
+B2Entity::B2Entity(int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID) {
 	// Save all of the variables received from the constructor
 	this->world = world;
 
-	shader = ResourceManager::GetShader("defaultShader");
-	dr = nullptr;
 	// Give all of the variables a value because it is bad to leave it not initialized
 	fixture = nullptr;
 	body = nullptr;
-	texture = nullptr;
 	shape = Shape::box;
 	colliderWidth = 0;
 	colliderHeight = 0;
+	debugColor = glm::vec3(1, 1, 1);
+	colliderPivot = glm::vec2(-0.5f, 0.0f);
 }
 
 B2Entity::~B2Entity() {
@@ -20,9 +19,6 @@ B2Entity::~B2Entity() {
 	if (body != nullptr) {
 		body->DestroyFixture(fixture);
 		world->DestroyBody(body);
-	}
-	if (dr != nullptr) {
-		delete dr;
 	}
 }
 
@@ -59,12 +55,12 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 	}
 }
 
-void B2Entity::Draw() {
+/*void B2Entity::Draw() {
 	if (renderer != nullptr) {
 		// If a renderer was found just update VBO of the renderer by the data of this sprite
-		renderer->UpdateVBO(this);
+		renderer->Submit(this);
 	}
-	else if (texture != nullptr) {
+	/*else if (texture != nullptr) {
 		shader->Use();
 		glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
 		shader->SetMatrix4("model", _model);
@@ -81,13 +77,17 @@ void B2Entity::Draw() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	if (body != nullptr) {
-		if (dr != nullptr) {
-			dr->Render(model, 10.0f);
+		if (shape == Shape::box) {
+			//DebugRenderer::AddBox(colliderWidth, colliderHeight, colliderPivot, model, debugColor);
 		}
-	}
-}
+	}*/
+//}
 
 void B2Entity::CreateBoxCollider(int w, int h, glm::vec2 pivot, bool dynamic, bool sensor) {
+	if (pivot.x != 0.0f) {
+		std::cout << "The pivot = " << pivot.x << std::endl;
+	}
+	colliderPivot = pivot;
 	shape = Shape::box;
 	// If the body was created make sure to delete everything as well
 	if (body != nullptr) {
@@ -174,32 +174,9 @@ void B2Entity::CreateCircleCollider(int radius, bool dynamic, bool sensor)
 	body->SetActive(true);
 }
 
-void B2Entity::EnableDebugRendering(glm::vec3 color)
+void B2Entity::SetDebugColor(glm::vec3 color)
 {
-	if (body == nullptr) {
-		std::cout << "You can not enable debug rendering if you have not yet created a body!" << std::endl;
-		return;
-	}
-	if (dr != nullptr) {
-		delete dr;
-	}
-	dr = new DebugRenderer(camera, color);
-	switch (shape)
-	{
-	case box:
-		GLfloat* vertices;
-		vertices = new GLfloat[8];
-		vertices[0] = -colliderWidth/2; vertices[1] = -colliderHeight/2; // lower-left corner
-		vertices[2] = colliderWidth /2; vertices[3] = -colliderHeight /2;  // lower-right corner
-		vertices[4] = colliderWidth /2; vertices[5] = colliderHeight /2; // upper-right corner
-		vertices[6] = -colliderWidth /2; vertices[7] = colliderHeight /2;  // uper left corner
-		dr->DrawBox(vertices);
-		delete vertices;
-		break;
-	case circle:
-		dr->DrawCircle(glm::vec2(0, 0), colliderWidth / 2);
-		break;
-	}
+	debugColor = color;
 }
 
 glm::vec2 B2Entity::ApplyVelocityB2body(glm::vec2 velocity)

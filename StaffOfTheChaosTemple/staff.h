@@ -13,13 +13,11 @@
 class Staff : public Sprite
 {
 public:
-	Staff(float laserRange, b2World* world, int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera);
+	Staff(float laserRange, int width, int height, unsigned int textureID, b2World* world);
 	~Staff();
 
 	void Update(double deltaTime);
 	void Shoot();
-
-	void SetCamera(Camera* camera);
 
 private:
 	float laserRange;

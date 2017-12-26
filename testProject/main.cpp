@@ -26,8 +26,10 @@ Core* core;
 Scene* scene1;
 const int amount = 10000;
 Sprite* sprite[amount];
-const int amount2 = 10000;
+const int amount2 = 5;
 Sprite* sprite2[amount2];
+const int amount3 = 5;
+Sprite* sprite3[amount3];
 
 float scale = 1.0f;
 
@@ -38,27 +40,33 @@ int main() {
 	core->ResizeWindow(800, 800);
 	core->SetWindowBackgroundColor(glm::vec3(1, 1, 0));
 
-	ResourceManager::CreateTexture("crate", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("crate2", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateShader("defaultShaderInstancing", "shaders\\defaultShaderInstancing.vs", "shaders\\defaultShader.fs");
+	ResourceManager::CreateTexture("crate", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("crate2", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("crate3", "textures/wall.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
 	scene1 = new Scene(800, 800);
 	for (int i = 0; i < amount; i++) {
-		sprite[i] = new Sprite(20, 20, glm::vec2(0, 0), ResourceManager::GetTexture("crate"), scene1->GetCamera(), false);
-		sprite[i]->SetShader(ResourceManager::GetShader("defaultShaderInstancing"));
-		sprite[i]->SetInstancedRenderer("crate");
+		sprite[i] = new Sprite(100, 100, ResourceManager::GetTexture("crate3")->GetId());
 		sprite[i]->localPosition = glm::vec2((std::rand() % 400) * -1, std::rand() % 800 - 400);
-		//std::cout << "sprite[" << i << "]->localPosition.x = " << sprite[i]->localPosition.x << " .y = " << sprite[i]->localPosition.y << std::endl;
 		scene1->AddChild(sprite[i]);
 	}
+
 	for (int i = 0; i < amount2; i++) {
-		sprite2[i] = new Sprite(20, 20, glm::vec2(0, 0), ResourceManager::GetTexture("crate2"), scene1->GetCamera(), false);
-		sprite2[i]->SetShader(ResourceManager::GetShader("defaultShaderInstancing"));
-		sprite2[i]->SetInstancedRenderer("crate2");
+		sprite2[i] = new Sprite(100, 100, 0);
 		sprite2[i]->localPosition = glm::vec2(std::rand() % 400, std::rand() % 800 - 400);
-		//std::cout << "sprite[" << i << "]->localPosition.x = " << sprite[i]->localPosition.x << " .y = " << sprite[i]->localPosition.y << std::endl;
+		sprite2[i]->SetColor(glm::vec4(std::rand() / double(RAND_MAX), std::rand() / double(RAND_MAX), std::rand() / double(RAND_MAX), 1.0f));
 		scene1->AddChild(sprite2[i]);
 	}
+
+	for (int i = 0; i < amount3; i++) {
+		sprite3[i] = new Sprite(100, 100, ResourceManager::GetTexture("crate")->GetId());
+		sprite3[i]->localPosition = glm::vec2(std::rand() % 800 - 400, std::rand() % 800 - 400);
+		sprite3[i]->SetColor(glm::vec4(1, 0, 0, 1));
+		scene1->AddChild(sprite3[i]);
+	}
+
+	sprite3[0]->SetPivot(glm::vec2(-0.5f, -0.5f));
+	sprite3[1]->SetRepeatableUV(glm::vec2(2, 2));
 
 	while (core->IsActive()) {
 
@@ -67,13 +75,25 @@ int main() {
 		if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 			core->Close();
 		}
-		if (Input::KeyDown(GLFW_KEY_UP)) {
+		/*if (Input::KeyDown(GLFW_KEY_UP)) {
 			scale += core->GetDeltaTime() / 2;
 			scene1->GetCamera()->SetScale(scale);
 		}
 		else if (Input::KeyDown(GLFW_KEY_DOWN)) {
 			scale -= core->GetDeltaTime() / 2;
 			scene1->GetCamera()->SetScale(scale);
+		}*/
+		if (Input::KeyDown(GLFW_KEY_DOWN)) {
+			scene1->GetCamera()->PositionAdd(glm::vec2(0.0f, -100.0f * core->GetDeltaTime()));
+		}
+		if (Input::KeyDown(GLFW_KEY_UP)) {
+			scene1->GetCamera()->PositionAdd(glm::vec2(0.0f, 100.0f * core->GetDeltaTime()));
+		}
+		if (Input::KeyDown(GLFW_KEY_LEFT)) {
+			scene1->GetCamera()->PositionAdd(glm::vec2(-100.0f * core->GetDeltaTime(), 0.0f));
+		}
+		if (Input::KeyDown(GLFW_KEY_RIGHT)) {
+			scene1->GetCamera()->PositionAdd(glm::vec2(100.0f * core->GetDeltaTime(), 0.0f));
 		}
 	}
 
@@ -83,6 +103,9 @@ int main() {
 	}
 	for (int i = 0; i < amount2; i++) {
 		delete sprite2[i];
+	}
+	for (int i = 0; i < amount3; i++) {
+		delete sprite3[i];
 	}
 	delete scene1;
 	delete core;

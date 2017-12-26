@@ -1,6 +1,6 @@
 #include "rotator.h"
 
-Rotator::Rotator(int width, int height, glm::vec2 pivot, Texture* texture, Camera * camera, b2World * world) : B2Entity::B2Entity(width, height, pivot, texture, camera, world)
+Rotator::Rotator(int width, int height, unsigned int textureID, b2World* world) : B2Entity::B2Entity(width, height, textureID, world)
 {
 	rotation = 0.0f;
 }
@@ -12,7 +12,7 @@ Rotator::~Rotator()
 
 void Rotator::Update(double deltaTime)
 {
-	
+
 }
 
 void Rotator::Rotate(bool clockWise, float degrees)

@@ -1,6 +1,6 @@
 #include "texture.h"
 
-Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, TextureType textureType)
+Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter textureFilter, MipmapFilter mipmapFilter)
 {
 	int width, height;
 	// unsigned char, which gives you at least the 0 to 255 range.
@@ -39,24 +39,29 @@ Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter t
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		break;
 	}
-
-	// get the entered type
-	switch (textureType) {
-	case diffuse:
-		type = "diffuse";
-		break;
-	case specular:
-		type = "specular";
-		break;
-	case emission:
-		type = "emission";
-		break;
-	}
 	// load the image data and create Mipmap
 	data = SOIL_load_image(filePath, &width, &height, 0, SOIL_LOAD_RGBA);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+
+		if (mipmapFilter != MipmapFilter::none) {
+			glGenerateMipmap(GL_TEXTURE_2D);
+			switch (mipmapFilter)
+			{
+			case nearest_mipmap_nearest:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+				break;
+			case nearest_mipmap_linear:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+				break;
+			case linear_mipmap_nearest:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+				break;
+			case linear_mipmap_linear:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				break;
+			}
+		}
 	}
 	else {
 		std::cout << "Failed to load '" << filePath << "' : " << SOIL_last_result() << std::endl;
@@ -74,9 +79,4 @@ Texture::~Texture()
 unsigned int Texture::GetId()
 {
 	return id;
-}
-
-std::string Texture::GetType()
-{
-	return type;
 }

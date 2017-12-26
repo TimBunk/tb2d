@@ -1,8 +1,9 @@
 #include "player.h"
 
-Player::Player(int health, float speed, int damage, int width, int height, Texture* texture, Camera * camera, b2World * world) : Person::Person(health, speed, damage, width, height, texture, camera, world)
+Player::Player(Camera* camera, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World* world) : Person::Person(health, speed, damage, width, height, textureID, world)
 {
-	staff = new Staff(1000.0f, world, 100, 200, glm::vec2(0.0f, -0.0f), ResourceManager::GetTexture("staff"), camera);
+	this->camera = camera;
+	staff = new Staff(1000.0f, 100, 200, ResourceManager::GetTexture("staff")->GetId(), world);
 	staff->localPosition.x = -25;
 	staff->localPosition.y = -50;
 	this->AddChild(staff);
@@ -92,10 +93,4 @@ void Player::Update(double deltaTime)
 			}
 		}
 	}
-}
-
-void Player::SetCamera(Camera * camera)
-{
-	this->camera = camera;
-	staff->SetCamera(camera);
 }

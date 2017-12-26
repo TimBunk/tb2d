@@ -23,12 +23,13 @@ enum Shape {
  * @brief The B2Entity class is the main entity for all of the box2D objects.
  */
 class B2Entity : public Sprite {
+friend class DebugRenderer;
 public:
 	/// @brief Constructor of the B2Entity takes a Camera and Shader that is used for rendering and a B2World for the B2Body
 	/// @param camera The reason it takes a camera is for drawing the object with the view and projection matrix that can be received from the camera
 	/// @param shader The shader is used for the drawing and the shader needs at least to have 3 uniforms matrix4: projection, view and model als the VAO needs to excist of 1. 2Dposition and 2. uv's
 	/// @param world The world is need for creating the body and deleting the box2D body
-	B2Entity(int width, int height, glm::vec2 pivot, Texture* texture, Camera* camera, b2World* world);
+	B2Entity(int width, int height, unsigned int textureID, b2World* world);
 
 	/// @brief Destructor of the B2Entity
 	virtual ~B2Entity();
@@ -43,7 +44,7 @@ public:
 
 	/// @brief Draw draws this B2Entity according to the shader and position, angle, scaling of the Entity. (Don't forgot to give it a texture)
 	/// @return void
-	virtual void Draw();
+	//virtual void Draw();
 
 	/// @brief Create a body and add it to the b2World
 	/// @param x The x position
@@ -57,7 +58,7 @@ public:
 
 	virtual void CreateCircleCollider(int radius, bool dynamic, bool sensor);
 
-	void EnableDebugRendering(glm::vec3 color);
+	void SetDebugColor(glm::vec3 color);
 
 	glm::vec2 ApplyVelocityB2body(glm::vec2 velocity);
 
@@ -86,9 +87,10 @@ public:
 	static float p2m;
 
 protected:
-	DebugRenderer* dr;
 	Shape shape;
 	int colliderWidth, colliderHeight;
+	glm::vec2 colliderPivot;
+	glm::vec3 debugColor;
 	b2Body* body; ///< @brief The body needs to be initialized by calling CreateBody()
 	b2World* world; ///< @brief The world is needed in order for the body to work
 	b2Fixture* fixture; ///< @brief The body makes use of only one fixture

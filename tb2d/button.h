@@ -3,17 +3,14 @@
 
 #include "input.h"
 #include "text.h"
-#include "resourceManager.h"
+#include "sprite.h"
 
-class Button : public Entity {
+class Button : public Sprite {
 public:
-	Button(int width, int height, bool HUD, glm::vec3 color, Camera* camera);
+	Button(int width, int height, unsigned int textureID, bool hud, Camera* camera);
 	virtual ~Button();
 
 	void Update(double deltaTime);
-	void Draw();
-
-	void SetColor(glm::vec3 color);
 
 	void CreateText(std::string text, int textSize, glm::vec3 color);
 	void SetText(std::string text);
@@ -22,14 +19,10 @@ public:
 	bool Down();
 
 private:
-	int width, height;
-	Camera* camera;
 	Text* text;
-	glm::vec3 color;
-	Shader* shader;
-	QuadData quadData;
+	Camera* camera;
 
-	bool HUD;
+	bool hud;
 	bool hover;
 	bool down;
 };

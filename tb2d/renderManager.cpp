@@ -6,6 +6,7 @@ void RenderManager::Initalize()
 {
 	if (RenderManager::renderManager == nullptr) {
 		RenderManager::renderManager = new RenderManager();
+		RenderManager::CreateRenderer(0, "default", ResourceManager::GetShader("default"), false);
 	}
 }
 
@@ -17,44 +18,32 @@ void RenderManager::Destroy()
 	}
 }
 
-void RenderManager::CreateRenderer(int layer, std::string name, Shader* shader, bool hud)
+void RenderManager::CreateRenderer(unsigned int layer, std::string name, Shader* shader, bool hud)
 {
 	if (layer >= RenderManager::renderManager->renderers.size()) {
 		RenderManager::renderManager->renderers.resize(layer + 1);
 	}
 	RenderManager::renderManager->renderers[layer][name] = new Renderer(shader, hud);
 
-	std::cout << "print out rendering order!" << std::endl;
+	/*std::cout << "print out rendering order!" << std::endl;
 	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
 		std::map<std::string, Renderer*>::iterator it = RenderManager::renderManager->renderers[i].begin();
 		while (it != RenderManager::renderManager->renderers[i].end()) {
 			std::cout << (*it).first << std::endl;
 			++it;
 		}
-	}
+	}*/
 }
 
 Renderer * RenderManager::GetRenderer(std::string name)
 {
 	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
-		//RenderManager::renderManager->renderers[i]
 		if (RenderManager::renderManager->renderers[i].find(name) != RenderManager::renderManager->renderers[i].end()) {
 			return RenderManager::renderManager->renderers[i][name];
 		}
 	}
 	// The renderer was not found so return nullptr
 	return nullptr;
-}
-
-void RenderManager::ClearRenderers()
-{
-	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
-		std::map<std::string, Renderer*>::iterator it = RenderManager::renderManager->renderers[i].begin();
-		while (it != RenderManager::renderManager->renderers[i].end()) {
-			(*it).second->Clear();
-			++it;
-		}
-	}
 }
 
 void RenderManager::Render(Camera* camera)

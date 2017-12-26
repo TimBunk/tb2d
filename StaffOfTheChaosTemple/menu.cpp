@@ -8,16 +8,22 @@ Menu::Menu(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenW
 	quit = false;
 	this->input = input;
 	// Initialize all of the buttons
-	startButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
+	startButton = new Button(camera->GetWidth()/3, 150, 0, true, camera);
+	startButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
 	startButton->CreateText("start", 96, glm::vec3(0, 0, 0));
 	startButton->localPosition = glm::vec2(0, 210);
+	startButton->SetRenderer(RenderManager::GetRenderer("hud"));
 	this->AddChild(startButton);
-	restartButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
+	restartButton = new Button(camera->GetWidth()/3, 150, 0, true, camera);
+	restartButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
 	restartButton->CreateText("restart", 96, glm::vec3(0, 0, 0));
 	restartButton->localPosition = glm::vec2(0, -40);
-	quitButton = new Button(camera->GetWidth()/3, 150, true, glm::vec3(0.505882353f, 0.411764706f, 0.458823529f), camera);
+	restartButton->SetRenderer(RenderManager::GetRenderer("hud"));
+	quitButton = new Button(camera->GetWidth()/3, 150, 0, true, camera);
+	quitButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
 	quitButton->CreateText("quit", 96, glm::vec3(0, 0, 0));
 	quitButton->localPosition = glm::vec2(0, -290);
+	quitButton->SetRenderer(RenderManager::GetRenderer("hud"));
 	this->AddChild(quitButton);
 }
 

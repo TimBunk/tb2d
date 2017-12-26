@@ -1,6 +1,6 @@
 #include "door.h"
 
-Door::Door(Direction direction, int width, int height, Texture* texture, Camera * camera, b2World * world) : Linkable::Linkable(width, height, texture, camera, world)
+Door::Door(Direction direction, int width, int height, unsigned int textureID, b2World* world) : Linkable::Linkable(width, height, textureID, world)
 {
 	this->direction = direction;
 	openPosition = glm::vec2(0.0f, 0.0f);

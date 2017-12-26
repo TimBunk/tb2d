@@ -10,6 +10,7 @@ Core::Core(const char * screenName, bool fullscreen)
 	fpsCount = 0;
 	// Initialize the rendermanager
 	RenderManager::Initalize();
+	DebugRenderer::Initialize();
 }
 
 Core::~Core()
@@ -17,6 +18,7 @@ Core::~Core()
 	delete window;
 	ResourceManager::Destroy();
 	RenderManager::Destroy();
+	DebugRenderer::Destroy();
 }
 
 void Core::Run(Scene * scene)
@@ -25,10 +27,11 @@ void Core::Run(Scene * scene)
 	window->Clear();
 	CalculateFrameRate();
 
-	RenderManager::Render(scene->GetCamera());
-	RenderManager::ClearRenderers();
+	DebugRenderer::Clear();
 	scene->Update(deltaTime);
 	scene->UpdateChilderen(NULL, deltaTime);
+	RenderManager::Render(scene->GetCamera());
+	DebugRenderer::Render(scene->GetCamera());
 
 	window->SwapBuffers();
 }

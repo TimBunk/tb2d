@@ -13,37 +13,34 @@
 #include "camera.h"
 #include "scene.h"
 
+class Sprite;
+
 class Renderer
 {
 public:
 	Renderer(Shader* shader, bool hud);
 	~Renderer();
 
-	void Clear();
-	void UpdateVBO(Entity* entity);
+	void Submit(Sprite* sprite);
 	void Render(Camera* camera);
 
-	void AddAttributeUV(Texture* texture);
-	void AddInstanceAttributeColor();
-
 private:
-	Texture* texture;
+	std::vector<GLint> textureSlots;
+	int activeTextureArray[32];// 32 is the maximum allowed of active textures
 	Shader* shader;
 	bool hud;
 	int drawCount;
 
 	GLuint VAO;
 	GLuint VBO_position;
-	GLuint EBO_position;
-	GLuint VBO_model;
-	GLuint VBO_uv;
-	GLuint EBO_uv;
+	GLuint VBO_texture;
 	GLuint VBO_color;
+	GLuint VBO_model;
 
-	std::vector<glm::vec2> positions;
-	std::vector<glm::mat4> matrices;
-	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec4> positions;
+	std::vector<GLfloat> textures;
 	std::vector<glm::vec4> colors;
+	std::vector<glm::mat4> matrices;
 };
 
 #endif // !RENDERER_H

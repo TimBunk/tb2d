@@ -11,14 +11,14 @@
 class Player : public Person
 {
 public:
-	Player(int health, float speed, int damage, int width, int height, Texture* texture, Camera* camera, b2World* world);
+	Player(Camera* camera, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World* world);
 	~Player();
 
 	void Update(double deltaTime);
-	void SetCamera(Camera* camera);
 
 private:
 	Staff* staff;
+	Camera* camera;
 };
 
 #endif // !PLAYER_H

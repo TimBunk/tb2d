@@ -52,42 +52,19 @@ int main() {
 	core->ResizeWindow(800, 600);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
-	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("wall", "textures/wall.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("staff", "textures/staff.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("laser", "textures/laser.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("crystal", "textures/crystal.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
-	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, TextureType::diffuse);
+	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("wall", "textures/wall.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("staff", "textures/staff.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("laser", "textures/laser.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("crystal", "textures/crystal.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
-	ResourceManager::CreateShader("debug", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
-	//ResourceManager::CreateShader("crystal", "shaders\\defaultShader.vs", "shaders\\crystal.fs");
-	ResourceManager::CreateShader("defaultShaderInstancing", "shaders\\defaultShaderInstancing.vs", "shaders\\defaultShader.fs");
-	ResourceManager::CreateShader("crystal", "shaders\\colorWithTextureInstancing.vs", "shaders\\crystal.fs");
-
-	RenderManager::CreateRenderer(0, "floor", ResourceManager::GetShader("defaultShaderInstancing"), false);
-	RenderManager::GetRenderer("floor")->AddAttributeUV(ResourceManager::GetTexture("floor"));
-
-	RenderManager::CreateRenderer(1, "wall", ResourceManager::GetShader("defaultShaderInstancing"), false);
-	RenderManager::GetRenderer("wall")->AddAttributeUV(ResourceManager::GetTexture("wall"));
-
-	RenderManager::CreateRenderer(2, "mirror", ResourceManager::GetShader("defaultShaderInstancing"), false);
-	RenderManager::GetRenderer("mirror")->AddAttributeUV(ResourceManager::GetTexture("mirror"));
-
-	RenderManager::CreateRenderer(2, "rotator", ResourceManager::GetShader("defaultShaderInstancing"), false);
-	RenderManager::GetRenderer("rotator")->AddAttributeUV(ResourceManager::GetTexture("rotator"));
-
-	RenderManager::CreateRenderer(3, "crystal", ResourceManager::GetShader("crystal"), false);
-	RenderManager::GetRenderer("crystal")->AddAttributeUV(ResourceManager::GetTexture("crystal"));
-	RenderManager::GetRenderer("crystal")->AddInstanceAttributeColor();
-
-	RenderManager::CreateRenderer(1, "enemy", ResourceManager::GetShader("defaultShaderInstancing"), false);
-	RenderManager::GetRenderer("enemy")->AddAttributeUV(ResourceManager::GetTexture("enemy"));
-
+	RenderManager::CreateRenderer(1, "hud", ResourceManager::GetShader("default"), true);
 
 	level1 = new Level1(1920, 1080);
 	level2 = new Level2(1920, 1080);
