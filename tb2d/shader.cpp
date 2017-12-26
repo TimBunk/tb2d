@@ -40,6 +40,14 @@ void Shader::SetInt(const std::string & name, int value)
 	}
 }
 
+void Shader::SetIntArray(const std::string & name, int * value, int count)
+{
+	GLint uniformLoc = GetUniformLocation(name);
+	if (uniformLoc != -1) {
+		glUniform1iv(uniformLoc, count, value);
+	}
+}
+
 void Shader::SetUnsignedInt(const std::string & name, unsigned int value)
 {
 	GLint uniformLoc = GetUniformLocation(name);
@@ -48,11 +56,27 @@ void Shader::SetUnsignedInt(const std::string & name, unsigned int value)
 	}
 }
 
+void Shader::SetUnsignedIntArray(const std::string & name, unsigned int * value, int count)
+{
+	GLint uniformLoc = GetUniformLocation(name);
+	if (uniformLoc != -1) {
+		glUniform1uiv(uniformLoc, count, value);
+	}
+}
+
 void Shader::SetFloat(const std::string & name, float value)
 {
 	GLint uniformLoc = GetUniformLocation(name);
 	if (uniformLoc != -1) {
 		glUniform1f(uniformLoc, value);
+	}
+}
+
+void Shader::SetFloatArray(const std::string & name, float * value, int count)
+{
+	GLint uniformLoc = GetUniformLocation(name);
+	if (uniformLoc != -1) {
+		glUniform1fv(uniformLoc, count, value);
 	}
 }
 

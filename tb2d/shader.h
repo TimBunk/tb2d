@@ -21,8 +21,11 @@ public:
 	void ReloadShaders();
 	void SetBool(const std::string &name, bool value);
 	void SetInt(const std::string &name, int value);
+	void SetIntArray(const std::string &name, int* value, int count);
 	void SetUnsignedInt(const std::string &name, unsigned int value);
+	void SetUnsignedIntArray(const std::string &name, unsigned int* value, int count);
 	void SetFloat(const std::string &name, float value);
+	void SetFloatArray(const std::string &name, float* value, int count);
 	void SetVec2Float(const std::string &name, glm::vec2 value);
 	void SetVec3Float(const std::string &name, glm::vec3 value);
 	void SetVec4Float(const std::string &name, glm::vec4 value);
