@@ -27,10 +27,9 @@ void Core::Run(Scene * scene)
 	window->Clear();
 	CalculateFrameRate();
 
-	DebugRenderer::Clear();
 	scene->Update(deltaTime);
-	scene->UpdateChilderen(NULL, deltaTime);
 	RenderManager::Render(scene->GetCamera());
+	scene->UpdateChilderen(NULL, deltaTime);
 	DebugRenderer::Render(scene->GetCamera());
 
 	window->SwapBuffers();
