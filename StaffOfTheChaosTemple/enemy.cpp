@@ -27,33 +27,31 @@ void Enemy::Update(double deltaTime)
 	localAngle = glm::atan(diff.y, diff.x);
 	diff *= lineOfSight;
 	diff += position;
-	raycast->Update(b2Vec2(position.x * p2m, position.y * p2m), b2Vec2(diff.x * p2m, diff.y * p2m));
+	raycast->Update(position, diff);
+	raycast->Draw(glm::vec3(0,1,0));
 	float _angle = (angle - M_PI);
-	//raycast->Draw(position, _angle);
 
 	glm::vec2 acceleration;
 	bool playerHit = false;
 	// Check if the first object hitted by the raycast is the player
-	if (raycast->AmountOfHits() > 0) {
-		int size = raycast->AmountOfHits();
-		for (int i = 0; i < size; i++) {
-			B2Entity* b = static_cast<B2Entity*>(raycast->GetHit(i).fixture->GetUserData());
-			if (b == player) {
-				// hitted player
-				lastPositionPlayer = player->GetGlobalPosition();
-				acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
-				playerHit = true;
-				continue;
-			}
-			// If the raycast hit is a enemy or a sensor continue with the for loop otheriwse break it
-			else if (dynamic_cast<Enemy*>(b) != NULL) {
-				continue;
-			}
-			else if (raycast->GetHit(i).fixture->IsSensor()) {
-				continue;
-			}
-			break;
+	std::vector<RaycastHit> hits = raycast->GetHits();
+	for (int i = 0; i < hits.size(); i++) {
+		B2Entity* b = static_cast<B2Entity*>(hits[i].fixture->GetUserData());
+		if (b == player) {
+			// hitted player
+			lastPositionPlayer = player->GetGlobalPosition();
+			acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
+			playerHit = true;
+			continue;
 		}
+		// If the raycast hit is a enemy or a sensor continue with the for loop otheriwse break it
+		else if (dynamic_cast<Enemy*>(b) != NULL) {
+			continue;
+		}
+		else if (hits[i].fixture->IsSensor()) {
+			continue;
+		}
+		break;
 	}
 	if (!playerHit && glm::length(position - lastPositionPlayer) > 125.0f) {
 		acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);

@@ -14,15 +14,15 @@ public:
 
 	void SetDirection(glm::vec2 direction);
 	bool Hit();
-	glm::vec2 GetHitPosition();
-	glm::vec2 GetReflection();
+	glm::vec2 GetHitPosition() { return hitPosition; };
+	glm::vec2 GetReflection() { return reflection; };
 
 private:
 	bool hit;
 	Raycast* raycast;
 	glm::vec2 direction;
-	b2Vec2 hitPosition;
-	b2Vec2 reflection;
+	glm::vec2 hitPosition;
+	glm::vec2 reflection;
 };
 
 #endif // !LASER_H

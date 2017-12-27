@@ -14,6 +14,7 @@
 
 #include "shader.h"
 #include "window.h"
+#include "debugRenderer.h"
 
 #include <GL/glew.h>
 #include <glm-0.9.8.4/glm/glm.hpp>
@@ -24,10 +25,9 @@
 /// @brief RaycastOutput is a struct you will receive whenever you call GetOutput(). It will give you all of the information of the hitted B2Entity by this raycast
 struct RaycastHit {
 	b2Fixture* fixture = nullptr;
-	b2Vec2 point = b2Vec2(0.0f, 0.0f);
-	b2Vec2 normal = b2Vec2(0.0f, 0.0f);
+	glm::vec2 point;
+	glm::vec2 normal;
 	float32 fraction = 0.0f;
-	//bool operator()(const RaycastOutput& lhs, const RaycastOutput& rhs) const { lhs.fraction < rhs.fraction; }
 };
 
 /**
@@ -43,27 +43,15 @@ public:
 	///< @brief Destructor of the RayCastCallBack
 	virtual ~Raycast();
 
-	void Update(b2Vec2 startingPoint, b2Vec2 endPoint);
+	void Update(glm::vec2 startingPoint, glm::vec2 endPoint);
 
-	RaycastHit GetHit(int index);
-	int AmountOfHits();
-
-	/// @brief CreateLine is an optional function it is used for rendering a line that can help you visualize the raycast better
-	/// @param length The length of the line
-	/// @param width The Width of the line
-	/// @param camera The camera used by the window
-	/// @param shader Its best to give the debugRenderer shader or make your own one similar to that one
-	/// @param color The color of the line
-	/// @return void
-	//void CreateLine(float length, float width, Camera* camera, Shader* shader, glm::vec3 color);
-
-	void ChangeColor(glm::vec3 color);
+	std::vector<RaycastHit> GetHits() { return hits; };
 
 	/// @brief Draws the line created by the function CreateLine
 	/// @param position The position of where the ray starts
 	/// @param angle The angle of where the raycast is poiting
 	/// @return void
-	//void Draw(glm::vec2 position, float angle);
+	void Draw(glm::vec3 color);
 
 	/// @brief ReportFixture looks if the raycast is hitting something note that this raycast ignores sensors and enenmy's.
 	/// @param fixture The fixture is the fixture hit by the raycast that will be received from the b2World
@@ -74,14 +62,10 @@ public:
 	float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction);
 
 private:
+	glm::vec2 startingPoint, endPoint;
 	b2World* world;
 	std::vector<RaycastHit> hits;
-	float lineWidth; ///< @brief the lineWidth that is used for drawing
-	Camera* camera; ///< @brief The camera is needed for drawing
-	Shader* shader; ///< @brief It's best to use the debugRenderer shader
 	glm::vec3 color; ///< @brief The color of the line
-	GLuint VAO; ///< @brief VAO(Vertex Array Object) is needed for drawing and stores all of the VBO
-	GLuint VBO; ///< @brief VBO(Vertex Buffer Object) is needed for creating the VAO. The VBO stores all of the vertices and uv's
 };
 
 #endif // !RAYCASTCALLBACK_H

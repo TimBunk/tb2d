@@ -44,7 +44,7 @@ public:
 
 	/// @brief Draw draws this B2Entity according to the shader and position, angle, scaling of the Entity. (Don't forgot to give it a texture)
 	/// @return void
-	//virtual void Draw();
+	virtual void Draw();
 
 	/// @brief Create a body and add it to the b2World
 	/// @param x The x position
@@ -59,11 +59,15 @@ public:
 	virtual void CreateCircleCollider(int radius, bool dynamic, bool sensor);
 
 	void SetDebugColor(glm::vec3 color);
+	glm::vec3 GetDebugColor() { return debugColor; };
 
 	glm::vec2 ApplyVelocityB2body(glm::vec2 velocity);
 
 	int GetColliderWidth();
 	int GetColliderHeight();
+	glm::vec2 GetColliderPivot() { return colliderPivot; };
+
+	Shape GetShape() { return shape; };
 
 	/// @brief A contact will be added whenever this b2Entity fixture collided with an other fixture
 	/// @brief The ContactListener class takes care of adding the contacts to this class. You can access the contacts by the a vector named contacts that is protected for this class

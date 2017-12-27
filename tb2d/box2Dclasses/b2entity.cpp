@@ -55,33 +55,12 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 	}
 }
 
-/*void B2Entity::Draw() {
-	if (renderer != nullptr) {
-		// If a renderer was found just update VBO of the renderer by the data of this sprite
-		renderer->Submit(this);
-	}
-	/*else if (texture != nullptr) {
-		shader->Use();
-		glm::mat4 _model = glm::scale(model, glm::vec3(width, height, 0.0f));
-		shader->SetMatrix4("model", _model);
-		shader->SetMatrix4("projection", camera->GetProjectionMatrix());
-		shader->SetMatrix4("view", camera->GetViewMatrix());
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(quadData.VAO);
-		glBindTexture(GL_TEXTURE_2D, texture->GetId());
-
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		// Set the currently binded VAO and texture to 0
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+void B2Entity::Draw() {
+	renderer->Submit(this);
 	if (body != nullptr) {
-		if (shape == Shape::box) {
-			//DebugRenderer::AddBox(colliderWidth, colliderHeight, colliderPivot, model, debugColor);
-		}
-	}*/
-//}
+		DebugRenderer::Submit(this);
+	}
+}
 
 void B2Entity::CreateBoxCollider(int w, int h, glm::vec2 pivot, bool dynamic, bool sensor) {
 	if (pivot.x != 0.0f) {
@@ -140,8 +119,8 @@ void B2Entity::CreateCircleCollider(int radius, bool dynamic, bool sensor)
 		world->DestroyBody(body);
 	}
 	// Save the w and h for later use
-	colliderWidth = radius * 2.0f;
-	colliderHeight = radius * 2.0f;
+	colliderWidth = radius;
+	colliderHeight = radius;
 	// Step 1 defina a body
 	b2BodyDef bodydef;
 	bodydef.position.Set(0.0f, 0.0f);

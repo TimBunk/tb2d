@@ -23,33 +23,50 @@ class  DebugRenderer
 public:
 	static void Initialize();
 	static void Destroy();
-
-	static void Clear();
-	static void AddBox(int width, int height, glm::vec2 pivot, glm::mat4 model, glm::vec3 color);
-	static void AddCircle(int radius, glm::mat4 model, glm::vec3 color);
+	
+	static void Submit(B2Entity* b2entity);
 	static void Render(Camera* camera);
+	static void Line(glm::vec2 point1, glm::vec2 point2, glm::vec3 color);
 
 private:
-
-	static DebugRenderer* debugRenderer;
 	DebugRenderer();
 	virtual ~DebugRenderer();
 
-	//void DrawBox(GLfloat* vertices);
-	//void DrawCircle(glm::vec2 center, float radius);
+	void AddBox(B2Entity* b2entity);
+	void AddCircle(B2Entity* b2entity);
 
+	void DrawBoxes();
+	void DrawCircles();
+	void DrawLines(Camera* camera);
+
+	static DebugRenderer* debugRenderer;
 	Shader* shader;
-	GLuint VAO_box, VBO_box, EBO_box;
+	Shader* shaderLine;
+
+	// The VBO_position and the VBO_color are buffers that are both being shared by the box and the line
+	GLuint VBO_position;
+	GLuint VBO_color;
+	// box
+	GLuint VAO_box;
 	GLuint VBO_boxModel;
-	GLuint VBO_boxColor;
 	std::vector<glm::vec2> boxesPosition;
 	std::vector<glm::vec3> boxesColor;
 	std::vector<glm::mat4> boxesModel;
 	int boxesCount;
-	GLuint VAO_circle, VBO_circle, EBO_circle;
+	// circle
+	GLuint VAO_circle;
+	GLuint VBO_circlePosition;
+	GLuint EBO_circlePosition;
+	GLuint VBO_circleColor;
+	GLuint VBO_circleModel;
 	std::vector<glm::vec3> circlesColor;
 	std::vector<glm::mat4> circlesModel;
 	int circlesCount;
+	// line
+	GLuint VAO_line;
+	std::vector<glm::vec2> linesPosition;
+	std::vector<glm::vec3> linesColor;
+	int linesCount;
 };
 
 #endif // !DEBUGRENDERER_H
