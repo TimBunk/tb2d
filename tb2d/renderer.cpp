@@ -83,8 +83,8 @@ void Renderer::Submit(Sprite* sprite)
 		}
 		if (found == false) {
 			if (textureSlots.size() == 32) {
+				// TODO: Make a fix so that there can be more than 32 textures
 				std::cout << "above 32 textures! " << std::endl;
-				//Render();
 			}
 			textureSlots.push_back(sprite->GetTextureID());
 		}
