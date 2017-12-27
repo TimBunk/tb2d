@@ -10,8 +10,10 @@ ResourceManager* ResourceManager::GetInstance()
 		ResourceManager::CreateShader("default", "shaders\\basic.vs", "shaders\\basic.fs");
 		// The default freetype shader
 		ResourceManager::CreateShader("defaultFreetype", "shaders\\defaultShader.vs", "shaders\\defaultFreetype.fs");
-		/*// Debug Renderer
-		ResourceManager::CreateShader("debugRenderer", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");*/
+		// Debug Renderer
+		ResourceManager::CreateShader("debugRenderer", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
+		// Debug Line Renderer
+		ResourceManager::CreateShader("debugLineRenderer", "shaders\\debugLineRenderer.vs", "shaders\\debugLineRenderer.fs");
 	}
 	return ResourceManager::rm;
 }
