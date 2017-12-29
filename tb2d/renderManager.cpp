@@ -6,7 +6,8 @@ void RenderManager::Initalize()
 {
 	if (RenderManager::renderManager == nullptr) {
 		RenderManager::renderManager = new RenderManager();
-		RenderManager::CreateRenderer(0, "default", ResourceManager::GetShader("default"), false);
+		// Set a default renderer for the sprites
+		RenderManager::SetRenderer(0, "default", new SimpleRenderer(ResourceManager::GetShader("default"), false));
 	}
 }
 
@@ -18,31 +19,47 @@ void RenderManager::Destroy()
 	}
 }
 
-void RenderManager::CreateRenderer(unsigned int layer, std::string name, Shader* shader, bool hud)
+void RenderManager::SetRenderer(unsigned int layer, std::string name, Renderer * renderer)
 {
 	if (layer >= RenderManager::renderManager->renderers.size()) {
 		RenderManager::renderManager->renderers.resize(layer + 1);
 	}
-	RenderManager::renderManager->renderers[layer][name] = new Renderer(shader, hud);
-
-	/*std::cout << "print out rendering order!" << std::endl;
-	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
-		std::map<std::string, Renderer*>::iterator it = RenderManager::renderManager->renderers[i].begin();
-		while (it != RenderManager::renderManager->renderers[i].end()) {
-			std::cout << (*it).first << std::endl;
-			++it;
-		}
-	}*/
+	RenderManager::renderManager->renderers[layer][name] = renderer;
 }
 
-Renderer * RenderManager::GetRenderer(std::string name)
+SimpleRenderer * RenderManager::GetSimpleRenderer(std::string name)
 {
 	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
 		if (RenderManager::renderManager->renderers[i].find(name) != RenderManager::renderManager->renderers[i].end()) {
-			return RenderManager::renderManager->renderers[i][name];
+			if (dynamic_cast<SimpleRenderer*>(RenderManager::renderManager->renderers[i][name]) != NULL) {
+				return dynamic_cast<SimpleRenderer*>(RenderManager::renderManager->renderers[i][name]);
+			}
+			else {
+				std::cout << "ERROR renderManager: " << name << " is not a simpleRenderer" << std::endl;
+				return nullptr;
+			}
 		}
 	}
 	// The renderer was not found so return nullptr
+	std::cout << "ERROR renderManager: " << name << " is not found" << std::endl;
+	return nullptr;
+}
+
+ParticleRenderer * RenderManager::GetParticleRenderer(std::string name)
+{
+	for (int i = 0; i < RenderManager::renderManager->renderers.size(); i++) {
+		if (RenderManager::renderManager->renderers[i].find(name) != RenderManager::renderManager->renderers[i].end()) {
+			if (dynamic_cast<ParticleRenderer*>(RenderManager::renderManager->renderers[i][name]) != NULL) {
+				return dynamic_cast<ParticleRenderer*>(RenderManager::renderManager->renderers[i][name]);
+			}
+			else {
+				std::cout << "ERROR renderManager: " << name << " is not a particleRenderer" << std::endl;
+				return nullptr;
+			}
+		}
+	}
+	// The renderer was not found so return nullptr
+	std::cout << "ERROR renderManager: " << name << " is not found" << std::endl;
 	return nullptr;
 }
 

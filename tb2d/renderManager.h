@@ -1,7 +1,8 @@
 #ifndef RENDERMANAGER_H
 #define RENDERMANAGER_H
 
-#include "renderer.h"
+#include "simplerenderer.h"
+#include "particlerenderer.h"
 
 class RenderManager
 {
@@ -9,8 +10,9 @@ public:
 	static void Initalize();
 	static void Destroy();
 
-	static void CreateRenderer(unsigned int layer, std::string name, Shader* shader, bool hud);
-	static Renderer* GetRenderer(std::string name);
+	static void SetRenderer(unsigned int layer, std::string name, Renderer* rendererer);
+	static SimpleRenderer* GetSimpleRenderer(std::string name);
+	static ParticleRenderer* GetParticleRenderer(std::string name);
 	static void Render(Camera* camera);
 
 private:

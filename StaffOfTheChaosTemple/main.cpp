@@ -63,8 +63,10 @@ int main() {
 	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("laserParticle", "textures/laserParticle.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
-	RenderManager::CreateRenderer(1, "hud", ResourceManager::GetShader("default"), true);
+	RenderManager::SetRenderer(1, "hud", new SimpleRenderer(ResourceManager::GetShader("default"), true));
+	RenderManager::SetRenderer(1, "particle", new ParticleRenderer(ResourceManager::GetShader("default")));
 
 	level1 = new Level1(1920, 1080);
 	level2 = new Level2(1920, 1080);

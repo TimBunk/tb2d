@@ -1,9 +1,11 @@
 #include "laser.h"
 #include "mirror.h"
 
-Laser::Laser(int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
+Laser::Laser(float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
+	this->laserRange = laserRange;
 	raycast = new Raycast(world);
+	pr = RenderManager::GetParticleRenderer("particle");
 }
 
 Laser::~Laser()
@@ -33,7 +35,7 @@ void Laser::Update(double deltaTime)
 			reflection = intersectionPoint - (2 * glm::dot(intersectionPoint, rh.normal) * rh.normal);
 
 			localScale.y = rh.fraction;
-			this->SetRepeatableUV(glm::vec2(1.0f, localScale.y * height / width));
+			UpdateParticles(deltaTime);
 			return;
 
 		}
@@ -53,25 +55,75 @@ void Laser::Update(double deltaTime)
 			// Scale the laser by the distance of hit
 			localScale.y = rh.fraction;
 			hit = false;
-			hitPosition = glm::vec2();
+			hitPosition = rh.point;
 			reflection = glm::vec2();
-			this->SetRepeatableUV(glm::vec2(1.0f, localScale.y * height / width));
+			UpdateParticles(deltaTime);
 			return;
 		}
 	}
-	hit = false;
-	hitPosition = glm::vec2();
-	reflection = glm::vec2();
 	localScale.y = 1.0f;
-	this->SetRepeatableUV(glm::vec2(1.0f, localScale.y * height / width));
+	hit = false;
+	hitPosition = destination;
+	reflection = glm::vec2();
+	UpdateParticles(deltaTime);
 }
 
-void Laser::SetDirection(glm::vec2 direction)
+void Laser::Draw()
 {
-	this->direction = direction;
+	for (int i = 0; i < particles.size(); i++) {
+		pr->Submit(particles[i]);
+	}
 }
 
-bool Laser::Hit()
+void Laser::UpdateParticles(double deltaTime)
 {
-	return hit;
+	glm::vec2 diff = hitPosition - position;
+	float distance = glm::length(diff);
+	// Iterate through our vectors and update them or delete them if neccesary
+	std::vector<Particle>::iterator itParticles = particles.begin();
+	std::vector<float>::iterator itRandomPositions = randomLengths.begin();
+	std::vector<glm::vec2>::iterator itRandomOffets = randomOffsets.begin();
+	while (itParticles != particles.end()) {
+		// Delete the particle and its randomPosition if the randomPosition is greather then the distance
+		if (glm::length((*itRandomPositions) * diff) > distance) {
+			itParticles = particles.erase(itParticles);
+			itRandomPositions = randomLengths.erase(itRandomPositions);
+			itRandomOffets = randomOffsets.erase(itRandomOffets);
+		}
+		// Update the position of the particles
+		else {
+			// Move particle
+			(*itRandomPositions) += (glm::normalize((*itRandomPositions)) * deltaTime * 0.25f);
+			glm::vec2 randomVec2 = diff * (*itRandomPositions) + (*itRandomOffets);
+			(*itParticles).position = randomVec2 + position;
+			++itParticles;
+			++itRandomPositions;
+			++itRandomOffets;
+		}
+	}
+	int amountParticles = ((int)(localScale.y * 100.0f));
+	for (int i = particles.size(); i < amountParticles; i++) {
+		Particle p;
+		
+		float randomLength = ((float)(std::rand() % 1000)/1000);
+		randomLengths.push_back(randomLength);
+
+		glm::vec2 randomOffset;
+		randomOffset.x = ((float)(std::rand() % 20) - 10);
+		randomOffset.y = ((float)(std::rand() % 20) -  10);
+		randomOffsets.push_back(randomOffset);
+
+		glm::vec2 randomVec2 = diff * randomLength + randomOffset;
+		p.position = randomVec2 + position;
+
+		p.textureID = textureID;
+		p.width = width;
+		p.height = height;
+		particles.push_back(p);
+	}
+	while (particles.size() > amountParticles) {
+		particles.pop_back();
+		randomLengths.pop_back();
+		randomOffsets.pop_back();
+	}
 }

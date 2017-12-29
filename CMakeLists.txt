@@ -114,6 +114,10 @@ set(TB2DSOURCE
   tb2d/sprite.cpp
   tb2d/renderer.h
   tb2d/renderer.cpp
+  tb2d/simplerenderer.h
+  tb2d/simplerenderer.cpp
+  tb2d/particlerenderer.h
+  tb2d/particlerenderer.cpp
   tb2d/renderManager.h
   tb2d/renderManager.cpp
   tb2d/core.h

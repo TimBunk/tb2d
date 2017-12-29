@@ -4,7 +4,6 @@
 #include "entity.h"
 #include "camera.h"
 #include "resourceManager.h"
-//#include "renderer.h"
 #include "renderManager.h"
 
 class Sprite : public Entity {
@@ -15,7 +14,7 @@ public:
 	virtual void Draw();
 
 	// SETTERS
-	void SetRenderer(Renderer* renderer)			{ this->renderer = renderer; };
+	void SetRenderer(SimpleRenderer* renderer)		{ this->renderer = renderer; };
 	void SetTextureID(unsigned int textureID)		{ this->textureID = textureID; };
 	void SetRepeatableUV(glm::vec2 repeat)			{ this->repeatUV = repeat; };
 	void SetPivot(glm::vec2 pivot)					{ this->pivot = pivot; };
@@ -36,7 +35,7 @@ protected:
 	glm::vec2 pivot;
 	glm::vec4 color;
 	int width, height;
-	Renderer* renderer;
+	SimpleRenderer* renderer;
 
 private:
 	

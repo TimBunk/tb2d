@@ -5,7 +5,7 @@ Staff::Staff(float laserRange, int width, int height, unsigned int textureID, b2
 	this->laserRange = laserRange;
 	this->world = world;
 	// In order to make the lasers work we need atleast one already in the vector
-	lasers.push_back(new Laser(25.0f, laserRange, ResourceManager::GetTexture("crystal")->GetId(), world));
+	lasers.push_back(new Laser(laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
 	lasers[0]->SetPivot(glm::vec2(0.0f, -0.5f));
 	shooting = false;
 }
@@ -41,8 +41,8 @@ void Staff::Update(double deltaTime)
 		if (lasers[0]->Hit()) {
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
-				if (i == lasers.size() && lasers[i - 1]->Hit()) {
-					lasers.push_back(new Laser(25.0f, laserRange, ResourceManager::GetTexture("crystal")->GetId(), world));
+				if (i == lasers.size() && lasers[i - 1]->Hit() && i < 15) {
+					lasers.push_back(new Laser(laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
 					lasers[i]->SetPivot(glm::vec2(0.0f, -0.5f));
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);
@@ -54,10 +54,10 @@ void Staff::Update(double deltaTime)
 					lasers[i]->Update(deltaTime);
 					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
-					i++;
+					//i++;
 				}
 				// Update and draw the lasers that already exist
-				else if (lasers[i - 1]->Hit()) {
+				else if (lasers[i - 1]->Hit() && i < 15) {
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);
 					direction *= laserRange;
@@ -68,7 +68,7 @@ void Staff::Update(double deltaTime)
 					lasers[i]->Update(deltaTime);
 					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
-					i++;
+					//i++;
 				}
 				// If a laser does not hit anything delete every laser that comes after it
 				else if (i > 0 && lasers[i - 1]->Hit() == false) {
@@ -80,6 +80,7 @@ void Staff::Update(double deltaTime)
 					// Break out of the while loop otherwise the program will crash
 					break;
 				}
+				i++;
 				if (lasers.size() > 15) {
 					while (lasers.size() > 15) {
 						delete lasers[lasers.size() - 1];
