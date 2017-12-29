@@ -6,21 +6,21 @@ Level2::Level2(int screenWidthCamera, int screenHeightCamera) : Level::Level(scr
 	// We need to update the player otherwise the position will not be set because of the player using velocity and the velocity overrride it's position
 	this->player->UpdateChilderen(this, 0.0f);
 
-	enemy = new Enemy(player, 900.0f, 0.1f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+	enemy = new Enemy(player, 900.0f, 0.6f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
 	enemy->localPosition = glm::vec2(0, -300);
 	enemy->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
 	enemy->SetDebugColor(glm::vec3(1, 0, 1));
 	enemy->UpdateChilderen(this, 0.0f);
 	this->AddChild(enemy);
 
-	enemy1 = new Enemy(player, 900.0f, 0.1f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+	enemy1 = new Enemy(player, 900.0f, 0.6f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
 	enemy1->localPosition = glm::vec2(1, -300);
 	enemy1->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
 	enemy1->SetDebugColor(glm::vec3(1, 0, 1));
 	enemy1->UpdateChilderen(this, 0.0f);
 	this->AddChild(enemy1);
 
-	enemy2 = new Enemy(player, 900.0f, 0.1f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+	enemy2 = new Enemy(player, 900.0f, 0.6f, 0.5f, 1, 5, 1, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
 	enemy2->localPosition = glm::vec2(800, -300);
 	enemy2->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
 	enemy2->SetDebugColor(glm::vec3(1, 0, 1));
