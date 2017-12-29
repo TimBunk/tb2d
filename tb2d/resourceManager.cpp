@@ -62,45 +62,6 @@ Texture * ResourceManager::GetTexture(std::string name)
 	return nullptr;
 }
 
-QuadData ResourceManager::GetQuad(glm::vec2 pivot)
-{
-	ResourceManager* _rm = ResourceManager::GetInstance();
-	CompareVectors2 _pivot = { pivot.x, pivot.y };
-	// Search for an excisting quad
-	if (_rm->quads.find(_pivot) != _rm->quads.end()) {
-		return _rm->quads[_pivot];
-	}
-	float vertices[] = {
-		// position							// uv's
-		-0.5f + pivot.x, 0.5f + pivot.y,	0.0f, 1.0f,  // uper left corner
-		-0.5f + pivot.x, -0.5f + pivot.y,	0.0f, 0.0f,  // lower-left corner
-		0.5f + pivot.x, -0.5f + pivot.y,	1.0f, 0.0f,  // lower-right corner
-
-		0.5f + pivot.x, -0.5f + pivot.y,	1.0f, 0.0f,  // lower-right corner
-		0.5f+ pivot.x, 0.5f + pivot.y,		1.0f, 1.0f,  // upper-right corner
-		-0.5f + pivot.x, 0.5f + pivot.y,	0.0f, 1.0f,  // uper left corner
-	};
-
-	GLuint VAO, VBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// set the vertices
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-	QuadData qd = { VAO, VBO };
-	_rm->quads[_pivot] = qd;
-	return qd;
-}
-
 ResourceManager::ResourceManager()
 {
 	
@@ -119,12 +80,5 @@ ResourceManager::~ResourceManager()
 	while (it2 != textures.end()) {
 		delete (*it2).second;
 		it2 = textures.erase(it2);
-	}
-	// Delete VAO's and VBO's
-	std::map<CompareVectors2, QuadData>::iterator it3 = quads.begin();
-	while (it3 != quads.end()) {
-		glDeleteVertexArrays(1, &(*it3).second.VAO);
-		glDeleteBuffers(1, &(*it3).second.VBO);
-		it3 = quads.erase(it3);
 	}
 }
