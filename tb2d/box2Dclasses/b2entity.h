@@ -69,6 +69,9 @@ public:
 
 	Shape GetShape() { return shape; };
 
+	virtual void SetFilter(unsigned int filter) { this->filter = filter; };
+	unsigned int GetFilter() { return filter; };
+
 	/// @brief A contact will be added whenever this b2Entity fixture collided with an other fixture
 	/// @brief The ContactListener class takes care of adding the contacts to this class. You can access the contacts by the a vector named contacts that is protected for this class
 	/// @return void
@@ -91,6 +94,7 @@ public:
 	static float p2m;
 
 protected:
+	unsigned int filter;
 	Shape shape;
 	int colliderWidth, colliderHeight;
 	glm::vec2 colliderPivot;

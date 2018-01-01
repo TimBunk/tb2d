@@ -12,6 +12,7 @@ B2Entity::B2Entity(int width, int height, unsigned int textureID, b2World* world
 	colliderHeight = 0;
 	debugColor = glm::vec3(1, 1, 1);
 	colliderPivot = glm::vec2(-0.5f, 0.0f);
+	filter = 0;
 }
 
 B2Entity::~B2Entity() {
