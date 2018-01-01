@@ -1,11 +1,12 @@
 #include "staff.h"
 
-Staff::Staff(float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
+Staff::Staff(float damage, float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
+	this->damage = damage;
 	this->laserRange = laserRange;
 	this->world = world;
 	// In order to make the lasers work we need atleast one already in the vector
-	lasers.push_back(new Laser(laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
+	lasers.push_back(new Laser(damage, laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
 	lasers[0]->SetPivot(glm::vec2(0.0f, -0.5f));
 	shooting = false;
 }
@@ -42,7 +43,7 @@ void Staff::Update(double deltaTime)
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
 				if (i == lasers.size() && lasers[i - 1]->Hit() && i < 15) {
-					lasers.push_back(new Laser(laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
+					lasers.push_back(new Laser(damage, laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
 					lasers[i]->SetPivot(glm::vec2(0.0f, -0.5f));
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);

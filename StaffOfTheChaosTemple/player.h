@@ -11,7 +11,7 @@
 class Player : public Person
 {
 public:
-	Player(Camera* camera, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World* world);
+	Player(Camera* camera, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World* world);
 	~Player();
 
 	void Update(double deltaTime);

@@ -13,13 +13,14 @@
 class Staff : public Sprite
 {
 public:
-	Staff(float laserRange, int width, int height, unsigned int textureID, b2World* world);
+	Staff(float damage, float laserRange, int width, int height, unsigned int textureID, b2World* world);
 	~Staff();
 
 	void Update(double deltaTime);
 	void Shoot();
 
 private:
+	float damage;
 	float laserRange;
 	bool shooting;
 	std::vector<Laser*> lasers;

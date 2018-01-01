@@ -7,7 +7,7 @@
 class Laser : public Sprite
 {
 public:
-	Laser(float laserRange, int width, int height, unsigned int texture, b2World* world);
+	Laser(float damage, float laserRange, int width, int height, unsigned int texture, b2World* world);
 	~Laser();
 
 	void Update(double deltaTime);
@@ -21,6 +21,7 @@ public:
 	glm::vec2 GetReflection() { return reflection; };
 
 private:
+	float damage;
 	float laserRange;
 	ParticleRenderer* pr;
 

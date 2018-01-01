@@ -1,9 +1,9 @@
 #include "player.h"
 
-Player::Player(Camera* camera, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World* world) : Person::Person(health, speed, damage, width, height, textureID, world)
+Player::Player(Camera* camera, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World* world) : Person::Person(health, speed, damage, width, height, textureID, world)
 {
 	this->camera = camera;
-	staff = new Staff(1000.0f, 100, 200, ResourceManager::GetTexture("staff")->GetId(), world);
+	staff = new Staff(damage, 1000.0f, 100, 200, ResourceManager::GetTexture("staff")->GetId(), world);
 	staff->localPosition.x = -25;
 	staff->localPosition.y = -50;
 	this->AddChild(staff);

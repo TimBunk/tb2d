@@ -1,8 +1,10 @@
 #include "laser.h"
 #include "mirror.h"
+#include "person.h"
 
-Laser::Laser(float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
+Laser::Laser(float damage, float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
+	this->damage = damage;
 	this->laserRange = laserRange;
 	raycast = new Raycast(world);
 	pr = RenderManager::GetParticleRenderer("particle");
@@ -49,6 +51,17 @@ void Laser::Update(double deltaTime)
 		else if (rh.fixture->IsSensor()) {
 			// IGNORE IT
 			continue;
+		}
+		// HITTED PLAYER OR ENEMY
+		else if (dynamic_cast<Person*>(b) != NULL) {
+			// Damage the person
+			dynamic_cast<Person*>(b)->Damage(damage * deltaTime);
+			localScale.y = rh.fraction;
+			hit = false;
+			hitPosition = rh.point;
+			reflection = glm::vec2();
+			UpdateParticles(deltaTime);
+			return;
 		}
 		// HIT B2ENTITY
 		else {

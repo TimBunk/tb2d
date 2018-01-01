@@ -2,20 +2,26 @@
 #define PERSON_H
 
 #include "box2Dclasses/b2entity.h"
+#include "linkable.h"
 
-class Person : public B2Entity
+class Person : public Linkable
 {
 public:
-	Person(int health, float speed, int damage, int width, int height, unsigned int textureID, b2World * world);
+	Person(float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world);
 	~Person();
 
-	void Damage(int damage);
+	void Damage(float damage);
 	bool IsAlive();
+	float GetCurrentHealth() { return currentHealth; };
+	float GetMaxHealth() { return maxHealth; };
+	float GetSpeed() { return speed; };
+	float GetDamage() { return damage; };
 
 protected:
-	int health;
+	float maxHealth;
+	float currentHealth;
 	float speed;
-	int damage;
+	float damage;
 
 private:
 

@@ -59,6 +59,7 @@ int main() {
 	ResourceManager::CreateTexture("laser", "textures/laser.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("crystal", "textures/crystal.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("sword", "textures/TestEnemySword.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
@@ -71,8 +72,8 @@ int main() {
 	level1 = new Level1(1920, 1080);
 	level2 = new Level2(1920, 1080);
 
-	levels.push_back(level1);
 	levels.push_back(level2);
+	levels.push_back(level1);
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);

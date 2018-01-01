@@ -13,6 +13,8 @@ public:
 	void Update(double deltaTime);
 	void SetRotation(float degrees);
 
+	virtual void SetFilter(unsigned int filter);
+
 private:
 	Rotator* rotator;
 	B2Entity* notHitableArea;

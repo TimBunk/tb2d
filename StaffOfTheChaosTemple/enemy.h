@@ -3,17 +3,27 @@
 
 #include "player.h"
 #include "box2Dclasses/raycast.h"
+#include "mirror.h"
 
 class Enemy : public Person
 {
 public:
-	Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, int health, float speed, int damage, int width, int height, unsigned int textureID, b2World * world);
+	Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world);
 	~Enemy();
 
 	void Update(double deltaTime);
+	void Die();
 
 private:
+	bool dead;
+	Sprite* redHealthbar;
+	Sprite* greenHealthbar;
+
+	Mirror* mirror;
 	float lineOfSight;
+	float attackRadius;
+	B2Entity* sword;
+
 	Player* player;
 	glm::vec2 lastPositionPlayer;
 	glm::vec2 velocity;
