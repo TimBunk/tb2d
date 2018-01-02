@@ -53,15 +53,9 @@ glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
 
 bool Input::MousePress(int mouse) {
 	Input* input = Input::GetInstance();
-	// Check if the mousepressed is already true and if so it first has to become false again by releasing the mouse
-	if (input->mousePressed[mouse]) {
-		input->SetMouseState(mouse);
-		if (input->mousePressed[mouse]) {
-			return false;
-		}
-	}
-	else {
-		input->SetMouseState(mouse);
+	input->SetMouseState(mouse);
+	if (input->mousePressedSecond[mouse]) {
+		return false;
 	}
 	return input->mousePressed[mouse];
 }
@@ -86,28 +80,21 @@ void Input::SetMouseState(int mouse)
 		mouseDown[mouse] = true;
 		mouseUp[mouse] = false;
 		// Check if the mousepressed has not yet been pressed otherwise you have to release the mouse first
-		if (!mousePressed[mouse]) {
-			mousePressed[mouse] = true;
-		}
+		mousePressed[mouse] = true;
 		return;
 	}
 	// The mouse is not being held down so set mouseup to true and mousedown and pressed to false
 	mousePressed[mouse] = false;
+	mousePressedSecond[mouse] = false;
 	mouseDown[mouse] = false;
 	mouseUp[mouse] = true;
 }
 
 bool Input::KeyPress(int key) {
 	Input* input = Input::GetInstance();
-	// Check if the keypressed is already true and if so it first has to become false again by releasing the key
-	if (input->keysPressed[key]) {
-		input->SetKeyState(key);
-		if (input->keysPressed[key]) {
-			return false;
-		}
-	}
-	else {
-		input->SetKeyState(key);
+	input->SetKeyState(key);
+	if (input->keysPressedSecond[key]) {
+		return false;
 	}
 	return input->keysPressed[key];
 }
@@ -124,6 +111,21 @@ bool Input::KeyUp(int key) {
 	return input->keysUp[key];
 }
 
+void Input::Clear()
+{
+	Input* input = Input::GetInstance();
+	for (int i = 0; i < 348; i++) {
+		if (i < 8) {
+			if (input->mousePressed[i]) {
+				input->mousePressedSecond[i] = true;
+			}
+		}
+		if (input->keysPressed[i]) {
+			input->keysPressedSecond[i] = true;
+		}
+	}
+}
+
 void Input::SetKeyState(int key)
 {
 	// Check if the key is held down
@@ -132,13 +134,12 @@ void Input::SetKeyState(int key)
 		keysDown[key] = true;
 		keysUp[key] = false;
 		// Check if the keypressed has not yet been pressed otherwise you have to release the key first
-		if (!keysPressed[key]) {
-			keysPressed[key] = true;
-		}
+		keysPressed[key] = true;
 		return;
 	}
 	// The key is not being held down so set keyup to true and keydown and pressed to false
 	keysPressed[key] = false;
+	keysPressedSecond[key] = false;
 	keysDown[key] = false;
 	keysUp[key] = true;
 }
@@ -150,10 +151,12 @@ Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
 	mousePosition = glm::vec2(0.0f, 0.0f);
 	for (int i = 0; i<348; i++) {
 		keysPressed[i] = false;
+		keysPressedSecond[i] = false;
 		keysDown[i] = false;
 		keysUp[i] = true;
 		if (i < 8) {
 			mousePressed[i] = false;
+			mousePressedSecond[i] = false;
 			mouseDown[i] = false;
 			mouseUp[i] = true;
 		}

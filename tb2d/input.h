@@ -23,6 +23,8 @@ public:
 	static bool KeyPress(int key);
 	static bool KeyDown(int key);
 	static bool KeyUp(int key);
+
+	static void Clear();
 private:
 	static Input* GetInstance();
 	Input(GLFWwindow* window, float screenWidth, float screenHeight);
@@ -39,10 +41,12 @@ private:
 
 	glm::vec2 mousePosition;
 	bool mousePressed[8];
+	bool mousePressedSecond[8];
 	bool mouseDown[8];
 	bool mouseUp[8];
 
 	bool keysPressed[348];
+	bool keysPressedSecond[348];
 	bool keysDown[348];
 	bool keysUp[348];
 };
