@@ -66,6 +66,17 @@ void Level::Update(double deltaTime)
 			++it;
 		}
 	}
+
+	/*b2Body* bodylist = world->GetBodyList();
+	glm::vec2 _mousePos = Input::GetMousePositionWorldSpace(camera);
+	b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
+
+	while (bodylist != NULL) {
+		if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
+			std::cout << "hit is true!" << std::endl;
+		}
+		bodylist = bodylist->GetNext();
+	}*/
 }
 
 bool Level::IsFinished()

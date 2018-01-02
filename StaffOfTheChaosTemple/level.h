@@ -16,13 +16,13 @@ public:
 	virtual ~Level();
 
 	virtual void Update(double deltaTime);
+	void CreateFinish(int x, int y, int width, int height);
 	bool IsFinished();
 
 	b2World* GetB2World();
 	void AddEnemy(Enemy* enemy);
 
 protected:
-	void CreateFinish(int x, int y, int width, int height);
 
 	Sprite* greenHealthbarPlayer;
 	Sprite* redHealthbarPlayer;

@@ -23,6 +23,7 @@
 #include "crystal.h"
 #include "door.h"
 #include "core.h"
+#include "leveleditor.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -31,6 +32,7 @@ Core* core;
 Level1* level1;
 Level2* level2;
 Menu* menu;
+LevelEditor* levelEditor;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -38,6 +40,7 @@ float B2Entity::p2m = 1.0f / B2Entity::m2p;
 enum GameState
 {
 	_game,
+	_editor,
 	_menu
 };
 
@@ -77,6 +80,9 @@ int main() {
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
+
+	levelEditor = new LevelEditor(1920, 1080);
+
 	while (core->IsActive()) {
 
 		switch (gameState)
@@ -94,11 +100,32 @@ int main() {
 				gameState = _menu;
 			}
 			break;
+		case _editor:
+			if (levelEditor->GetCurrentLevel() != nullptr) {
+				core->Run(levelEditor->GetCurrentLevel());
+				if (Input::KeyDown(GLFW_KEY_ESCAPE)) {
+					levelEditor->StopCurrentLevel();
+				}
+			}
+			else {
+				core->Run(levelEditor);
+				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+					gameState = _menu;
+				}
+			}
+			// if escaped is pressed go back in to the menu
+			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+				gameState = _menu;
+			}
+			break;
 		case _menu:
 			core->Run(menu);
 			// If start is pressed start the game
 			if (menu->Start()) {
 				gameState = _game;
+			}
+			else if (menu->Editor()) {
+				gameState = _editor;
 			}
 			else if (menu->Restart()) {
 				// TODO: restart level
@@ -113,6 +140,7 @@ int main() {
 	delete menu;
 	delete level1;
 	delete level2;
+	delete levelEditor;
 	delete core;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;

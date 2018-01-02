@@ -35,6 +35,7 @@ public:
 	/// @brief IsActive returns the active boolean of the Menu
 	///@return bool
 	bool Start();
+	bool Editor();
 
 	/// @brief returns a boolean that will be true whenever the restart button is pressed
 	/// @return void
@@ -50,10 +51,12 @@ private:
 
 	bool init;
 	bool start; ///< @brief active Represents current state of the menu
+	bool editor;
 	bool restart; ///< @brief restart Is a boolean that will be true when the restart button is pressed
 	bool quit; ///< @brief quit Is a boolean that will be true when the quit button is pressed
 	Input* input; ///< @brief input The input is needed for when the user presses escape so he can leave the menu and get back in to the game
 	Button* startButton; ///< @brief startButton Is the a button that can be pressed for when you want to start the game
+	Button* editorButton;
 	Button* restartButton; ///< @brief restartButton Is a button that can be pressed for when you want to restart the game
 	Button* quitButton; ///< @brief quitButton Is a button that can be pressed for when you want to quit the game
 };

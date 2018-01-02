@@ -106,8 +106,6 @@ set(TB2DSOURCE
   tb2d/input.cpp
   tb2d/window.h
   tb2d/window.cpp
-  tb2d/hud.h
-  tb2d/hud.cpp
   tb2d/button.h
   tb2d/button.cpp
   tb2d/sprite.h
@@ -122,6 +120,8 @@ set(TB2DSOURCE
   tb2d/renderManager.cpp
   tb2d/core.h
   tb2d/core.cpp
+  tb2d/textfile.cpp
+  tb2d/textfile.h
 )
 
 ####################################################################
@@ -191,6 +191,12 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/menu.h
     StaffOfTheChaosTemple/menu.cpp
     StaffOfTheChaosTemple/main.cpp
+    StaffOfTheChaosTemple/leveleditor.h
+    StaffOfTheChaosTemple/leveleditor.cpp
+    StaffOfTheChaosTemple/savelevel.h
+    StaffOfTheChaosTemple/savelevel.cpp
+    StaffOfTheChaosTemple/loadlevel.h
+    StaffOfTheChaosTemple/loadlevel.cpp
   )
 
   target_link_libraries(staff
