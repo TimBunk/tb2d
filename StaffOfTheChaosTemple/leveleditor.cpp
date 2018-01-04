@@ -13,21 +13,21 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 
 	saveButton = new Button(300, 100, 0, true, camera);
 	saveButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
-	saveButton->CreateText("save", 96, glm::vec3(0, 0, 0));
+	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	saveButton->localPosition = glm::vec2(camera->GetWidth() / 2 - 150, camera->GetHeight() / 2 - 50);
 	saveButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	this->AddChild(saveButton);
 
 	loadButton = new Button(300, 100, 0, true, camera);
 	loadButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
-	loadButton->CreateText("load", 96, glm::vec3(0, 0, 0));
+	loadButton->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	loadButton->localPosition = glm::vec2(camera->GetWidth() / 2 - 150, camera->GetHeight() / 2 - 125);
 	loadButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	this->AddChild(loadButton);
 
 	wallButton = new Button(300, 100, 0, true, camera);
 	wallButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
-	wallButton->CreateText("wall", 96, glm::vec3(0, 0, 0));
+	wallButton->CreateText("wall", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	wallButton->localPosition = glm::vec2(camera->GetWidth()/2 * -1 + 150, camera->GetHeight()/2 - 50);
 	wallButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	this->AddChild(wallButton);

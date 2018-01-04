@@ -12,7 +12,7 @@ public:
 
 	void Update(double deltaTime);
 
-	void CreateText(std::string text, int textSize, glm::vec3 color);
+	void CreateText(std::string text, Font font, glm::vec3 color);
 	void SetText(std::string text);
 
 	bool Hover();

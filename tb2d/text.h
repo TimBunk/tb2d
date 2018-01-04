@@ -1,46 +1,57 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include <iostream>
-#include <string>
-#include <map>
-
-#include "shader.h"
 #include "entity.h"
 #include "camera.h"
+#include "resourceManager.h"
+#include "renderManager.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-/// Holds all state information relevant to a character as loaded using FreeType
-struct Character {
-	GLuint TextureID;   // ID handle of the glyph texture
-	glm::ivec2 Size;    // Size of glyph
-	glm::ivec2 Bearing;  // Offset from baseline to left/top of glyph
-	GLuint Advance;    // Horizontal offset to advance to next glyph
-};
-
-class Text : public Entity {
+class Text : public Entity
+{
 public:
-	Text(std::string text, int size, const char* fontPath, glm::vec3 color, Shader* shader, Camera* camera, bool HUD);
-	virtual ~Text();
+	enum AlignmentX {
+		leftX,
+		centerX,
+		rightX
+	};
 
-	void SetText(std::string text);
-	void SetColor(glm::vec3 color);
+	enum AlignmentY {
+		topY,
+		centerY,
+		bottomY
+	};
+
+	Text(std::string text, Font font, glm::vec3 color, AlignmentX xAlignment, AlignmentY yAlignment);
+	~Text();
+
 	void Draw();
 
-	float GetWidth();
-	float GetHeight();
+	void SetText(std::string text);
+	void SetTextRenderer(TextRenderer* textRenderer) { this->textRenderer = textRenderer; }
+	void SetAlignment(AlignmentX xAlignment, AlignmentY yAlignment);
+	void SetFont(Font font) { this->font = font; }
+
+	std::string GetText() { return text; }
+	unsigned int GetAtlasID() { return font.textureAtlas->id; }
+	ftgl::texture_font_t* GetFont() { return font.font; }
+	glm::vec3 GetColor() { return color; }
+	float GetWidth() { return width; }
+	float GetHeight() { return height; }
+	glm::vec2 GetOffset() { return offset; }
+
 private:
-	float width, height;
-	Shader* shader;
-	Camera* camera;
-	std::map<GLchar, Character> characters;
-	GLuint VAO, VBO;
+	TextRenderer* textRenderer;
 
 	std::string text;
+	Font font;
 	glm::vec3 color;
-	bool HUD;
+
+	float width;
+	float height;
+
+	glm::vec2 offset;
+	AlignmentX xAlignment;
+	AlignmentY yAlignment;
 };
 
-#endif //! TEXT_H
+#endif // !TEXT_H

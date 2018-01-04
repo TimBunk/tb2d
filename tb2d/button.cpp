@@ -36,19 +36,14 @@ void Button::Update(double deltaTime) {
 	}
 }
 
-void Button::CreateText(std::string text, int textSize, glm::vec3 color)
+void Button::CreateText(std::string text, Font font, glm::vec3 color)
 {
 	// If a text has already been created remove the previous one
 	if (this->text != nullptr) {
 		RemoveChild(this->text);
 		delete this->text;
 	}
-	this->text = new Text(text, textSize, "fonts/OpenSans-Regular.ttf", color, ResourceManager::GetShader("defaultFreetype"), camera, hud);
-
-	// Drawing the text is needed in order to get the correct width and height
-
- 	this->text->Draw();
-	this->text->localPosition = glm::vec2(this->text->GetWidth() / 2 * -1, this->text->GetHeight()/2 * -1);
+	this->text = new Text(text, font, color, Text::AlignmentX::centerX, Text::AlignmentY::centerY);
 	AddChild(this->text);
 
 }
@@ -56,9 +51,6 @@ void Button::CreateText(std::string text, int textSize, glm::vec3 color)
 void Button::SetText(std::string text) {
 	if (this->text != nullptr) {
 		this->text->SetText(text);
-		// Drawing the text is needed in order to get the correct width and height
-		this->text->Draw();
-		this->text->localPosition = glm::vec2(this->text->GetWidth() / 2 * -1.0f, this->text->GetHeight()/2 * -1);
 	}
 }
 

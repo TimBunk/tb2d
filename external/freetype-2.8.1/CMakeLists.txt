@@ -333,10 +333,61 @@ endif ()
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+set (FREETYPEGL_INCLUDE_DIR
+  ${CMAKE_CURRENT_SOURCE_DIR}/freetype-gl
+)
+
+set(FREETYPEGL_SOURCE
+freetype-gl/freetype-gl.h
+freetype-gl/opengl.h
+freetype-gl/platform.c
+freetype-gl/platform.h
+freetype-gl/texture-atlas.c
+freetype-gl/texture-atlas.h
+freetype-gl/texture-font.c
+freetype-gl/texture-font.h
+freetype-gl/vec234.h
+freetype-gl/vector.c
+freetype-gl/vector.h
+freetype-gl/utf8-utils.h
+freetype-gl/utf8-utils.c
+freetype-gl/distance-field.c
+freetype-gl/distance-field.h
+freetype-gl/edtaa3func.c
+freetype-gl/edtaa3func.h
+freetype-gl/font-manager.c
+freetype-gl/font-manager.h
+freetype-gl/markup.h
+freetype-gl/text-buffer.c
+freetype-gl/text-buffer.h
+freetype-gl/vertex-attribute.c
+freetype-gl/vertex-attribute.h
+freetype-gl/vertex-buffer.c
+freetype-gl/vertex-buffer.h
+)
+
+include_directories(
+  ${FREETYPEGL_INCLUDE_DIR}
+)
+
 SET (LIB_TYPE2 STATIC)
+
+
+### GLEW ###
+include_directories(
+	glew-2.1.0/include/
+)
+set(GLEW_SOURCE
+	glew-2.1.0/src/glew.c
+)
+set(GLEW_HEADERS
+)
 
 add_library(freetype
   ${LIB_TYPE2}
+  ${GLEW_SOURCE}
+	${GLEW_INCLUDE}
+  ${FREETYPEGL_SOURCE}
   ${PUBLIC_HEADERS}
   ${PUBLIC_CONFIG_HEADERS}
   ${PRIVATE_HEADERS}

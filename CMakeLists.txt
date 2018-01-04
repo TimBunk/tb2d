@@ -26,6 +26,13 @@ add_subdirectory(external)
 # Set c++11 as main language
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -O2")
 
+link_directories(
+  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/src
+  ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
+  ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
+  ${CMAKE_SOURCE_DIR}/external
+)
+
 # Create library from soil2 source
 set (SOIL2_INCLUDE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/external/SOIL2/src
@@ -48,7 +55,7 @@ include_directories(
   ${SOIL2_INCLUDE_DIR}
   ${FREETYPE2_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/include/GLFW
-  ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
+  ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
   ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/include
@@ -57,16 +64,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/tb2d
 )
 
-link_directories(
-  ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/src
-  ${CMAKE_SOURCE_DIR}/external/glew-2.1.0
-  ${CMAKE_SOURCE_DIR}/external/glm-0.9.8.4
-  ${CMAKE_SOURCE_DIR}/external
-)
-
 set(ALL_GRAPHICS_LIBS
 	${OPENGL_LIBRARY}
-  GLEW
   glfw
   ${GLEW_LIBRARIES}
 )
@@ -122,6 +121,8 @@ set(TB2DSOURCE
   tb2d/core.cpp
   tb2d/textfile.cpp
   tb2d/textfile.h
+  tb2d/textrenderer.cpp
+  tb2d/textrenderer.h
 )
 
 ####################################################################

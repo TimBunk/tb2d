@@ -24,6 +24,7 @@
 #include "door.h"
 #include "core.h"
 #include "leveleditor.h"
+#include "textrenderer.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -33,6 +34,7 @@ Level1* level1;
 Level2* level2;
 Menu* menu;
 LevelEditor* levelEditor;
+Text* sampletext;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -69,8 +71,7 @@ int main() {
 	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("laserParticle", "textures/laserParticle.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
-	RenderManager::SetRenderer(1, "hud", new SimpleRenderer(ResourceManager::GetShader("default"), true));
-	RenderManager::SetRenderer(1, "particle", new ParticleRenderer(ResourceManager::GetShader("default")));
+	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("default"));
 
 	level1 = new Level1(1920, 1080);
 	level2 = new Level2(1920, 1080);
@@ -83,8 +84,10 @@ int main() {
 
 	levelEditor = new LevelEditor(1920, 1080);
 
-	while (core->IsActive()) {
+	sampletext = new Text("the lazy dog jumps over the fence", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec4(1, 1, 1, 0), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	//menu->AddChild(sampletext);
 
+	while (core->IsActive()) {
 		switch (gameState)
 		{
 		case _game:
@@ -141,6 +144,7 @@ int main() {
 	delete level1;
 	delete level2;
 	delete levelEditor;
+	delete sampletext;
 	delete core;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;
