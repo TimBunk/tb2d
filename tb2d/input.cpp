@@ -6,6 +6,12 @@ void Input::Init(GLFWwindow * window, float screenWidth, float screenHeight)
 {
 	if (Input::_input == nullptr) {
 		Input::_input = new Input(window, screenWidth, screenHeight);
+
+		// Set charCallback function for the input
+		glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int keyCode) {
+			Input::_input->c = keyCode;
+			Input::_input->newChar = true;
+		});
 		return;
 	}
 	std::cout << "Input is already initialized!" << std::endl;
@@ -37,17 +43,21 @@ void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
 	mousePosition.y = ypos;
 }
 
-glm::vec2 Input::GetMousePositionScreenSpace(Camera* camera) {
+glm::vec2 Input::GetMousePositionScreenSpace() {
 	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionScreenSpace;
-	mousePositionScreenSpace = glm::vec2(camera->GetWidth()/input->screenWidth*input->mousePosition.x - camera->GetWidth() / 2, ((camera->GetHeight()/input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 - camera->GetHeight() / 2);
+	if (input->camera != nullptr) {
+		mousePositionScreenSpace = glm::vec2(input->camera->GetWidth() / input->screenWidth*input->mousePosition.x - input->camera->GetWidth() / 2, ((input->camera->GetHeight() / input->screenHeight*input->mousePosition.y) - input->camera->GetHeight()) * -1 - input->camera->GetHeight() / 2);
+	}
 	return mousePositionScreenSpace;
 }
 
-glm::vec2 Input::GetMousePositionWorldSpace(Camera* camera) {
+glm::vec2 Input::GetMousePositionWorldSpace() {
 	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionWorldSpace;
-	mousePositionWorldSpace = glm::vec2(camera->GetWidth() / input->screenWidth*input->mousePosition.x + camera->GetPosition().x - camera->GetWidth() / 2, ((camera->GetHeight() / input->screenHeight*input->mousePosition.y) - camera->GetHeight()) * -1 + camera->GetPosition().y - camera->GetHeight() / 2);
+	if (input->camera != nullptr) {
+		mousePositionWorldSpace = glm::vec2(input->camera->GetWidth() / input->screenWidth*input->mousePosition.x + input->camera->GetPosition().x - input->camera->GetWidth() / 2, ((input->camera->GetHeight() / input->screenHeight*input->mousePosition.y) - input->camera->GetHeight()) * -1 + input->camera->GetPosition().y - input->camera->GetHeight() / 2);
+	}
 	return mousePositionWorldSpace;
 }
 
@@ -111,9 +121,20 @@ bool Input::KeyUp(int key) {
 	return input->keysUp[key];
 }
 
-void Input::Clear()
+bool Input::NewChar()
+{
+	return Input::GetInstance()->newChar;
+}
+
+char Input::GetKeyPressChar()
+{
+	return Input::GetInstance()->c;
+}
+
+void Input::Update(Camera* camera)
 {
 	Input* input = Input::GetInstance();
+	input->camera = camera;
 	for (int i = 0; i < 348; i++) {
 		if (i < 8) {
 			if (input->mousePressed[i]) {
@@ -124,6 +145,7 @@ void Input::Clear()
 			input->keysPressedSecond[i] = true;
 		}
 	}
+	input->newChar = false;
 }
 
 void Input::SetKeyState(int key)
@@ -146,6 +168,7 @@ void Input::SetKeyState(int key)
 
 Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
 	this->window = window;
+	this->camera = nullptr;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
 	mousePosition = glm::vec2(0.0f, 0.0f);
@@ -161,6 +184,8 @@ Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
 			mouseUp[i] = true;
 		}
 	}
+	newChar = false;
+	c = ' ';
 
 	// A hacky kinda way to get events working for member functions
 	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback

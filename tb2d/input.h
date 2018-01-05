@@ -14,8 +14,8 @@ public:
 	static void Init(GLFWwindow* window, float screenWidth, float screenHeight);
 	static void Destroy();
 
-	static glm::vec2 GetMousePositionScreenSpace(Camera* camera);
-	static glm::vec2 GetMousePositionWorldSpace(Camera* camera);
+	static glm::vec2 GetMousePositionScreenSpace();
+	static glm::vec2 GetMousePositionWorldSpace();
 	static bool MousePress(int mouse);
 	static bool MouseDown(int mouse);
 	static bool MouseUp(int mouse);
@@ -24,7 +24,10 @@ public:
 	static bool KeyDown(int key);
 	static bool KeyUp(int key);
 
-	static void Clear();
+	static bool NewChar();
+	static char GetKeyPressChar();
+
+	static void Update(Camera* camera);
 private:
 	static Input* GetInstance();
 	Input(GLFWwindow* window, float screenWidth, float screenHeight);
@@ -36,6 +39,7 @@ private:
 
 	static Input* _input;
 	GLFWwindow* window;
+	Camera* camera;
 	float screenWidth;
 	float screenHeight;
 
@@ -49,6 +53,9 @@ private:
 	bool keysPressedSecond[348];
 	bool keysDown[348];
 	bool keysUp[348];
+
+	bool newChar;
+	char c;
 };
 
 #endif // !INPUT_H
