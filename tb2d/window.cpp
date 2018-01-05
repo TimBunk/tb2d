@@ -59,13 +59,13 @@ void Window::Clear() {
 	glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
+	// Call the events of glfw
+	glfwPollEvents();
 }
 
 void Window::SwapBuffers() {
-	// check/call events and swap the buffers
+	// swap the buffers
 	glfwSwapBuffers(window);
-	glfwPollEvents();
-	
 }
 
 int Window::ShouldClose()
