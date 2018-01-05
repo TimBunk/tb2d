@@ -9,6 +9,7 @@
 class Sprite : public Entity {
 public:
 	Sprite(int width, int height, unsigned int textureID);
+	Sprite(int width, int height, glm::vec4 color);
 	virtual ~Sprite();
 
 	virtual void Draw();
