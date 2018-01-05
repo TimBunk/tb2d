@@ -14,6 +14,7 @@ public:
 
 	void CreateText(std::string text, Font font, glm::vec3 color);
 	void SetText(std::string text);
+	void SetTextColor(glm::vec4 color);
 
 	bool Hover();
 	bool Down();

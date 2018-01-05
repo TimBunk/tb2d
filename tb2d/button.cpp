@@ -16,12 +16,12 @@ Button::~Button() {
 void Button::Update(double deltaTime) {
 	glm::vec2 mousePos;
 	if (hud) {
-		mousePos = Input::GetMousePositionScreenSpace(camera);
+		mousePos = Input::GetMousePositionScreenSpace();
 	}
 	else {
-		mousePos = Input::GetMousePositionWorldSpace(camera);
+		mousePos = Input::GetMousePositionWorldSpace();
 	}
-	if (mousePos.x >= (this->localPosition.x - (this->width/2 * scale.x)) && mousePos.x <= (this->localPosition.x + (this->width/2 * scale.x)) && mousePos.y >= (this->localPosition.y - (this->height/2 * scale.y)) && mousePos.y <= (this->localPosition.y + (this->height/2 * scale.y))) {
+	if (mousePos.x >= (this->position.x - (this->width/2 * scale.x)) && mousePos.x <= (this->position.x + (this->width/2 * scale.x)) && mousePos.y >= (this->position.y - (this->height/2 * scale.y)) && mousePos.y <= (this->position.y + (this->height/2 * scale.y))) {
 		hover = true;
 		if (Input::MousePress(0)) {
 			down = true;
@@ -51,6 +51,13 @@ void Button::CreateText(std::string text, Font font, glm::vec3 color)
 void Button::SetText(std::string text) {
 	if (this->text != nullptr) {
 		this->text->SetText(text);
+	}
+}
+
+void Button::SetTextColor(glm::vec4 color)
+{
+	if (text != nullptr) {
+		text->SetColor(color);
 	}
 }
 
