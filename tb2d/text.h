@@ -27,9 +27,11 @@ public:
 	void Draw();
 
 	void SetText(std::string text);
+
 	void SetTextRenderer(TextRenderer* textRenderer) { this->textRenderer = textRenderer; }
 	void SetAlignment(AlignmentX xAlignment, AlignmentY yAlignment);
 	void SetFont(Font font) { this->font = font; }
+	void SetColor(glm::vec4 color) { this->color = color; }
 
 	std::string GetText() { return text; }
 	unsigned int GetAtlasID() { return font.textureAtlas->id; }

@@ -42,7 +42,7 @@ void Player::Update(double deltaTime)
 	localPosition = ApplyVelocityB2body(velocity);
 	camera->SetPosition(GetGlobalPosition());
 	// Rotate the player towards the mouse
-	glm::vec2 mousePos = Input::GetMousePositionWorldSpace(camera);
+	glm::vec2 mousePos = Input::GetMousePositionWorldSpace();
 	glm::vec2 direction = mousePos - GetGlobalPosition();
 	this->localAngle = std::atan2(direction.y, direction.x) + glm::radians(180.0f);
 	// Rotate the staff towards the mouse

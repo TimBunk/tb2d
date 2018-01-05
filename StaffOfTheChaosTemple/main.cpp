@@ -54,7 +54,8 @@ std::vector<Level*> levels;
 int main() {
 	std::cout << "hello world" << std::endl;
 	core = new Core("Staff of the Chaos Temple", false);
-	core->ResizeWindow(800, 600);
+	core->ResizeWindow(1600, 900);
+	//core->ResizeWindow(800, 600);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
 	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
@@ -70,6 +71,8 @@ int main() {
 	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("laserParticle", "textures/laserParticle.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("tickboxNotActive", "textures/tickbox.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("tickboxActive", "textures/tickboxactive.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
 	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("default"));
 

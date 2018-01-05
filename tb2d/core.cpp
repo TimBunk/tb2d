@@ -33,7 +33,7 @@ void Core::Run(Scene * scene)
 	DebugRenderer::Render(scene->GetCamera());
 
 	window->SwapBuffers();
-	Input::Clear();
+	Input::Update(scene->GetCamera());
 }
 
 bool Core::IsActive()

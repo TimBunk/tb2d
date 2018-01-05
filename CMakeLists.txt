@@ -123,6 +123,10 @@ set(TB2DSOURCE
   tb2d/textfile.h
   tb2d/textrenderer.cpp
   tb2d/textrenderer.h
+  tb2d/tickbox.cpp
+  tb2d/tickbox.h
+  tb2d/textinput.cpp
+  tb2d/textinput.h
 )
 
 ####################################################################
