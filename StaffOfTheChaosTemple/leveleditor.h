@@ -12,6 +12,13 @@
 #include "loadlevel.h"
 #include "tickbox.h"
 #include "textinput.h"
+#include "player.h"
+
+struct InputFloat {
+	Text* text = nullptr;
+	Textinput* input = nullptr;
+	float output = 0.0f;
+};
 
 class LevelEditor : public Scene
 {
@@ -21,24 +28,24 @@ public:
 
 	void Update(double deltaTime);
 	bool UpdateTickboxes();
+	void UpdateInputFloats();
 
 	Level* GetCurrentLevel();
 	void StopCurrentLevel();
 
 	void Save(char* levelname);
 
-	Entity* GetPlaceable();
+	void Place();
+	void GetPlaceable();
+	void UpdateCurrentlySelected();
 	void DeleteCurrentlySeleceted();
 
 	void CreatePlaceablesTickbox(std::string text, glm::vec2 position);
 	void CreateEditorModeTickbox(std::string text, glm::vec2 position);
+	InputFloat CreateInputFloat(Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
+	Sprite* CreateCanvasPlaceable();
 
 private:
-	Sprite* canvasEditor;
-
-	std::vector<B2Entity*> walls;
-	int wallWidth, wallHeight, wallRotation;
-
 	enum Placeables
 	{
 		player,
@@ -47,8 +54,49 @@ private:
 		crystal,
 		floor,
 		door,
+		enemy,
 		finish
 	};
+	struct EditorObject {
+		Entity* entity = nullptr;
+		Placeables type;
+	};
+	std::vector<EditorObject> editorObjects;
+	Sprite* canvasEditor;
+	Text* properties;
+
+	std::vector<Sprite*> propertiesCanvas;
+	std::vector<InputFloat*> inputFloats;
+
+	// Player canvas
+	Sprite* playerCanvas;
+	InputFloat inputPlayerRotation;
+	Player* _player;
+	// Wall canvas
+	Sprite* wallCanvas;
+	InputFloat inputWallWidth;
+	InputFloat inputWallRotation;
+	// Mirror canvas
+	Sprite* mirrorCanvas;
+	InputFloat inputMirrorRotation;
+	// Crystal canvas
+	Sprite* crystalCanvas;
+	InputFloat inputCrystalRotation;
+	// Floor canvas
+	Sprite* floorCanvas;
+	InputFloat inputFloorWidth;
+	// Door canvas
+	Sprite* doorCanvas;
+	InputFloat inputDoorRotation;
+	// Enemy canvas
+	Sprite* enemyCanvas;
+	InputFloat inputEnemyRotation;
+	// Finish canvas
+	Sprite* finishCanvas;
+	InputFloat inputFinishWidth;
+	InputFloat inputFinishHeight;
+	Entity* _finish;
+
 	Placeables currentPlaceable;
 	std::vector<Tickbox*> tickboxes;
 	std::vector<Text*> tickboxesText;
@@ -62,14 +110,12 @@ private:
 	std::vector<Tickbox*> tickboxesMode;
 	std::vector<Text*> tickboxesModeText;
 
-	Textinput* inputtest;
-
 	Textfile* textfile;
 	Loadlevel* levelLoader;
 	Level* level;
 
 	b2World* world;
-	Entity* currentlySelected;
+	EditorObject currentlySelected;
 
 	Button* saveButton;
 	Button* loadButton;
