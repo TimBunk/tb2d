@@ -20,6 +20,7 @@ public:
 
 	virtual void Update(double deltaTime);
 	virtual void UpdateChilderen(Entity* parent, double deltaTime);
+	virtual void DrawChilderen(Entity* parent);
 	virtual void Draw();
 
 	// You only have to add a child one, otherwise it might cause unexpected behaviour
