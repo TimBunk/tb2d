@@ -56,6 +56,37 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 	}
 }
 
+void B2Entity::DrawChilderen(Entity * parent)
+{
+	// Check if the parent does not equals NULL and set this's position/angle and scale
+	if (parent != NULL) {
+		model = parent->GetModelMatrix();
+		model = glm::translate(model, glm::vec3(localPosition.x, localPosition.y, 0.0f));
+		model = glm::rotate(model, localAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+		// The third row is the position of the 
+		this->position = model[3];
+		// The first two values in the mat4 can be used to get the z-rotation according to: https://stackoverflow.com/questions/39251412/get-the-angle-from-a-rotated-matrix-using-glm
+		this->angle = glm::atan(model[0][1], model[0][0]);
+	}
+	else {
+		// If the parent is null set the global position/angle/scale equal to the localPosition of this B2Entity
+		this->position = this->localPosition;
+		this->angle = this->localAngle;
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+	// If the body is intialized update the position and angle of the body
+	if (this->body != nullptr) {
+		body->SetTransform(b2Vec2(this->position.x * p2m, this->position.y * p2m), this->angle);
+	}
+	// Update and draw all of the childeren and their childeren
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->Draw();
+		entities[i]->DrawChilderen(this);
+	}
+}
+
 void B2Entity::Draw() {
 	renderer->Submit(this);
 	if (body != nullptr) {

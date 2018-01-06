@@ -41,6 +41,7 @@ public:
 	/// @param deltaTime you have to give the deltaTime because the Update function of an Entity takes a deltaTime
 	/// @return void
 	virtual void UpdateChilderen(Entity* parent, double deltaTime);
+	virtual void DrawChilderen(Entity* parent);
 
 	/// @brief Draw draws this B2Entity according to the shader and position, angle, scaling of the Entity. (Don't forgot to give it a texture)
 	/// @return void
