@@ -1,31 +1,35 @@
 #include "textinput.h"
 
-Textinput::Textinput(bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, unsigned int textureID) : Sprite(width, height, textureID)
+Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, unsigned int textureID) : Sprite(width, height, textureID)
 {
 	this->onlyNumbers = onlyNumbers;
 	this->hud = hud;
-	text = new Text("", font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
-	text->localPosition.x = -width / 2;
-	AddChild(text);
+	this->text = new Text(text, font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	this->text->localPosition.x = -width / 2;
+	AddChild(this->text);
 	active = false;
-	input = "";
+	input = text;
 	number = 0;
+	std::stringstream myStream(input);
+	myStream >> number;
 	maxLength = 9000;
 	maxDecimals = 9000;
 	maxDecimalsAfterDot = 9000;
 }
 
-Textinput::Textinput(bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, glm::vec4 color) : Sprite(width, height, 0)
+Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, glm::vec4 color) : Sprite(width, height, 0)
 {
 	this->onlyNumbers = onlyNumbers;
 	this->hud = hud;
-	text = new Text("", font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
-	text->localPosition.x = -width / 2;
-	AddChild(text);
+	this->text = new Text(text, font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	this->text->localPosition.x = -width / 2;
+	AddChild(this->text);
 	this->SetColor(color);
 	active = false;
-	input = "";
+	input = text;
 	number = 0;
+	std::stringstream myStream(input);
+	myStream >> number;
 	maxLength = 9000;
 	maxDecimals = 9000;
 	maxDecimalsAfterDot = 9000;
