@@ -15,6 +15,7 @@ public:
 	void Update(double deltaTime);
 	bool IsActive() { return active; }
 
+	void SetText(std::string text);
 	void SetMaxLength(int maxLength) { this->maxLength = maxLength; }
 	void SetMaxDecimals(int maxDecimals) { this->maxDecimals = maxDecimals; }
 	float GetFloat() { return number; }

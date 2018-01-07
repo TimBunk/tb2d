@@ -121,3 +121,12 @@ void Textinput::Update(double deltaTime)
 		}
 	}
 }
+
+void Textinput::SetText(std::string text)
+{
+	input = text;
+	number = 0;
+	std::stringstream myStream(input);
+	myStream >> number;
+	this->text->SetText(input);
+}
