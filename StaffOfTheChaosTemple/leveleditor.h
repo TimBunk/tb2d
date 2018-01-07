@@ -114,9 +114,10 @@ private:
 	InputFloat inputEnemyLOS;
 	// Finish canvas
 	Sprite* finishCanvas;
+	InputFloat inputFinishRotation;
 	InputFloat inputFinishWidth;
 	InputFloat inputFinishHeight;
-	Entity* _finish;
+	B2Entity* _finish;
 
 	std::vector<Text*> textVector;
 

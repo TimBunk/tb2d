@@ -81,8 +81,9 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	CreateInputFloat(inputEnemyLOS, enemyCanvas, "3000", glm::vec2(-150, 50), "line of sight");
 	// Finish options
 	finishCanvas = CreateCanvasPlaceable("finish");
-	CreateInputFloat(inputFinishWidth, finishCanvas, "400", glm::vec2(-150, 250), "width");
-	CreateInputFloat(inputFinishHeight, finishCanvas, "100", glm::vec2(0, 250), "height");
+	CreateInputFloat(inputFinishRotation, finishCanvas, "0", glm::vec2(-150, 250), "rotation");
+	CreateInputFloat(inputFinishWidth, finishCanvas, "400", glm::vec2(0, 250), "width");
+	CreateInputFloat(inputFinishHeight, finishCanvas, "100", glm::vec2(-150, 150), "height");
 	_finish = nullptr;
 
 	canvasObjects = new Entity();
@@ -177,15 +178,13 @@ void LevelEditor::Update(double deltaTime)
 		editorObjects[i].entity->Draw();
 		editorObjects[i].entity->DrawChilderen(this);
 	}
-	if (currentlySelected.entity != nullptr && currentlySelected.type == Placeables::player) {
+	if (currentlySelected.entity != nullptr && currentlySelected.type == Placeables::player || currentlySelected.type == Placeables::finish) {
 		currentlySelected.entity->Draw();
 		currentlySelected.entity->DrawChilderen(this);
 	}
 	if (_finish != nullptr) {
-		DebugRenderer::Line(_finish->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2), _finish->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2), glm::vec3(1, 0, 1));// Horizontal positive
-		DebugRenderer::Line(_finish->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2), _finish->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Vertical positive
-		DebugRenderer::Line(_finish->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2 * -1), _finish->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Horizontal negative
-		DebugRenderer::Line(_finish->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2), _finish->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Vertical negative
+		_finish->Draw();
+		_finish->DrawChilderen(this);
 	}
 	if (_player != nullptr) {
 		_player->Draw();
@@ -377,7 +376,9 @@ void LevelEditor::Place()
 		if (mode == EditorMode::place && _finish != nullptr && _finish != currentlySelected.entity) {
 			delete _finish;
 		}
-		_finish = currentlySelected.entity;
+		_finish = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_finish->SetColor(glm::vec4(1,0,1,0.5f));
+		_finish->CreateBoxCollider(_finish->GetWidth(), _finish->GetHeight(), glm::vec2(0, 0), true, true);
 	}
 }
 
@@ -439,7 +440,8 @@ void LevelEditor::Select()
 		inputEnemyLOS.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::finish) {
-
+		_finish = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_finish->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 	}
 	tickboxes[currentlySelected.type]->SetActive(true);
 	//currentPlaceable = currentlySelected.type;
@@ -491,7 +493,8 @@ void LevelEditor::GetPlaceable()
 		currentlySelected.type = Placeables::enemy;
 	}
 	else if (currentPlaceable == Placeables::finish) {
-		Entity* theFinish = new Entity();
+		B2Entity* theFinish = new B2Entity(400, 100, 0, world);
+		theFinish->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = theFinish;
 		currentlySelected.type = Placeables::finish;
 		return;
@@ -546,10 +549,10 @@ void LevelEditor::UpdateCurrentlySelected()
 		_enemy->SetLineOfSight(inputEnemyLOS.output);
 	}
 	else if (currentlySelected.type == Placeables::finish) {
-		DebugRenderer::Line(currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2), currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2), glm::vec3(1, 0, 1));// Horizontal positive
-		DebugRenderer::Line(currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2), currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Vertical positive
-		DebugRenderer::Line(currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2 * -1), currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Horizontal negative
-		DebugRenderer::Line(currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2), currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2 * -1), glm::vec3(1, 0, 1));// Vertical negative
+		B2Entity* _finish = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_finish->localAngle = glm::radians(inputFinishRotation.output);
+		_finish->SetWidth(inputFinishWidth.output);
+		_finish->SetHeight(inputFinishHeight.output);
 	}
 }
 
