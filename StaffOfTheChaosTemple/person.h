@@ -12,6 +12,11 @@ public:
 
 	void Damage(float damage);
 	bool IsAlive();
+
+	void SetMaxHealth(float value) { this->maxHealth = value; }
+	void SetDamage(float value) { this->damage = value; }
+	void SetSpeed(float value) { this->speed = speed; }
+
 	float GetCurrentHealth() { return currentHealth; };
 	float GetMaxHealth() { return maxHealth; };
 	float GetSpeed() { return speed; };

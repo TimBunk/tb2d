@@ -48,41 +48,41 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 
 	// Player options
 	playerCanvas = CreateCanvasPlaceable("player");
-	inputPlayerRotation = CreateInputFloat(playerCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputFloats.push_back(&inputPlayerRotation);
+	CreateInputFloat(inputPlayerRotation, playerCanvas, "0", glm::vec2(-150, 250), "rotation");
+	CreateInputFloat(inputPlayerHealth, playerCanvas, "800", glm::vec2(0, 250), "health");
+	CreateInputFloat(inputPlayerDamage, playerCanvas, "10", glm::vec2(-150, 150), "damage");
+	CreateInputFloat(inputPlayerSpeed, playerCanvas, "50", glm::vec2(0, 150), "speed");
 	_player = nullptr;
 	// Wall options
 	wallCanvas = CreateCanvasPlaceable("wall");
-	inputWallWidth = CreateInputFloat(wallCanvas, "100", glm::vec2(-150, 250), "width");
-	inputFloats.push_back(&inputWallWidth);
-	inputWallRotation = CreateInputFloat(wallCanvas, "0", glm::vec2(0, 250), "rotation");
-	inputFloats.push_back(&inputWallRotation);
+	CreateInputFloat(inputWallWidth, wallCanvas, "100", glm::vec2(-150, 250), "width");
+	CreateInputFloat(inputWallRotation, wallCanvas, "0", glm::vec2(0, 250), "rotation");
 	// Mirror options
 	mirrorCanvas = CreateCanvasPlaceable("mirror");
-	inputMirrorRotation = CreateInputFloat(mirrorCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputFloats.push_back(&inputMirrorRotation);
+	CreateInputFloat(inputMirrorRotation, mirrorCanvas, "0", glm::vec2(-150, 250), "rotation");
+	inputMirrorRotator = CreateTickbox(mirrorCanvas, true, glm::vec2(0, 250), "rotator");
 	// Crystal options
 	crystalCanvas = CreateCanvasPlaceable("crystal");
-	inputCrystalRotation = CreateInputFloat(crystalCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputFloats.push_back(&inputCrystalRotation);
+	CreateInputFloat(inputCrystalRotation, crystalCanvas, "0", glm::vec2(-150, 250), "rotation");
 	// Floor options
 	floorCanvas = CreateCanvasPlaceable("floor");
-	inputFloorWidth = CreateInputFloat(floorCanvas, "200", glm::vec2(-150, 250), "width");
-	inputFloats.push_back(&inputFloorWidth);
+	CreateInputFloat(inputFloorRotation, floorCanvas, "0", glm::vec2(-150, 250), "rotation");
+	CreateInputFloat(inputFloorWidth, floorCanvas, "200", glm::vec2(0, 250), "width");
+	CreateInputFloat(inputFloorHeight, floorCanvas, "200", glm::vec2(-150, 150), "height");
 	// Door options
 	doorCanvas = CreateCanvasPlaceable("door");
-	inputDoorRotation = CreateInputFloat(doorCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputFloats.push_back(&inputDoorRotation);
+	CreateInputFloat(inputDoorRotation, doorCanvas, "0", glm::vec2(-150, 250), "rotation");
 	// Enemy options
 	enemyCanvas = CreateCanvasPlaceable("enemy");
-	inputEnemyRotation = CreateInputFloat(enemyCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputFloats.push_back(&inputEnemyRotation);
+	CreateInputFloat(inputEnemyRotation, enemyCanvas, "0", glm::vec2(-150, 250), "rotation");
+	CreateInputFloat(inputEnemyHealth, enemyCanvas, "300", glm::vec2(0, 250), "health");
+	CreateInputFloat(inputEnemyDamage, enemyCanvas, "6", glm::vec2(-150, 150), "damage");
+	CreateInputFloat(inputEnemySpeed, enemyCanvas, "150", glm::vec2(0, 150), "speed");
+	CreateInputFloat(inputEnemyLOS, enemyCanvas, "3000", glm::vec2(-150, 50), "line of sight");
 	// Finish options
 	finishCanvas = CreateCanvasPlaceable("finish");
-	inputFinishWidth = CreateInputFloat(finishCanvas, "400", glm::vec2(-150, 250), "width");
-	inputFloats.push_back(&inputFinishWidth);
-	inputFinishHeight = CreateInputFloat(finishCanvas, "100", glm::vec2(0, 250), "height");
-	inputFloats.push_back(&inputFinishHeight);
+	CreateInputFloat(inputFinishWidth, finishCanvas, "400", glm::vec2(-150, 250), "width");
+	CreateInputFloat(inputFinishHeight, finishCanvas, "100", glm::vec2(0, 250), "height");
 	_finish = nullptr;
 
 	canvasObjects = new Entity();
@@ -119,6 +119,12 @@ LevelEditor::~LevelEditor()
 
 	delete canvasEditor;
 	delete properties;
+	// Delete the tickboxeseditorobjects
+	std::vector<Tickbox*>::iterator itTickboxes = editorObjectsTickBoxes.begin();
+	while (itTickboxes != editorObjectsTickBoxes.end()) {
+		delete (*itTickboxes);
+		itTickboxes = editorObjectsTickBoxes.erase(itTickboxes);
+	}
 	// Delete the properties canvas
 	std::vector<Sprite*>::iterator itPropertiesCanvas = propertiesCanvas.begin();
 	while (itPropertiesCanvas != propertiesCanvas.end()) {
@@ -166,8 +172,6 @@ LevelEditor::~LevelEditor()
 
 void LevelEditor::Update(double deltaTime)
 {
-	//std::cout << "editorobjects size = " << editorObjects.size() << std::endl;
-	//std::cout << "currentplaceable = " << currentPlaceable << std::endl;
 	// DRAW
 	for (int i = 0; i < editorObjects.size(); i++) {
 		editorObjects[i].entity->Draw();
@@ -345,19 +349,29 @@ void LevelEditor::Place()
 		_wall->CreateBoxCollider(_wall->GetWidth(), 100, glm::vec2(0, 0), false, false);
 	}
 	else if (currentlySelected.type == Placeables::mirror) {
-		
+		Mirror* _mirror = dynamic_cast<Mirror*>(currentlySelected.entity);
+		_mirror->SetColor(glm::vec4(0, 0, 0, 0));
+		_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
 	}
 	else if (currentlySelected.type == Placeables::crystal) {
-		
+		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
+		_crystal->SetColor(glm::vec4(0, 0, 0, 0));
+		_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 	}
 	else if (currentlySelected.type == Placeables::floor) {
-	
+		B2Entity* _floor = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_floor->SetColor(glm::vec4(0, 0, 0, 0));
+		_floor->CreateBoxCollider(_floor->GetWidth(), _floor->GetHeight(), glm::vec2(0, 0), true, true);
 	}
 	else if (currentlySelected.type == Placeables::door) {
-	
+		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
+		_door->SetColor(glm::vec4(0, 0, 0, 0));
+		_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 	}
 	else if (currentlySelected.type == Placeables::enemy) {
-
+		Enemy* _enemy = dynamic_cast<Enemy*>(currentlySelected.entity);
+		_enemy->SetColor(glm::vec4(0, 0, 0, 0));
+		_enemy->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
 	}
 	else if (currentlySelected.type == Placeables::finish) {
 		if (mode == EditorMode::place && _finish != nullptr && _finish != currentlySelected.entity) {
@@ -382,19 +396,47 @@ void LevelEditor::Select()
 		inputWallRotation.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::mirror) {
-
+		Mirror* _mirror = dynamic_cast<Mirror*>(currentlySelected.entity);
+		_mirror->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string((int)glm::degrees(_mirror->localAngle));
+		inputMirrorRotation.input->SetText(s);
+		inputMirrorRotator->SetActive(_mirror->IsRotatable());
 	}
 	else if (currentlySelected.type == Placeables::crystal) {
-
+		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
+		_crystal->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string((int)glm::degrees(_crystal->localAngle));
+		inputCrystalRotation.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::floor) {
-
+		B2Entity* _floor = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_floor->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string((int)glm::degrees(_floor->localAngle));
+		inputFloorRotation.input->SetText(s);
+		s = std::to_string((int)_floor->GetWidth());
+		inputFloorWidth.input->SetText(s);
+		s = std::to_string((int)_floor->GetHeight());
+		inputFloorHeight.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::door) {
-
+		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
+		_door->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string((int)glm::degrees(_door->localAngle));
+		inputDoorRotation.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::enemy) {
-
+		Enemy* _enemy = dynamic_cast<Enemy*>(currentlySelected.entity);
+		_enemy->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string((int)glm::degrees(_enemy->localAngle));
+		inputEnemyRotation.input->SetText(s);
+		s = std::to_string((int)_enemy->GetMaxHealth());
+		inputEnemyHealth.input->SetText(s);
+		s = std::to_string((int)_enemy->GetDamage());
+		inputEnemyDamage.input->SetText(s);
+		s = std::to_string((int)_enemy->GetSpeed());
+		inputEnemySpeed.input->SetText(s);
+		s = std::to_string((int)_enemy->GetLineOfSight());
+		inputEnemyLOS.input->SetText(s);
 	}
 	else if (currentlySelected.type == Placeables::finish) {
 
@@ -431,7 +473,7 @@ void LevelEditor::GetPlaceable()
 		currentlySelected.type = Placeables::crystal;
 	}
 	else if (currentPlaceable == Placeables::floor) {
-		Sprite* _floor = new Sprite(200, 200, ResourceManager::GetTexture("floor")->GetId());
+		B2Entity* _floor = new B2Entity(200, 200, ResourceManager::GetTexture("floor")->GetId(), world);
 		_floor->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _floor;
 		currentlySelected.type = Placeables::floor;
@@ -463,17 +505,22 @@ void LevelEditor::UpdateCurrentlySelected()
 	if (currentlySelected.type == Placeables::player) {
 		Player* _player = dynamic_cast<Player*>(currentlySelected.entity);
 		_player->localAngle = glm::radians(inputPlayerRotation.output);
-		//std::cout << "rotation player = " << glm::radians(inputPlayerRotation.output) << std::endl;
+		_player->SetMaxHealth(inputPlayerHealth.output);
+		_player->SetDamage(inputPlayerDamage.output);
+		_player->SetSpeed(inputPlayerSpeed.output);
 	}
 	else if (currentlySelected.type == Placeables::wall) {
 		B2Entity* _wall = dynamic_cast<B2Entity*>(currentlySelected.entity);
 		_wall->SetWidth(inputWallWidth.output);
+		_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
 		_wall->localAngle = glm::radians(inputWallRotation.output);
 	}
 	else if (currentlySelected.type == Placeables::mirror) {
 		Mirror* _mirror = dynamic_cast<Mirror*>(currentlySelected.entity);
 		_mirror->localAngle = glm::radians(inputMirrorRotation.output);
-		//_mirror->SetRotation(-90.0f);
+		if (_mirror->IsRotatable() != inputMirrorRotator->IsActive()) {
+			_mirror->Rotatable(inputMirrorRotator->IsActive());
+		}
 	}
 	else if (currentlySelected.type == Placeables::crystal) {
 		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
@@ -481,7 +528,10 @@ void LevelEditor::UpdateCurrentlySelected()
 	}
 	else if (currentlySelected.type == Placeables::floor) {
 		Sprite* _floor = dynamic_cast<Sprite*>(currentlySelected.entity);
+		_floor->localAngle = glm::radians(inputFloorRotation.output);
 		_floor->SetWidth(inputFloorWidth.output);
+		_floor->SetHeight(inputFloorHeight.output);
+		_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
 	}
 	else if (currentlySelected.type == Placeables::door) {
 		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
@@ -490,6 +540,10 @@ void LevelEditor::UpdateCurrentlySelected()
 	else if (currentlySelected.type == Placeables::enemy) {
 		Enemy* _enemy = dynamic_cast<Enemy*>(currentlySelected.entity);
 		_enemy->localAngle = glm::radians(inputEnemyRotation.output);
+		_enemy->SetMaxHealth(inputEnemyHealth.output);
+		_enemy->SetDamage(inputEnemyDamage.output);
+		_enemy->SetSpeed(inputEnemySpeed.output);
+		_enemy->SetLineOfSight(inputEnemyLOS.output);
 	}
 	else if (currentlySelected.type == Placeables::finish) {
 		DebugRenderer::Line(currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2 * -1, inputFinishHeight.output / 2), currentlySelected.entity->localPosition + glm::vec2(inputFinishWidth.output / 2, inputFinishHeight.output / 2), glm::vec3(1, 0, 1));// Horizontal positive
@@ -581,9 +635,9 @@ void LevelEditor::CreateEditorModeTickbox(std::string text, glm::vec2 position)
 	textVector.push_back(t);
 }
 
-InputFloat LevelEditor::CreateInputFloat(Sprite * canvas, std::string startValue, glm::vec2 position, std::string text)
+void LevelEditor::CreateInputFloat(InputFloat& inputFloat, Sprite * canvas, std::string startValue, glm::vec2 position, std::string text)
 {
-	InputFloat inputFloat;
+	//InputFloat inputFloat;
 	inputFloat.text = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
 	inputFloat.text->localPosition = glm::vec2(position.x, position.y + 50);
 	inputFloat.input = new Textinput(startValue, true, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), true, 100, 40, ResourceManager::GetTexture("textinput")->GetId());
@@ -595,8 +649,22 @@ InputFloat LevelEditor::CreateInputFloat(Sprite * canvas, std::string startValue
 
 	canvas->AddChild(inputFloat.text);
 	canvas->AddChild(inputFloat.input);
+	inputFloats.push_back(&inputFloat);
+}
 
-	return inputFloat;
+Tickbox* LevelEditor::CreateTickbox(Sprite * canvas, bool startValue, glm::vec2 position, std::string text)
+{
+	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 25, 25, ResourceManager::GetTexture("tickboxActive")->GetId());
+	tb->SetActive(startValue);
+	tb->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	tb->localPosition = position;
+	canvas->AddChild(tb);
+	editorObjectsTickBoxes.push_back(tb);
+	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	t->localPosition = glm::vec2(position.x, position.y + 50);
+	canvas->AddChild(t);
+	textVector.push_back(t);
+	return tb;
 }
 
 Sprite * LevelEditor::CreateCanvasPlaceable(std::string name)

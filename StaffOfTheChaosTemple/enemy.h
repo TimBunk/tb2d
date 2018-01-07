@@ -14,6 +14,9 @@ public:
 	void Update(double deltaTime);
 	void Die();
 
+	float GetLineOfSight() { return lineOfSight; }
+	void SetLineOfSight(float lineOfSight) { this->lineOfSight = lineOfSight; }
+
 private:
 	bool dead;
 	Sprite* redHealthbar;

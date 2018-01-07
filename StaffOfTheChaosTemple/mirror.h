@@ -13,6 +13,8 @@ public:
 	void Update(double deltaTime);
 	void SetRotation(float degrees);
 
+	void Rotatable(bool boolean);
+	bool IsRotatable();
 	virtual void SetFilter(unsigned int filter);
 
 private:

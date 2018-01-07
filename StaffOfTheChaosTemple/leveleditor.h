@@ -43,7 +43,9 @@ public:
 
 	void CreatePlaceablesTickbox(std::string text, glm::vec2 position);
 	void CreateEditorModeTickbox(std::string text, glm::vec2 position);
-	InputFloat CreateInputFloat(Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
+
+	void CreateInputFloat(InputFloat& inputFloat, Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
+	Tickbox* CreateTickbox(Sprite* canvas, bool startValue, glm::vec2 position, std::string text);
 	Sprite* CreateCanvasPlaceable(std::string name);
 
 	Level* GetCurrentLevel();
@@ -68,6 +70,7 @@ private:
 		Placeables type;
 	};
 	std::vector<EditorObject> editorObjects;
+	std::vector<Tickbox*> editorObjectsTickBoxes;
 	Sprite* canvasEditor;
 	Text* properties;
 
@@ -90,18 +93,25 @@ private:
 	// Mirror canvas
 	Sprite* mirrorCanvas;
 	InputFloat inputMirrorRotation;
+	Tickbox* inputMirrorRotator;
 	// Crystal canvas
 	Sprite* crystalCanvas;
 	InputFloat inputCrystalRotation;
 	// Floor canvas
 	Sprite* floorCanvas;
+	InputFloat inputFloorRotation;
 	InputFloat inputFloorWidth;
+	InputFloat inputFloorHeight;
 	// Door canvas
 	Sprite* doorCanvas;
 	InputFloat inputDoorRotation;
 	// Enemy canvas
 	Sprite* enemyCanvas;
 	InputFloat inputEnemyRotation;
+	InputFloat inputEnemyHealth;
+	InputFloat inputEnemyDamage;
+	InputFloat inputEnemySpeed;
+	InputFloat inputEnemyLOS;
 	// Finish canvas
 	Sprite* finishCanvas;
 	InputFloat inputFinishWidth;

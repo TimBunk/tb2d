@@ -2,16 +2,8 @@
 
 Mirror::Mirror(bool rotatable, int width, int height, unsigned int textureID, b2World* world) : B2Entity::B2Entity(width, height, textureID, world)
 {
-	if (rotatable) {
-		rotator = new Rotator(90, 15, ResourceManager::GetTexture("rotator")->GetId(), world);
-		rotator->localPosition = glm::vec2(-22, 0);
-		rotator->SetPivot(glm::vec2(-0.5f, 0.0f));
-		rotator->CreateBoxCollider(90, 15, glm::vec2(-0.5f, 0.0f), false, false);
-		this->AddChild(rotator);
-	}
-	else {
-		rotator = nullptr;
-	}
+	rotator = nullptr;
+	Rotatable(rotatable);
 	notHitableArea = new B2Entity(width + 2, height, 0, world);
 	notHitableArea->CreateBoxCollider(width, height + 20, glm::vec2(0, 0), false, false);
 	notHitableArea->localPosition.x = -2.0f;
@@ -36,6 +28,30 @@ void Mirror::Update(double deltaTime)
 void Mirror::SetRotation(float degrees)
 {
 	rotator->SetRotation(degrees);
+}
+
+void Mirror::Rotatable(bool boolean)
+{
+	if (rotator != nullptr) {
+		this->RemoveChild(rotator);
+		delete rotator;
+		rotator = nullptr;
+	}
+	if (boolean) {
+		rotator = new Rotator(90, 15, ResourceManager::GetTexture("rotator")->GetId(), world);
+		rotator->localPosition = glm::vec2(-22, 0);
+		rotator->SetPivot(glm::vec2(-0.5f, 0.0f));
+		rotator->CreateBoxCollider(90, 15, glm::vec2(-0.5f, 0.0f), false, false);
+		this->AddChild(rotator);
+	}
+}
+
+bool Mirror::IsRotatable()
+{
+	if (rotator == nullptr) {
+		return false;
+	}
+	return true;
 }
 
 void Mirror::SetFilter(unsigned int filter)
