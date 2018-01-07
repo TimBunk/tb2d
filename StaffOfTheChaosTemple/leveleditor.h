@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <cstring>
+#include <iomanip>
 
 #include "scene.h"
 #include "box2Dclasses/b2entity.h"
@@ -27,15 +28,15 @@ public:
 	~LevelEditor();
 
 	void Update(double deltaTime);
-	bool UpdateTickboxes();
+	void UpdateSelectMode();
+	void UpdatePlaceMode();
+
+	void UpdateTickboxes();
 	void UpdateInputFloats();
 
-	Level* GetCurrentLevel();
-	void StopCurrentLevel();
-
-	void Save(char* levelname);
-
 	void Place();
+	void Select();
+
 	void GetPlaceable();
 	void UpdateCurrentlySelected();
 	void DeleteCurrentlySeleceted();
@@ -43,7 +44,12 @@ public:
 	void CreatePlaceablesTickbox(std::string text, glm::vec2 position);
 	void CreateEditorModeTickbox(std::string text, glm::vec2 position);
 	InputFloat CreateInputFloat(Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
-	Sprite* CreateCanvasPlaceable();
+	Sprite* CreateCanvasPlaceable(std::string name);
+
+	Level* GetCurrentLevel();
+	void StopCurrentLevel();
+
+	void Save(char* levelname);
 
 private:
 	enum Placeables
@@ -65,12 +71,17 @@ private:
 	Sprite* canvasEditor;
 	Text* properties;
 
+	Entity* canvasObjects;
+
 	std::vector<Sprite*> propertiesCanvas;
 	std::vector<InputFloat*> inputFloats;
 
 	// Player canvas
 	Sprite* playerCanvas;
 	InputFloat inputPlayerRotation;
+	InputFloat inputPlayerHealth;
+	InputFloat inputPlayerDamage;
+	InputFloat inputPlayerSpeed;
 	Player* _player;
 	// Wall canvas
 	Sprite* wallCanvas;
@@ -97,18 +108,21 @@ private:
 	InputFloat inputFinishHeight;
 	Entity* _finish;
 
+	std::vector<Text*> textVector;
+
 	Placeables currentPlaceable;
 	std::vector<Tickbox*> tickboxes;
-	std::vector<Text*> tickboxesText;
+	//std::vector<Text*> tickboxesText;
 
 	enum EditorMode
 	{
 		select,
-		place
+		place,
+		move
 	};
 	EditorMode mode;
 	std::vector<Tickbox*> tickboxesMode;
-	std::vector<Text*> tickboxesModeText;
+	//std::vector<Text*> tickboxesModeText;
 
 	Textfile* textfile;
 	Loadlevel* levelLoader;

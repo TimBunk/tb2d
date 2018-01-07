@@ -14,8 +14,8 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	canvasEditor->localPosition.x = -760;
 	this->AddChild(canvasEditor);
 
-	properties = new Text("properties", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1,1,1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
-	properties->localPosition = glm::vec2(0.0f, 375);
+	properties = new Text("properties:", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1,1,1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	properties->localPosition = glm::vec2(properties->GetWidth() * -1 + 25, 515);
 	canvasEditor->AddChild(properties);
 
 	saveButton = new Button(400/3, 75, 0, true, camera);
@@ -39,59 +39,63 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	menuButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(menuButton);
 
-	CreateEditorModeTickbox("select", glm::vec2(-150, -400));
-	CreateEditorModeTickbox("place", glm::vec2(-75, -400));
+	CreateEditorModeTickbox("select", glm::vec2(-150, -260));
+	CreateEditorModeTickbox("place", glm::vec2(-75, -260));
+	CreateEditorModeTickbox("move", glm::vec2(0, -260));
 
 	mode = EditorMode::select;
 	tickboxesMode[0]->SetActive(true);
 
 	// Player options
-	playerCanvas = CreateCanvasPlaceable();
+	playerCanvas = CreateCanvasPlaceable("player");
 	inputPlayerRotation = CreateInputFloat(playerCanvas, "0", glm::vec2(-150, 250), "rotation");
 	inputFloats.push_back(&inputPlayerRotation);
 	_player = nullptr;
 	// Wall options
-	wallCanvas = CreateCanvasPlaceable();
+	wallCanvas = CreateCanvasPlaceable("wall");
 	inputWallWidth = CreateInputFloat(wallCanvas, "100", glm::vec2(-150, 250), "width");
 	inputFloats.push_back(&inputWallWidth);
 	inputWallRotation = CreateInputFloat(wallCanvas, "0", glm::vec2(0, 250), "rotation");
 	inputFloats.push_back(&inputWallRotation);
 	// Mirror options
-	mirrorCanvas = CreateCanvasPlaceable();
+	mirrorCanvas = CreateCanvasPlaceable("mirror");
 	inputMirrorRotation = CreateInputFloat(mirrorCanvas, "0", glm::vec2(-150, 250), "rotation");
 	inputFloats.push_back(&inputMirrorRotation);
 	// Crystal options
-	crystalCanvas = CreateCanvasPlaceable();
+	crystalCanvas = CreateCanvasPlaceable("crystal");
 	inputCrystalRotation = CreateInputFloat(crystalCanvas, "0", glm::vec2(-150, 250), "rotation");
 	inputFloats.push_back(&inputCrystalRotation);
 	// Floor options
-	floorCanvas = CreateCanvasPlaceable();
+	floorCanvas = CreateCanvasPlaceable("floor");
 	inputFloorWidth = CreateInputFloat(floorCanvas, "200", glm::vec2(-150, 250), "width");
 	inputFloats.push_back(&inputFloorWidth);
 	// Door options
-	doorCanvas = CreateCanvasPlaceable();
+	doorCanvas = CreateCanvasPlaceable("door");
 	inputDoorRotation = CreateInputFloat(doorCanvas, "0", glm::vec2(-150, 250), "rotation");
 	inputFloats.push_back(&inputDoorRotation);
 	// Enemy options
-	enemyCanvas = CreateCanvasPlaceable();
+	enemyCanvas = CreateCanvasPlaceable("enemy");
 	inputEnemyRotation = CreateInputFloat(enemyCanvas, "0", glm::vec2(-150, 250), "rotation");
 	inputFloats.push_back(&inputEnemyRotation);
 	// Finish options
-	finishCanvas = CreateCanvasPlaceable();
+	finishCanvas = CreateCanvasPlaceable("finish");
 	inputFinishWidth = CreateInputFloat(finishCanvas, "400", glm::vec2(-150, 250), "width");
 	inputFloats.push_back(&inputFinishWidth);
 	inputFinishHeight = CreateInputFloat(finishCanvas, "100", glm::vec2(0, 250), "height");
 	inputFloats.push_back(&inputFinishHeight);
 	_finish = nullptr;
 
-	CreatePlaceablesTickbox("player", glm::vec2(-150, 500));
-	CreatePlaceablesTickbox("wall", glm::vec2(-75, 500));
-	CreatePlaceablesTickbox("mirror", glm::vec2(0, 500));
-	CreatePlaceablesTickbox("crystal", glm::vec2(75, 500));
-	CreatePlaceablesTickbox("floor", glm::vec2(150, 500));
-	CreatePlaceablesTickbox("door", glm::vec2(-150, 425));
-	CreatePlaceablesTickbox("enemy", glm::vec2(-75, 425));
-	CreatePlaceablesTickbox("finish", glm::vec2(0, 425));
+	canvasObjects = new Entity();
+	canvasObjects->localPosition = glm::vec2(0,-300);
+	//canvasEditor->AddChild(canvasObjects);
+	CreatePlaceablesTickbox("player", glm::vec2(-150, -40));
+	CreatePlaceablesTickbox("wall", glm::vec2(-75, -40));
+	CreatePlaceablesTickbox("mirror", glm::vec2(0, -40));
+	CreatePlaceablesTickbox("crystal", glm::vec2(75, -40));
+	CreatePlaceablesTickbox("floor", glm::vec2(150, -40));
+	CreatePlaceablesTickbox("door", glm::vec2(-150, -115));
+	CreatePlaceablesTickbox("enemy", glm::vec2(-75, -115));
+	CreatePlaceablesTickbox("finish", glm::vec2(0, -115));
 
 	canvasEditor->AddChild(playerCanvas);
 	currentPlaceable = Placeables::player;
@@ -101,6 +105,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 
 LevelEditor::~LevelEditor()
 {
+	delete canvasObjects;
 	if (_player != nullptr) {
 		delete _player;
 	}
@@ -126,23 +131,17 @@ LevelEditor::~LevelEditor()
 		delete (*itTickbox);
 		itTickbox = tickboxes.erase(itTickbox);
 	}
-	// Delete the text of the tickboxes
-	std::vector<Text*>::iterator itTickboxText = tickboxesText.begin();
-	while (itTickboxText != tickboxesText.end()) {
-		delete (*itTickboxText);
-		itTickboxText = tickboxesText.erase(itTickboxText);
+	// Delete the text of the textVector
+	std::vector<Text*>::iterator itText = textVector.begin();
+	while (itText != textVector.end()) {
+		delete (*itText);
+		itText = textVector.erase(itText);
 	}
 	// Delete the tickboxes for the modes
 	std::vector<Tickbox*>::iterator itTickboxMode = tickboxesMode.begin();
 	while (itTickboxMode != tickboxesMode.end()) {
 		delete (*itTickboxMode);
 		itTickboxMode = tickboxesMode.erase(itTickboxMode);
-	}
-	// Delete the tickboxes for the text of the modes
-	std::vector<Text*>::iterator itTickboxModeText = tickboxesModeText.begin();
-	while (itTickboxModeText != tickboxesModeText.end()) {
-		delete (*itTickboxModeText);
-		itTickboxModeText = tickboxesModeText.erase(itTickboxModeText);
 	}
 	// Delete the inputFloats
 	std::vector<InputFloat*>::iterator itInputFloat = inputFloats.begin();
@@ -167,12 +166,14 @@ LevelEditor::~LevelEditor()
 
 void LevelEditor::Update(double deltaTime)
 {
+	//std::cout << "editorobjects size = " << editorObjects.size() << std::endl;
+	//std::cout << "currentplaceable = " << currentPlaceable << std::endl;
 	// DRAW
 	for (int i = 0; i < editorObjects.size(); i++) {
 		editorObjects[i].entity->Draw();
 		editorObjects[i].entity->DrawChilderen(this);
 	}
-	if (currentlySelected.entity != nullptr && currentlySelected.type == Placeables::player || currentlySelected.type == Placeables::finish) {
+	if (currentlySelected.entity != nullptr && currentlySelected.type == Placeables::player) {
 		currentlySelected.entity->Draw();
 		currentlySelected.entity->DrawChilderen(this);
 	}
@@ -187,55 +188,61 @@ void LevelEditor::Update(double deltaTime)
 		_player->DrawChilderen(this);
 	}
 	// END OF DRAWING
-	if (UpdateTickboxes()) {
-		// If true that means one of the tickboxes has been pressed so we skip one frame to avoid conflicts
-		std::cout << "updated tick boxes" << std::endl;
+	UpdateTickboxes();
+	UpdateInputFloats();
+	UpdateCurrentlySelected();
+	if (mode == EditorMode::place) {
+		UpdatePlaceMode();
 	}
-	if (currentlySelected.entity != nullptr && Input::MousePress(1)) {
-		Place();
-		std::cout << "place" << std::endl;
-		currentlySelected.entity = nullptr;
-	}
-
-	if (currentlySelected.entity != nullptr) {
-		//if (mode == EditorMode::place) {
-			currentlySelected.entity->localPosition = Input::GetMousePositionWorldSpace();
-		//}
-		UpdateInputFloats();
-		UpdateCurrentlySelected();
-	}
-	else if (mode == EditorMode::place) {
-		GetPlaceable();
+	else {
+		UpdateSelectMode();
 	}
 
-	if (saveButton->Down() && currentlySelected.entity == nullptr) {
+	/*if (saveButton->Down() && currentlySelected.entity == nullptr) {
 		Save("level3.bin");
 	}
 	if (loadButton->Down() && currentlySelected.entity == nullptr) {
 		level = levelLoader->LoadFromFile("level3.bin");
-	}
+	}*/
+}
 
-	if (Input::MousePress(0) && mode == EditorMode::select) {
+void LevelEditor::UpdateSelectMode()
+{
+	//tickboxes[currentlySelected.type]->SetActive(true);
+	if (Input::MousePress(0)) {
 		b2Body* bodylist = world->GetBodyList();
 		glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
 		b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
 
 		while (bodylist != NULL) {
 			if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
+				std::cout << "mouse hit" << std::endl;
 				B2Entity* _selected = static_cast<B2Entity*>(bodylist->GetFixtureList()->GetUserData());
 				if (_player == _selected) {
+					if (currentlySelected.entity != nullptr) {
+						Place();
+					}
 					currentlySelected.entity = _player;
 					currentlySelected.type = Placeables::player;
+					Select();
 					return;
 				}
 				else if (_finish == _selected) {
+					if (currentlySelected.entity != nullptr) {
+						Place();
+					}
 					currentlySelected.entity = _finish;
 					currentlySelected.type = Placeables::finish;
+					Select();
 					return;
 				}
 				for (int i = 0; i < editorObjects.size(); i++) {
 					if (editorObjects[i].entity == _selected) {
+						if (currentlySelected.entity != nullptr) {
+							Place();
+						}
 						currentlySelected = editorObjects[i];
+						Select();
 						break;
 					}
 				}
@@ -243,24 +250,49 @@ void LevelEditor::Update(double deltaTime)
 			bodylist = bodylist->GetNext();
 		}
 	}
+	if (mode == EditorMode::move) {
+		if (currentlySelected.entity != nullptr) {
+			currentlySelected.entity->localPosition = Input::GetMousePositionWorldSpace();
+			if (Input::MousePress(1)) {
+				Place();
+				currentlySelected.entity = nullptr;
+			}
+		}
+	}
 }
 
-bool LevelEditor::UpdateTickboxes()
+void LevelEditor::UpdatePlaceMode()
 {
-	bool change = false;
+	if (currentlySelected.entity != nullptr && Input::MousePress(1)) {
+		Place();
+		currentlySelected.entity = nullptr;
+	}
+	else if (currentlySelected.entity != nullptr) {
+		currentlySelected.entity->localPosition = Input::GetMousePositionWorldSpace();
+	}
+	if (currentlySelected.entity == nullptr) {
+		GetPlaceable();
+	}
+}
+
+void LevelEditor::UpdateTickboxes()
+{
 	// Update the tickboxes
 	for (int i = 0; i < tickboxes.size(); i++) {
 		if (i == currentPlaceable) {
 			tickboxes[i]->SetActive(true);
 		}
 		if (tickboxes[i]->IsActive() && i != currentPlaceable) {
-			std::cout << "test" << std::endl;
-			DeleteCurrentlySeleceted();
+			if (mode == EditorMode::place) {
+				DeleteCurrentlySeleceted();
+			}
+			/*else if (currentlySelected.entity != nullptr) {
+				Place();
+			}*/
 			tickboxes[currentPlaceable]->SetActive(false);
 			canvasEditor->RemoveChild(propertiesCanvas[currentPlaceable]);
 			currentPlaceable = static_cast<Placeables>(i);
 			canvasEditor->AddChild(propertiesCanvas[currentPlaceable]);
-			change = true;
 		}
 	}
 	// Update the tickboxes of the modes
@@ -269,13 +301,25 @@ bool LevelEditor::UpdateTickboxes()
 			tickboxesMode[i]->SetActive(true);
 		}
 		if (tickboxesMode[i]->IsActive() && i != mode) {
-			DeleteCurrentlySeleceted();
+			if (mode == EditorMode::select) {
+				if (currentlySelected.entity != nullptr) {
+					Place();
+					currentlySelected.entity = nullptr;
+				}
+			}
+			if (mode != EditorMode::select) {
+				DeleteCurrentlySeleceted();
+			}
 			tickboxesMode[mode]->SetActive(false);
+			if (mode == EditorMode::place) {
+				canvasEditor->RemoveChild(canvasObjects);
+			}
+			else if (mode != EditorMode::place && static_cast<EditorMode>(i) == EditorMode::place) {
+				canvasEditor->AddChild(canvasObjects);
+			}
 			mode = static_cast<EditorMode>(i);
-			change = true;
 		}
 	}
-	return change;
 }
 
 void LevelEditor::UpdateInputFloats()
@@ -285,49 +329,19 @@ void LevelEditor::UpdateInputFloats()
 	}
 }
 
-Level * LevelEditor::GetCurrentLevel()
-{
-	return level;
-}
-
-void LevelEditor::StopCurrentLevel()
-{
-	if (level != nullptr) {
-		delete level;
-		level = nullptr;
-	}
-}
-
-void LevelEditor::Save(char* levelname)
-{
-	std::cout << "save!" << std::endl;
-	/*textfile->Create(levelname);
-	for (int i = 0; i < walls.size(); i++) {
-		std::string walldata = "wall ";
-		walldata += std::to_string(walls[i]->localPosition.x);
-		walldata += " ";
-		walldata += std::to_string(walls[i]->localPosition.y);
-		walldata += " ";
-		walldata += std::to_string(walls[i]->localAngle);
-		walldata += " ";
-		walldata += std::to_string(walls[i]->GetWidth());
-		walldata += " ";
-		textfile->Write(walldata);
-	}
-	textfile->Close();*/
-}
-
 void LevelEditor::Place()
 {
 	if (currentlySelected.type == Placeables::player) {
-		if (mode == EditorMode::place && _player != nullptr) {
+		if (mode == EditorMode::place && _player != nullptr && _player != currentlySelected.entity) {
 			delete _player;
 		}
 		_player = dynamic_cast<Player*>(currentlySelected.entity);
+		_player->SetColor(glm::vec4(0,0,0,0));
 		_player->CreateCircleCollider(40.0f, true, false);
 	}
 	else if (currentlySelected.type == Placeables::wall) {
 		B2Entity* _wall = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_wall->SetColor(glm::vec4(0, 0, 0, 0));
 		_wall->CreateBoxCollider(_wall->GetWidth(), 100, glm::vec2(0, 0), false, false);
 	}
 	else if (currentlySelected.type == Placeables::mirror) {
@@ -346,48 +360,91 @@ void LevelEditor::Place()
 
 	}
 	else if (currentlySelected.type == Placeables::finish) {
-		if (mode == EditorMode::place && _finish != nullptr) {
+		if (mode == EditorMode::place && _finish != nullptr && _finish != currentlySelected.entity) {
 			delete _finish;
 		}
 		_finish = currentlySelected.entity;
 	}
 }
 
+void LevelEditor::Select()
+{
+	if (currentlySelected.type == Placeables::player) {
+		_player = dynamic_cast<Player*>(currentlySelected.entity);
+		_player->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+	}
+	else if (currentlySelected.type == Placeables::wall) {
+		B2Entity* _wall = dynamic_cast<B2Entity*>(currentlySelected.entity);
+		_wall->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
+		std::string s = std::to_string(_wall->GetWidth());
+		inputWallWidth.input->SetText(s);
+		s = std::to_string((int)glm::degrees(_wall->localAngle));
+		inputWallRotation.input->SetText(s);
+	}
+	else if (currentlySelected.type == Placeables::mirror) {
+
+	}
+	else if (currentlySelected.type == Placeables::crystal) {
+
+	}
+	else if (currentlySelected.type == Placeables::floor) {
+
+	}
+	else if (currentlySelected.type == Placeables::door) {
+
+	}
+	else if (currentlySelected.type == Placeables::enemy) {
+
+	}
+	else if (currentlySelected.type == Placeables::finish) {
+
+	}
+	tickboxes[currentlySelected.type]->SetActive(true);
+	//currentPlaceable = currentlySelected.type;
+}
+
 void LevelEditor::GetPlaceable()
 {
 	if (currentPlaceable == Placeables::player) {
 		Player* thePlayer = new Player(camera, 800.0f, 10.0f, 50.0f, 100, 100, ResourceManager::GetTexture("player")->GetId(), world);
+		thePlayer->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = thePlayer;
 		currentlySelected.type = Placeables::player;
 		return;
 	}
 	else if (currentPlaceable == Placeables::wall) {
 		B2Entity* _wall = new B2Entity(400, 750, ResourceManager::GetTexture("wall")->GetId(), world);
+		_wall->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _wall;
 		currentlySelected.type = Placeables::wall;
 	}
 	else if (currentPlaceable == Placeables::mirror) {
 		Mirror* _mirror = new Mirror(true, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+		_mirror->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _mirror;
 		currentlySelected.type = Placeables::mirror;
 	}
 	else if (currentPlaceable == Placeables::crystal) {
 		Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+		_crystal->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _crystal;
 		currentlySelected.type = Placeables::crystal;
 	}
 	else if (currentPlaceable == Placeables::floor) {
 		Sprite* _floor = new Sprite(200, 200, ResourceManager::GetTexture("floor")->GetId());
+		_floor->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _floor;
 		currentlySelected.type = Placeables::floor;
 	}
 	else if (currentPlaceable == Placeables::door) {
 		Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+		_door->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _door;
 		currentlySelected.type = Placeables::door;
 	}
 	else if (currentPlaceable == Placeables::enemy) {
 		Enemy* _enemy = new Enemy(nullptr, 3000.0f, 0.6f, 0.5f, 300.0f, 6.0f, 150.0f, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+		_enemy->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _enemy;
 		currentlySelected.type = Placeables::enemy;
 	}
@@ -402,6 +459,7 @@ void LevelEditor::GetPlaceable()
 
 void LevelEditor::UpdateCurrentlySelected()
 {
+	if (currentlySelected.entity == nullptr) { return; }
 	if (currentlySelected.type == Placeables::player) {
 		Player* _player = dynamic_cast<Player*>(currentlySelected.entity);
 		_player->localAngle = glm::radians(inputPlayerRotation.output);
@@ -461,18 +519,52 @@ void LevelEditor::DeleteCurrentlySeleceted()
 	currentlySelected.entity = nullptr;
 }
 
+Level * LevelEditor::GetCurrentLevel()
+{
+	return level;
+}
+
+void LevelEditor::StopCurrentLevel()
+{
+	if (level != nullptr) {
+		delete level;
+		level = nullptr;
+	}
+}
+
+void LevelEditor::Save(char* levelname)
+{
+	std::cout << "save!" << std::endl;
+	/*textfile->Create(levelname);
+	for (int i = 0; i < walls.size(); i++) {
+	std::string walldata = "wall ";
+	walldata += std::to_string(walls[i]->localPosition.x);
+	walldata += " ";
+	walldata += std::to_string(walls[i]->localPosition.y);
+	walldata += " ";
+	walldata += std::to_string(walls[i]->localAngle);
+	walldata += " ";
+	walldata += std::to_string(walls[i]->GetWidth());
+	walldata += " ";
+	textfile->Write(walldata);
+	}
+	textfile->Close();*/
+}
+
 void LevelEditor::CreatePlaceablesTickbox(std::string text, glm::vec2 position)
 {
 	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 25, 25, ResourceManager::GetTexture("tickboxActive")->GetId());
 	tb->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	tb->localPosition = position;
-	canvasEditor->AddChild(tb);
+	//canvasEditor->AddChild(tb);
 	tickboxes.push_back(tb);
+	canvasObjects->AddChild(tb);
 	
 	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 256, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
 	t->localPosition = glm::vec2(position.x, position.y + 25);
-	canvasEditor->AddChild(t);
-	tickboxesText.push_back(t);
+	//canvasEditor->AddChild(t);
+	textVector.push_back(t);
+	canvasObjects->AddChild(t);
 }
 
 void LevelEditor::CreateEditorModeTickbox(std::string text, glm::vec2 position)
@@ -486,7 +578,7 @@ void LevelEditor::CreateEditorModeTickbox(std::string text, glm::vec2 position)
 	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 256, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
 	t->localPosition = glm::vec2(position.x, position.y + 25);
 	canvasEditor->AddChild(t);
-	tickboxesModeText.push_back(t);
+	textVector.push_back(t);
 }
 
 InputFloat LevelEditor::CreateInputFloat(Sprite * canvas, std::string startValue, glm::vec2 position, std::string text)
@@ -507,10 +599,18 @@ InputFloat LevelEditor::CreateInputFloat(Sprite * canvas, std::string startValue
 	return inputFloat;
 }
 
-Sprite * LevelEditor::CreateCanvasPlaceable()
+Sprite * LevelEditor::CreateCanvasPlaceable(std::string name)
 {
 	Sprite* canvas = new Sprite(400, 650, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
+	canvas->localPosition.y = 140;
 	canvas->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	propertiesCanvas.push_back(canvas);
+
+	Text* t = new Text(name, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	t->localPosition.x = 35;
+	t->localPosition.y = 375;
+	textVector.push_back(t);
+	canvas->AddChild(t);
+
 	return canvas;
 }
