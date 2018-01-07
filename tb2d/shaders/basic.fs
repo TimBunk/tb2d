@@ -16,7 +16,8 @@ void main() {
     int tID = int(fs_in.textureID);
     tID -= 1;
     color = texture(textures[tID], fs_in.textureCoord);
-    color += fs_in.color;
+    //color += fs_in.color;
+    color = vec4(color.r + fs_in.color.r, color.g + fs_in.color.g, color.b + fs_in.color.b, color.a);
   }
   else {
     color = fs_in.color;
