@@ -14,6 +14,7 @@ public:
 
 	void Update(double deltaTime);
 	bool IsActive() { return active; }
+	void SetActive(bool active) { this->active = active; }
 
 	void SetText(std::string text);
 	void SetMaxLength(int maxLength) { this->maxLength = maxLength; }

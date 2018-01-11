@@ -15,7 +15,7 @@ public:
 
 	void SetMaxHealth(float value) { this->maxHealth = value; }
 	void SetDamage(float value) { this->damage = value; }
-	void SetSpeed(float value) { this->speed = speed; }
+	void SetSpeed(float value) { this->speed = value; }
 
 	float GetCurrentHealth() { return currentHealth; };
 	float GetMaxHealth() { return maxHealth; };
