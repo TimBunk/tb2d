@@ -51,9 +51,17 @@ public:
 	Level* GetCurrentLevel();
 	void StopCurrentLevel();
 
-	void Save(char* levelname);
+	void Save();
+	void Load();
+	void ClearScene();
+
+	std::string recentFilename;
+
+	//bool
+	bool Menu();
 
 private:
+	bool menu;
 	enum Placeables
 	{
 		player,
@@ -69,6 +77,7 @@ private:
 		Entity* entity = nullptr;
 		Placeables type;
 	};
+	std::vector<B2Entity*> floors;
 	std::vector<EditorObject> editorObjects;
 	std::vector<Tickbox*> editorObjectsTickBoxes;
 	Sprite* canvasEditor;
@@ -142,8 +151,14 @@ private:
 	b2World* world;
 	EditorObject currentlySelected;
 
+	Textinput* nameReceiver;
+	Text* nameReceiverText;
 	Button* saveButton;
+	bool saving;
+	bool saveWarningActive;
+	Button* saveWarning;
 	Button* loadButton;
+	bool loading;
 	Button* menuButton;
 };
 

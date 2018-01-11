@@ -18,12 +18,24 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	properties->localPosition = glm::vec2(properties->GetWidth() * -1 + 25, 515);
 	canvasEditor->AddChild(properties);
 
+	nameReceiver = new Textinput("", false, ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), true, 550, 100, glm::vec4(0, 0, 0, 1));
+	nameReceiver->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	nameReceiverText = new Text("Type the name of the file here", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	nameReceiverText->localPosition.y = 60;
+	textVector.push_back(nameReceiverText);
+
 	saveButton = new Button(400/3, 75, 0, true, camera);
 	saveButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
 	saveButton->localPosition = glm::vec2(-200 + saveButton->GetWidth()/2 * 1, -540 + 75 / 2);
 	saveButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(saveButton);
+
+	saveWarning = new Button(550, 100, 0, true, camera);
+	saveWarning->SetColor(glm::vec4(0, 0, 0, 1));
+	saveWarning->CreateText("You need atleast a player and a finish to save", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
+	saveWarning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	saveWarningActive = false;
 
 	loadButton = new Button(400/3, 75, 0, true, camera);
 	loadButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -102,19 +114,21 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	currentPlaceable = Placeables::player;
 	currentlySelected.type = currentPlaceable;
 	tickboxes[0]->SetActive(true);
+
+	menu = false;
+	saving = false;
+	loading = false;
+	recentFilename = "";
 }
 
 LevelEditor::~LevelEditor()
 {
+	ClearScene();
 	delete canvasObjects;
-	if (_player != nullptr) {
-		delete _player;
-	}
-	if (_finish != nullptr) {
-		delete _finish;
-	}
 	delete textfile;
 	delete saveButton;
+	delete nameReceiver;
+	delete saveWarning;
 	delete loadButton;
 	delete menuButton;
 
@@ -157,12 +171,6 @@ LevelEditor::~LevelEditor()
 		delete (*itInputFloat)->text;
 		itInputFloat = inputFloats.erase(itInputFloat);
 	}
-	// Delete the editor objects
-	std::vector<EditorObject>::iterator itEditorObjects = editorObjects.begin();
-	while (itEditorObjects != editorObjects.end()) {
-		delete (*itEditorObjects).entity;
-		itEditorObjects = editorObjects.erase(itEditorObjects);
-	}
 
 	delete world;
 	delete levelLoader;
@@ -173,12 +181,38 @@ LevelEditor::~LevelEditor()
 
 void LevelEditor::Update(double deltaTime)
 {
+	// Move the camera using the middle mouse button
+	if (Input::MouseDown(GLFW_MOUSE_BUTTON_3)) {
+		glm::vec2 mousePos = Input::GetMousePositionScreenSpace();
+		mousePos *= deltaTime;
+		camera->PositionAdd(mousePos);
+	}
+	else {
+		// Move the camera using the arrow keys
+		if (Input::KeyDown(GLFW_KEY_LEFT)) {
+			camera->PositionAdd(glm::vec2(-200.0f * deltaTime, 0.0f));
+		}
+		if (Input::KeyDown(GLFW_KEY_UP)) {
+			camera->PositionAdd(glm::vec2(0.0f, 200.0f * deltaTime));
+		}
+		if (Input::KeyDown(GLFW_KEY_RIGHT)) {
+			camera->PositionAdd(glm::vec2(200.0f * deltaTime, 0.0f));
+		}
+		if (Input::KeyDown(GLFW_KEY_DOWN)) {
+			camera->PositionAdd(glm::vec2(0.0f, -200.0f * deltaTime));
+		}
+	}
+
 	// DRAW
+	for (int i = 0; i < floors.size(); i++) {
+		floors[i]->Draw();
+		floors[i]->DrawChilderen(this);
+	}
 	for (int i = 0; i < editorObjects.size(); i++) {
 		editorObjects[i].entity->Draw();
 		editorObjects[i].entity->DrawChilderen(this);
 	}
-	if (currentlySelected.entity != nullptr && currentlySelected.type == Placeables::player || currentlySelected.type == Placeables::finish) {
+	if (currentlySelected.entity != nullptr) {// && currentlySelected.type == Placeables::player || currentlySelected.type == Placeables::finish) {
 		currentlySelected.entity->Draw();
 		currentlySelected.entity->DrawChilderen(this);
 	}
@@ -191,6 +225,30 @@ void LevelEditor::Update(double deltaTime)
 		_player->DrawChilderen(this);
 	}
 	// END OF DRAWING
+	// If saving or loading wait for the user to enter a name to load or save to
+	if (saving || loading) {
+		if (nameReceiver->IsActive() == false) {
+			if (nameReceiver->GetString().size() == 0) {
+				nameReceiver->SetActive(true);
+			}
+			else {
+				RemoveChild(nameReceiver);
+				RemoveChild(nameReceiverText);
+				if (saving) {
+					saving = false;
+					Save();
+				}
+				else {
+					loading = false;
+					Load();
+				}
+			}
+		}
+
+		return;
+	}
+
+
 	UpdateTickboxes();
 	UpdateInputFloats();
 	UpdateCurrentlySelected();
@@ -201,12 +259,21 @@ void LevelEditor::Update(double deltaTime)
 		UpdateSelectMode();
 	}
 
-	/*if (saveButton->Down() && currentlySelected.entity == nullptr) {
-		Save("level3.bin");
+	if (saveButton->Down()) {
+		Save();
 	}
-	if (loadButton->Down() && currentlySelected.entity == nullptr) {
-		level = levelLoader->LoadFromFile("level3.bin");
-	}*/
+	if (saveWarning->Down()) {
+		saveWarning->Update(deltaTime);
+		RemoveChild(saveWarning);
+		saveWarningActive = false;
+	}
+	if (loadButton->Down()) {
+		//level = levelLoader->LoadFromFile("level3.bin");
+		Load();
+	}
+	if (menuButton->Down()) {
+		menu = true;
+	}
 }
 
 void LevelEditor::UpdateSelectMode()
@@ -246,7 +313,18 @@ void LevelEditor::UpdateSelectMode()
 						}
 						currentlySelected = editorObjects[i];
 						Select();
-						break;
+						return;
+					}
+				}
+				for (int i = 0; i < floors.size(); i++) {
+					if (floors[i] == _selected) {
+						if (currentlySelected.entity != nullptr) {
+							Place();
+						}
+						currentlySelected.entity = floors[i];
+						currentlySelected.type = Placeables::floor;
+						Select();
+						continue;
 					}
 				}
 			}
@@ -329,6 +407,12 @@ void LevelEditor::UpdateInputFloats()
 {
 	for (int i = 0; i < inputFloats.size(); i++) {
 		inputFloats[i]->output = inputFloats[i]->input->GetFloat();
+		if (inputFloats[i]->input->IsActive()) {
+			inputFloats[i]->input->SetColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+		}
+		else {
+			inputFloats[i]->input->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+		}
 	}
 }
 
@@ -479,6 +563,8 @@ void LevelEditor::GetPlaceable()
 		_floor->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _floor;
 		currentlySelected.type = Placeables::floor;
+		floors.push_back(_floor);
+		return;
 	}
 	else if (currentPlaceable == Placeables::door) {
 		Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
@@ -561,19 +647,37 @@ void LevelEditor::DeleteCurrentlySeleceted()
 	if (currentlySelected.entity == nullptr) {
 		return;
 	}
-	// Delete the editor object
-	std::vector<EditorObject>::iterator itEditorObjects = editorObjects.begin();
-	while (itEditorObjects != editorObjects.end()) {
-		if ((*itEditorObjects).entity == currentlySelected.entity) {
-			delete (*itEditorObjects).entity;
-			itEditorObjects = editorObjects.erase(itEditorObjects);
-			break;
+	// Delete the floor object
+	if (currentlySelected.type == Placeables::floor) {
+		std::vector<B2Entity*>::iterator itFloor = floors.begin();
+		while (itFloor != floors.end()) {
+			if ((*itFloor) == currentlySelected.entity) {
+				delete (*itFloor);
+				floors.erase(itFloor);
+				break;
+			}
+			else {
+				++itFloor;
+			}
 		}
-		else {
-			++itEditorObjects;
-		}
+		currentlySelected.entity = nullptr;
 	}
-	currentlySelected.entity = nullptr;
+	else {
+		// Delete the editor object
+		std::vector<EditorObject>::iterator itEditorObjects = editorObjects.begin();
+		while (itEditorObjects != editorObjects.end()) {
+			if ((*itEditorObjects).entity == currentlySelected.entity) {
+				delete (*itEditorObjects).entity;
+				editorObjects.erase(itEditorObjects);
+				break;
+			}
+			else {
+				++itEditorObjects;
+			}
+		}
+		currentlySelected.entity = nullptr;
+		currentlySelected.type = Placeables::wall;
+	}
 }
 
 Level * LevelEditor::GetCurrentLevel()
@@ -589,23 +693,298 @@ void LevelEditor::StopCurrentLevel()
 	}
 }
 
-void LevelEditor::Save(char* levelname)
+void LevelEditor::Save()
 {
-	std::cout << "save!" << std::endl;
-	/*textfile->Create(levelname);
-	for (int i = 0; i < walls.size(); i++) {
-	std::string walldata = "wall ";
-	walldata += std::to_string(walls[i]->localPosition.x);
-	walldata += " ";
-	walldata += std::to_string(walls[i]->localPosition.y);
-	walldata += " ";
-	walldata += std::to_string(walls[i]->localAngle);
-	walldata += " ";
-	walldata += std::to_string(walls[i]->GetWidth());
-	walldata += " ";
-	textfile->Write(walldata);
+	if (loading) { return; }
+	if (_player == nullptr || _finish == nullptr) {
+		if (saveWarningActive == false) {
+			AddChild(saveWarning);
+			saveWarningActive = true;
+		}
+		return;
 	}
-	textfile->Close();*/
+	if (saving == false || nameReceiver->GetString().size() > 0) {
+		if (nameReceiver->GetString().size() == 0) {
+			saving = true;
+			AddChild(nameReceiverText);
+			AddChild(nameReceiver);
+			return;
+		}
+	}
+	else {
+		return;
+	}
+	std::cout << "save!" << std::endl;
+	nameReceiver->SetText("levels/" + nameReceiver->GetString() + ".LEVEL");
+	char *_levelName = new char[nameReceiver->GetString().length() + 1];
+	strcpy(_levelName, nameReceiver->GetString().c_str());
+	textfile->Create(_levelName);
+	delete[] _levelName;
+	nameReceiver->SetText("");
+
+	for (int i = 0; i < floors.size(); i++) {
+		std::string data = "floor ";
+		data += std::to_string(floors[i]->localPosition.x) + " ";
+		data += std::to_string(floors[i]->localPosition.y) + " ";
+		data += std::to_string(floors[i]->localAngle) + " ";
+		data += std::to_string(floors[i]->GetWidth()) + " ";
+		data += std::to_string(floors[i]->GetHeight()) + " ";
+		textfile->Write(data);
+	}
+	for (int i = 0; i < editorObjects.size(); i++) {
+		std::string data = "";
+		if (editorObjects[i].type == Placeables::wall) {
+			B2Entity* _wall = dynamic_cast<B2Entity*>(editorObjects[i].entity);
+			data += "wall ";
+			data += std::to_string(_wall->localPosition.x) + " ";
+			data += std::to_string(_wall->localPosition.y) + " ";
+			data += std::to_string(_wall->localAngle) + " ";
+			data += std::to_string(_wall->GetWidth()) + " ";
+		}
+		else if (editorObjects[i].type == Placeables::mirror) {
+			Mirror* _mirror = dynamic_cast<Mirror*>(editorObjects[i].entity);
+			data += "mirror ";
+			data += std::to_string(_mirror->localPosition.x) + " ";
+			data += std::to_string(_mirror->localPosition.y) + " ";
+			data += std::to_string(_mirror->localAngle) + " ";
+			data += std::to_string(_mirror->IsRotatable()) + " ";
+		}
+		else if (editorObjects[i].type == Placeables::crystal) {
+			Crystal* _crystal = dynamic_cast<Crystal*>(editorObjects[i].entity);
+			data += "crystal ";
+			data += std::to_string(_crystal->localPosition.x) + " ";
+			data += std::to_string(_crystal->localPosition.y) + " ";
+			data += std::to_string(_crystal->localAngle) + " ";
+		}
+		else if (editorObjects[i].type == Placeables::door) {
+			Door* _door = dynamic_cast<Door*>(editorObjects[i].entity);
+			data += "door ";
+			data += std::to_string(_door->localPosition.x) + " ";
+			data += std::to_string(_door->localPosition.y) + " ";
+			data += std::to_string(_door->localAngle) + " ";
+		}
+		else if (editorObjects[i].type == Placeables::enemy) {
+			Enemy* _enemy = dynamic_cast<Enemy*>(editorObjects[i].entity);
+			data += "enemy ";
+			data += std::to_string(_enemy->localPosition.x) + " ";
+			data += std::to_string(_enemy->localPosition.y) + " ";
+			data += std::to_string(_enemy->localAngle) + " ";
+			data += std::to_string(_enemy->GetMaxHealth()) + " ";
+			data += std::to_string(_enemy->GetDamage()) + " ";
+			data += std::to_string(_enemy->GetSpeed()) + " ";
+			data += std::to_string(_enemy->GetLineOfSight()) + " ";
+		}
+		textfile->Write(data);
+	}
+	std::string data = "player ";
+	data += std::to_string(_player->localPosition.x) + " ";
+	data += std::to_string(_player->localPosition.y) + " ";
+	data += std::to_string(_player->localAngle) + " ";
+	data += std::to_string(_player->GetMaxHealth()) + " ";
+	data += std::to_string(_player->GetDamage()) + " ";
+	data += std::to_string(_player->GetSpeed()) + " ";
+	textfile->Write(data);
+	data = "finish ";
+	data += std::to_string(_finish->localPosition.x) + " ";
+	data += std::to_string(_finish->localPosition.y) + " ";
+	data += std::to_string(_finish->localAngle) + " ";
+	data += std::to_string(_finish->GetWidth()) + " ";
+	data += std::to_string(_finish->GetHeight()) + " ";
+	textfile->Write(data);
+
+	textfile->Close();
+}
+
+void LevelEditor::Load()
+{
+	if (saving) { return; }
+	if (loading == false || nameReceiver->GetString().size() > 0) {
+		if (nameReceiver->GetString().size() == 0) {
+			loading= true;
+			AddChild(nameReceiverText);
+			AddChild(nameReceiver);
+			return;
+		}
+	}
+	else {
+		return;
+	}
+
+	std::cout << "loading!" << std::endl;
+	nameReceiver->SetText("levels/" + nameReceiver->GetString() + ".LEVEL");
+	char *_levelName = new char[nameReceiver->GetString().length() + 1];
+	strcpy(_levelName, nameReceiver->GetString().c_str());
+	nameReceiver->SetText("");
+
+	//textfile->Open(_levelName);
+	//textfile->StartReading();
+	//textfile->Close();
+
+	if (textfile->Open(_levelName)) {
+		ClearScene();
+		textfile->StartReading();
+		while (!textfile->EndOfFile()) {
+			std::string lineoftext = textfile->ReadLine();
+			EditorObject eo;
+			// FLOOR
+			if (lineoftext[0] == 'f' && lineoftext[1] == 'l') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				float _height;
+				sscanf(lineoftext.c_str(), "floor %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width, &_height);
+				B2Entity* _floor = new B2Entity(_width, _height, ResourceManager::GetTexture("floor")->GetId(), world);
+				_floor->CreateBoxCollider(_width, _height, glm::vec2(0.0f, 0.0f), true, true);
+				_floor->localPosition = _pos;
+				_floor->localAngle = _angle;
+				_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
+				floors.push_back(_floor);
+				continue;
+			}
+			// WALL
+			else if (lineoftext[0] == 'w') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				sscanf(lineoftext.c_str(), "wall %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width);
+				B2Entity* _wall = new B2Entity(_width, 750, ResourceManager::GetTexture("wall")->GetId(), world);
+				_wall->CreateBoxCollider(_width, 100, glm::vec2(0.0f, 0.0f), false, false);
+				_wall->localPosition = _pos;
+				_wall->localAngle = _angle;
+				_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
+				eo.entity = _wall;
+				eo.type = Placeables::wall;
+			}
+			// MIRROR
+			else if (lineoftext[0] == 'm') {
+				glm::vec2 _pos;
+				float _angle;
+				int _rotatable;
+				sscanf(lineoftext.c_str(), "mirror %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_rotatable);
+				Mirror* _mirror = new Mirror(_rotatable, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+				_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
+				_mirror->localPosition = _pos;
+				_mirror->localAngle = _angle;
+				eo.entity = _mirror;
+				eo.type = Placeables::mirror;
+			}
+			else if (lineoftext[0] == 'c') {
+				glm::vec2 _pos;
+				float _angle;
+				sscanf(lineoftext.c_str(), "crystal %f %f %f", &_pos.x, &_pos.y, &_angle);
+				Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+				_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
+				_crystal->localPosition = _pos;
+				_crystal->localAngle = _angle;
+				eo.entity = _crystal;
+				eo.type = Placeables::crystal;
+			}
+			else if (lineoftext[0] == 'd') {
+				glm::vec2 _pos;
+				float _angle;
+				sscanf(lineoftext.c_str(), "door %f %f %f", &_pos.x, &_pos.y, &_angle);
+				Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+				_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
+				_door->localPosition = _pos;
+				_door->localAngle = _angle;
+				eo.entity = _door;
+				eo.type = Placeables::door;
+			}
+			else if (lineoftext[0] == 'e') {
+				glm::vec2 _pos;
+				float _angle;
+				float _health;
+				float _damage;
+				float _speed;
+				float _LOS;//LOS short for LineOfSight
+				sscanf(lineoftext.c_str(), "enemy %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_health, &_damage, &_speed, &_LOS);
+				Enemy* _enemy = new Enemy(nullptr, _LOS, 0.6f, 0.5f, _health, _speed, _damage, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+				_enemy->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
+				_enemy->localPosition = _pos;
+				_enemy->localAngle = _angle;
+				eo.entity = _enemy;
+				eo.type = Placeables::enemy;
+			}
+			else if (lineoftext[0] == 'p') {
+				glm::vec2 _pos;
+				float _angle;
+				float _health;
+				float _damage;
+				float _speed;
+				sscanf(lineoftext.c_str(), "player %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_health, &_damage, &_speed);
+				_player = new Player(camera, _health, _speed, _damage, 100, 100, ResourceManager::GetTexture("player")->GetId(), world);
+				_player->CreateCircleCollider(40.0f, true, false);
+				_player->localPosition = _pos;
+				_player->localAngle = _angle;
+				inputPlayerRotation.input->SetText(std::to_string((int)glm::degrees(_angle)));
+				inputPlayerHealth.input->SetText(std::to_string((int)_health));
+				inputPlayerDamage.input->SetText(std::to_string((int)_damage));
+				inputPlayerSpeed.input->SetText(std::to_string((int)_speed));
+				continue;
+			}
+			else if (lineoftext[0] == 'f' && lineoftext[1] == 'i') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				float _height;
+				sscanf(lineoftext.c_str(), "finish %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width, &_height);
+				_finish = new B2Entity(_width, _height, 0, world);
+				_finish->CreateBoxCollider(_width, _height, glm::vec2(0, 0), true, true);
+				_finish->SetColor(glm::vec4(1, 0, 1, 0.5f));
+				_finish->localPosition = _pos;
+				_finish->localAngle = _angle;
+				inputFinishRotation.input->SetText(std::to_string((int)glm::degrees(_angle)));
+				inputFinishWidth.input->SetText(std::to_string((int)_width));
+				inputFinishWidth.input->SetText(std::to_string((int)_width));
+				continue;
+			}
+			if (eo.entity != nullptr) {
+				editorObjects.push_back(eo);
+			}
+		}
+		textfile->Close();
+		currentlySelected.entity = nullptr;
+		//currentlySelected.type = currentPlaceable;
+	}
+	else {
+		std::cout << "could not open: " << _levelName << std::endl;
+	}
+	delete[] _levelName;
+}
+
+void LevelEditor::ClearScene()
+{
+	if (_player != nullptr) {
+		delete _player;
+		_player = nullptr;
+	}
+	if (_finish != nullptr) {
+		delete _finish;
+		_finish = nullptr;
+	}
+	// Delete the floors
+	std::vector<B2Entity*>::iterator itFloor = floors.begin();
+	while (itFloor != floors.end()) {
+		delete (*itFloor);
+		itFloor = floors.erase(itFloor);
+	}
+	// Delete the editor objects
+	std::vector<EditorObject>::iterator itEditorObjects = editorObjects.begin();
+	while (itEditorObjects != editorObjects.end()) {
+		delete (*itEditorObjects).entity;
+		itEditorObjects = editorObjects.erase(itEditorObjects);
+	}
+	currentlySelected.entity = nullptr;
+	//currentlySelected.type = currentPlaceable;
+}
+
+bool LevelEditor::Menu()
+{
+	if (menu) {
+		menu = false;
+		return true;
+	}
+	return false;
 }
 
 void LevelEditor::CreatePlaceablesTickbox(std::string text, glm::vec2 position)

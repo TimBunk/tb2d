@@ -119,6 +119,10 @@ int main() {
 				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 					gameState = _menu;
 				}
+				else if (levelEditor->Menu()) {
+					gameState = _menu;
+				}
+
 			}
 			// if escaped is pressed go back in to the menu
 			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
