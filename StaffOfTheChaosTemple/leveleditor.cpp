@@ -31,11 +31,11 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	saveButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(saveButton);
 
-	saveWarning = new Button(550, 100, 0, true, camera);
-	saveWarning->SetColor(glm::vec4(0, 0, 0, 1));
-	saveWarning->CreateText("You need atleast a player and a finish to save", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
-	saveWarning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	saveWarningActive = false;
+	warning = new Button(550, 100, 0, true, camera);
+	warning->SetColor(glm::vec4(0, 0, 0, 1));
+	warning->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
+	warning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	warningState = false;
 
 	loadButton = new Button(400/3, 75, 0, true, camera);
 	loadButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -128,7 +128,7 @@ LevelEditor::~LevelEditor()
 	delete textfile;
 	delete saveButton;
 	delete nameReceiver;
-	delete saveWarning;
+	delete warning;
 	delete loadButton;
 	delete menuButton;
 
@@ -262,10 +262,10 @@ void LevelEditor::Update(double deltaTime)
 	if (saveButton->Down()) {
 		Save();
 	}
-	if (saveWarning->Down()) {
-		saveWarning->Update(deltaTime);
-		RemoveChild(saveWarning);
-		saveWarningActive = false;
+	if (warning->Down()) {
+		warning->Update(deltaTime);
+		RemoveChild(warning);
+		warningState = false;
 	}
 	if (loadButton->Down()) {
 		//level = levelLoader->LoadFromFile("level3.bin");
@@ -695,11 +695,12 @@ void LevelEditor::StopCurrentLevel()
 
 void LevelEditor::Save()
 {
-	if (loading) { return; }
+	if (loading || warningState) { return; }
 	if (_player == nullptr || _finish == nullptr) {
-		if (saveWarningActive == false) {
-			AddChild(saveWarning);
-			saveWarningActive = true;
+		if (warningState == false) {
+			warning->SetText("You need atleast a player and a finish to save");
+			AddChild(warning);
+			warningState = true;
 		}
 		return;
 	}
@@ -797,7 +798,7 @@ void LevelEditor::Save()
 
 void LevelEditor::Load()
 {
-	if (saving) { return; }
+	if (saving || warningState) { return; }
 	if (loading == false || nameReceiver->GetString().size() > 0) {
 		if (nameReceiver->GetString().size() == 0) {
 			loading= true;
@@ -948,6 +949,10 @@ void LevelEditor::Load()
 	}
 	else {
 		std::cout << "could not open: " << _levelName << std::endl;
+		std::string tmp_levelName = _levelName;
+		warning->SetText("Could not load: " + tmp_levelName);
+		AddChild(warning);
+		warningState = true;
 	}
 	delete[] _levelName;
 }

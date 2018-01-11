@@ -202,6 +202,8 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/savelevel.cpp
     StaffOfTheChaosTemple/loadlevel.h
     StaffOfTheChaosTemple/loadlevel.cpp
+    StaffOfTheChaosTemple/levelselector.h
+    StaffOfTheChaosTemple/levelselector.cpp
   )
 
   target_link_libraries(staff

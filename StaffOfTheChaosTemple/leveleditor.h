@@ -152,11 +152,11 @@ private:
 	EditorObject currentlySelected;
 
 	Textinput* nameReceiver;
+	Button* warning;
+	bool warningState;
 	Text* nameReceiverText;
 	Button* saveButton;
 	bool saving;
-	bool saveWarningActive;
-	Button* saveWarning;
 	Button* loadButton;
 	bool loading;
 	Button* menuButton;
