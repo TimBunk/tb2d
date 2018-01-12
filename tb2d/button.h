@@ -16,6 +16,8 @@ public:
 	void SetText(std::string text);
 	void SetTextColor(glm::vec4 color);
 
+	std::string GetText() { return text->GetText(); }
+
 	bool Hover();
 	bool Down();
 
