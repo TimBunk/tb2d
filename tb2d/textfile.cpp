@@ -10,14 +10,14 @@ Textfile::~Textfile()
 	file.close();
 }
 
-void Textfile::Create(char * filename)
+void Textfile::Create(const char * filename)
 {
 	file.close();
 	file.open(filename, std::ios::out);
 	Open(filename);
 }
 
-bool Textfile::Open(char * filename)
+bool Textfile::Open(const char * filename)
 {
 	file.close();
 	file.open(filename, std::ios::out | std::ios::in);

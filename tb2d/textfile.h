@@ -12,8 +12,8 @@ public:
 	Textfile();
 	~Textfile();
 
-	void Create(char* filename);
-	bool Open(char* filename);
+	void Create(const char* filename);
+	bool Open(const char* filename);
 	void Write(std::string text);
 	void StartReading();
 	std::string ReadLine();
