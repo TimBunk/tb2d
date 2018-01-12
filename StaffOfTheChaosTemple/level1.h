@@ -1,4 +1,4 @@
-#ifndef LEVEL1_H
+/*#ifndef LEVEL1_H
 #define LEVEL1_H
 
 #include "level.h"
@@ -26,3 +26,4 @@ private:
 };
 
 #endif // !LEVEL1_H
+*/

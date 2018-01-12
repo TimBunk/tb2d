@@ -1,4 +1,4 @@
-#include "level1.h"
+/*#include "level1.h"
 
 Level1::Level1(int screenWidthCamera, int screenHeightCamera) : Level::Level(screenWidthCamera, screenHeightCamera)
 {
@@ -89,3 +89,4 @@ Level1::~Level1()
 	delete crystal2;
 	delete mirror;
 }
+*/

@@ -12,7 +12,7 @@ Loadlevel::~Loadlevel()
 
 Level * Loadlevel::LoadFromFile(char* filename)
 {
-	if (textfile->Open(filename)) {
+	/*if (textfile->Open(filename)) {
 		Level* level = new Level(1920, 1080);
 		textfile->StartReading();
 		while (!textfile->EndOfFile()) {
@@ -32,6 +32,6 @@ Level * Loadlevel::LoadFromFile(char* filename)
 		}
 		level->CreateFinish(0, 540, 1920, 100);
 		return level;
-	}
+	}*/
 	return nullptr;
 }

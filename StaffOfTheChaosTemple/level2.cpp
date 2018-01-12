@@ -1,4 +1,4 @@
-#include "level2.h"
+/*#include "level2.h"
 
 Level2::Level2(int screenWidthCamera, int screenHeightCamera) : Level::Level(screenWidthCamera, screenHeightCamera)
 {
@@ -81,3 +81,4 @@ Level2::~Level2()
 	delete mirror2;
 	delete mirror3;
 }
+*/

@@ -25,14 +25,16 @@
 #include "core.h"
 #include "leveleditor.h"
 #include "textrenderer.h"
+#include "levelselector.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 Core* core;
-Level1* level1;
-Level2* level2;
+//Level1* level1;
+//Level2* level2;
 Menu* menu;
+Levelselector* levelSelector;
 LevelEditor* levelEditor;
 Text* sampletext;
 
@@ -41,6 +43,7 @@ float B2Entity::p2m = 1.0f / B2Entity::m2p;
 
 enum GameState
 {
+	_selector,
 	_game,
 	_editor,
 	_menu
@@ -77,15 +80,15 @@ int main() {
 
 	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("default"));
 
-	level1 = new Level1(1920, 1080);
-	level2 = new Level2(1920, 1080);
+	//level1 = new Level1(1920, 1080);
+	//level2 = new Level2(1920, 1080);
 
-	levels.push_back(level2);
-	levels.push_back(level1);
+	//levels.push_back(level2);
+	//levels.push_back(level1);
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
-
+	levelSelector = new Levelselector(1920, 1080);
 	levelEditor = new LevelEditor(1920, 1080);
 
 	sampletext = new Text("the lazy dog jumps over the fence", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec4(1, 1, 1, 0), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
@@ -94,8 +97,28 @@ int main() {
 	while (core->IsActive()) {
 		switch (gameState)
 		{
+		case _selector:
+			if (levelSelector->GetLevel() != nullptr) {
+				core->Run(levelSelector->GetLevel());
+				if (levelSelector->GetLevel()->IsFinished()) {
+					levelSelector->FinishLevel();
+				}
+				else if (levelSelector->GetLevel()->IsPlayerAlive() == false) {
+					levelSelector->EndLevel();
+				}
+				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+					levelSelector->ExitLevel();
+				}
+			}
+			else {
+				core->Run(levelSelector);
+				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+					gameState = _menu;
+				}
+			}
+			break;
 		case _game:
-			core->Run(levels[levelCounter]);
+			/*core->Run(levels[levelCounter]);
 			if (levels[levelCounter]->IsFinished()) {
 				levelCounter++;
 				if (levelCounter == levels.size()) {
@@ -106,7 +129,7 @@ int main() {
 			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 				gameState = _menu;
 			}
-			break;
+			break;*/
 		case _editor:
 			if (levelEditor->GetCurrentLevel() != nullptr) {
 				core->Run(levelEditor->GetCurrentLevel());
@@ -133,7 +156,7 @@ int main() {
 			core->Run(menu);
 			// If start is pressed start the game
 			if (menu->Start()) {
-				gameState = _game;
+				gameState = _selector;
 			}
 			else if (menu->Editor()) {
 				gameState = _editor;
@@ -149,8 +172,8 @@ int main() {
 		}
 	}
 	delete menu;
-	delete level1;
-	delete level2;
+	//delete level1;
+	//delete level2;
 	delete levelEditor;
 	delete sampletext;
 	delete core;

@@ -8,19 +8,18 @@
 #include "player.h"
 #include "box2Dclasses/contactListener.h"
 #include "enemy.h"
+#include "textfile.h"
 
 class Level : public Scene
 {
 public:
-	Level(int screenWidthCamera, int screenHeightCamera);
+	Level(int screenWidthCamera, int screenHeightCamera, std::string filename);
 	virtual ~Level();
 
 	virtual void Update(double deltaTime);
-	void CreateFinish(int x, int y, int width, int height);
 	bool IsFinished();
-
-	b2World* GetB2World();
-	void AddEnemy(Enemy* enemy);
+	bool IsPlayerAlive() { return player->IsAlive(); }
+	std::string GetLoadingErrors() { return LoadingErrors; }
 
 protected:
 
@@ -34,6 +33,10 @@ protected:
 	bool finished;
 
 private:
+	void Load(std::string filename);
+	Textfile* textfile;
+	std::string LoadingErrors;
+	std::vector<Entity*> levelObjects;
 	std::vector<Enemy*> enemies;
 };
 

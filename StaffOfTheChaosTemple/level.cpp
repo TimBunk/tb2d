@@ -1,7 +1,8 @@
 #include "level.h"
 
-Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
+Level::Level(int screenWidthCamera, int screenHeightCamera, std::string filename) : Scene::Scene(screenWidthCamera, screenHeightCamera)
 {
+	player = nullptr;
 	finish = nullptr;
 	finished = false;
 
@@ -21,18 +22,28 @@ Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(scree
 	contactListener = new ContactListener();
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetAllowSleeping(false);
+	world->SetContactListener(contactListener);
 
-	player = new Player(camera, 800.0f, 10.0f, 50.0f, 100, 100, ResourceManager::GetTexture("player")->GetId(), world);
-	player->CreateCircleCollider(40.0f, true, false);
-	player->SetDebugColor(glm::vec3(1, 0, 0));
+	LoadingErrors = "";
+	textfile = new Textfile();
+	Load(filename);
 }
 
 Level::~Level()
 {
+	std::vector<Entity*>::iterator itLevelObjects = levelObjects.begin();
+	while (itLevelObjects != levelObjects.end()) {
+		delete (*itLevelObjects);
+		itLevelObjects = levelObjects.erase(itLevelObjects);
+	}
+
+	delete textfile;
 	delete greenHealthbarPlayer;
 	delete redHealthbarPlayer;
-	delete finish;
-	delete player;
+	if (player != nullptr) {
+		delete finish;
+		delete player;
+	}
 
 	std::vector<Enemy*>::iterator it = enemies.begin();
 	while (it != enemies.end()) {
@@ -55,7 +66,7 @@ void Level::Update(double deltaTime)
 	greenHealthbarPlayer->SetWidth(player->GetCurrentHealth()/player->GetMaxHealth() * 350);
 
 	// Check if the enmies are alive otherwise remove them
-	std::vector<Enemy*>::iterator it = enemies.begin();
+	/*std::vector<Enemy*>::iterator it = enemies.begin();
 	while (it != enemies.end()) {
 		if ((*it)->IsAlive() == false) {
 			RemoveChild((*it));
@@ -65,17 +76,6 @@ void Level::Update(double deltaTime)
 		else {
 			++it;
 		}
-	}
-
-	/*b2Body* bodylist = world->GetBodyList();
-	glm::vec2 _mousePos = Input::GetMousePositionWorldSpace(camera);
-	b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
-
-	while (bodylist != NULL) {
-		if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
-			std::cout << "hit is true!" << std::endl;
-		}
-		bodylist = bodylist->GetNext();
 	}*/
 }
 
@@ -88,23 +88,132 @@ bool Level::IsFinished()
 	return false;
 }
 
-b2World * Level::GetB2World()
+void Level::Load(std::string filename)
 {
-	return world;
-}
+	if (textfile->Open(filename.c_str())) {
+		textfile->StartReading();
+		while (!textfile->EndOfFile()) {
+			std::string lineoftext = textfile->ReadLine();
+			// FLOOR
+			if (lineoftext[0] == 'f' && lineoftext[1] == 'l') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				float _height;
+				sscanf(lineoftext.c_str(), "floor %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width, &_height);
+				Sprite* _floor = new Sprite(_width, _height, ResourceManager::GetTexture("floor")->GetId());
+				_floor->localPosition = _pos;
+				_floor->localAngle = _angle;
+				_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
+				AddChild(_floor);
+				levelObjects.push_back(_floor);
+			}
+			// WALL
+			else if (lineoftext[0] == 'w') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				sscanf(lineoftext.c_str(), "wall %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width);
+				B2Entity* _wall = new B2Entity(_width, 750, ResourceManager::GetTexture("wall")->GetId(), world);
+				_wall->CreateBoxCollider(_width, 100, glm::vec2(0.0f, 0.0f), false, false);
+				_wall->localPosition = _pos;
+				_wall->localAngle = _angle;
+				_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
+				AddChild(_wall);
+				levelObjects.push_back(_wall);
+			}
+			// MIRROR
+			else if (lineoftext[0] == 'm') {
+				glm::vec2 _pos;
+				float _angle;
+				int _rotatable;
+				sscanf(lineoftext.c_str(), "mirror %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_rotatable);
+				Mirror* _mirror = new Mirror(_rotatable, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+				_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
+				_mirror->localPosition = _pos;
+				_mirror->SetRotation(glm::degrees(_angle));
+				_mirror->localAngle = _angle;
 
-void Level::AddEnemy(Enemy * enemy)
-{
-	enemies.push_back(enemy);
-}
-
-void Level::CreateFinish(int x, int y, int width, int height)
-{
-	finish = new B2Entity(width, height, 0, world);
-	finish->localPosition = glm::vec2(x, y);
-	finish->CreateBoxCollider(width, height, glm::vec2(0, 0), false, true);
-	finish->SetDebugColor(glm::vec3(0, 1, 0));
-	this->AddChild(finish);
-	world->SetContactListener(contactListener);
-	AddChild(player);
+				AddChild(_mirror);
+				levelObjects.push_back(_mirror);
+			}
+			// CRYSTAL
+			else if (lineoftext[0] == 'c') {
+				glm::vec2 _pos;
+				float _angle;
+				sscanf(lineoftext.c_str(), "crystal %f %f %f", &_pos.x, &_pos.y, &_angle);
+				Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+				_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
+				_crystal->localPosition = _pos;
+				_crystal->localAngle = _angle;
+				AddChild(_crystal);
+				levelObjects.push_back(_crystal);
+			}
+			// DOOR
+			else if (lineoftext[0] == 'd') {
+				glm::vec2 _pos;
+				float _angle;
+				sscanf(lineoftext.c_str(), "door %f %f %f", &_pos.x, &_pos.y, &_angle);
+				Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+				_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
+				_door->localPosition = _pos;
+				_door->localAngle = _angle;
+				AddChild(_door);
+				levelObjects.push_back(_door);
+			}
+			// ENEMY
+			else if (lineoftext[0] == 'e') {
+				glm::vec2 _pos;
+				float _angle;
+				float _health;
+				float _damage;
+				float _speed;
+				float _LOS;//LOS short for LineOfSight
+				sscanf(lineoftext.c_str(), "enemy %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_health, &_speed, &_damage, &_LOS);
+				Enemy* _enemy = new Enemy(NULL, _LOS, 0.6f, 0.5f, _health, _speed, _damage, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
+				_enemy->CreateBoxCollider(70, 70, glm::vec2(0, 0), true, false);
+				_enemy->localPosition = _pos;
+				_enemy->localAngle = _angle;
+				AddChild(_enemy);
+				enemies.push_back(_enemy);
+			}
+			// PLAYER
+			else if (lineoftext[0] == 'p') {
+				glm::vec2 _pos;
+				float _angle;
+				float _health;
+				float _damage;
+				float _speed;
+				sscanf(lineoftext.c_str(), "player %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_health, &_damage, &_speed);
+				player = new Player(camera, _health, _speed, _damage, 100, 100, ResourceManager::GetTexture("player")->GetId(), world);
+				player->CreateCircleCollider(40.0f, true, false);
+				player->localPosition = _pos;
+				player->localAngle = _angle;
+				//player->Update(0);
+				player->UpdateChilderen(this, 0);
+				AddChild(player);
+			}
+			// FINISH
+			else if (lineoftext[0] == 'f' && lineoftext[1] == 'i') {
+				glm::vec2 _pos;
+				float _angle;
+				float _width;
+				float _height;
+				sscanf(lineoftext.c_str(), "finish %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_width, &_height);
+				finish = new B2Entity(_width, _height, 0, world);
+				finish->CreateBoxCollider(_width, _height, glm::vec2(0, 0), true, true);
+				finish->localPosition = _pos;
+				finish->localAngle = _angle;
+				AddChild(finish);
+			}
+		}
+		textfile->Close();
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies[i]->SetPlayer(player);
+			enemies[i]->UpdateChilderen(this, 0);
+		}
+	}
+	else {
+		LoadingErrors = "Could not find: " + filename;
+	}
 }

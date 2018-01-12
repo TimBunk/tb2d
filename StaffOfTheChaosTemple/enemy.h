@@ -16,6 +16,8 @@ public:
 
 	float GetLineOfSight() { return lineOfSight; }
 	void SetLineOfSight(float lineOfSight) { this->lineOfSight = lineOfSight; }
+	
+	void SetPlayer(Player* player) { this->player = player; }
 
 private:
 	bool dead;
