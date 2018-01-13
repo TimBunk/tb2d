@@ -15,7 +15,7 @@ void Crystal::Update(double deltaTime)
 	if (hit) {
 		enabled = true;
 		hit = false;
-		color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+		color = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
 	}
 	else {
 		enabled = false;
