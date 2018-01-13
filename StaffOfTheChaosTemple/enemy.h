@@ -12,7 +12,7 @@ public:
 	~Enemy();
 
 	void Update(double deltaTime);
-	void Die();
+	void Draw();
 
 	float GetLineOfSight() { return lineOfSight; }
 	void SetLineOfSight(float lineOfSight) { this->lineOfSight = lineOfSight; }
@@ -20,11 +20,10 @@ public:
 	void SetPlayer(Player* player) { this->player = player; }
 
 private:
-	bool dead;
 	Sprite* redHealthbar;
 	Sprite* greenHealthbar;
 
-	Mirror* mirror;
+	//Mirror* mirror;
 	float lineOfSight;
 	float attackRadius;
 	B2Entity* sword;

@@ -9,22 +9,22 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 	raycast = new Raycast(world);
 
 	distanceObjects = new B2Entity(width, height, 0, world);
-	distanceObjects->CreateCircleCollider(75, true, true);
+	distanceObjects->CreateCircleCollider(65, true, true);
 	distanceObjects->SetDebugColor(glm::vec3(1, 0, 0));
 	this->AddChild(distanceObjects);
 
-	mirror = new Mirror(false, 45.0f, 120.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+	/*mirror = new Mirror(false, 45.0f, 120.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
 	mirror->localPosition.x = 100;
 	mirror->CreateBoxCollider(45.0f, 120.0f, glm::vec2(0.0f, 0.0f), false, false);
 	mirror->SetFilter(2);
-	AddChild(mirror);
+	AddChild(mirror);*/
 
-	attackRadius = 250.0f;
-	sword = new B2Entity(100, 200, ResourceManager::GetTexture("sword")->GetId(), world);
+	attackRadius = 150.0f;
+	sword = new B2Entity(75, 120, ResourceManager::GetTexture("sword")->GetId(), world);
 	sword->SetPivot(glm::vec2(0.0f, -0.5f));
-	sword->CreateBoxCollider(100, 200, glm::vec2(0, -0.5f), true, true);
-	sword->localPosition = glm::vec2(50,85);
-	sword->localAngle = glm::radians(90.0f);
+	sword->CreateBoxCollider(40, 120, glm::vec2(0, -0.5f), true, true);
+	sword->localPosition = glm::vec2(20,34);
+	sword->localAngle = glm::radians(110.0f);
 	sword->SetFilter(2);
 	AddChild(sword);
 
@@ -36,32 +36,20 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 	greenHealthbar->SetColor(glm::vec4(0, 1, 0, 1));
 	greenHealthbar->SetPivot(glm::vec2(0.5f, 0.0f));
 	AddChild(greenHealthbar);
-
-	dead = false;
 }
 
 Enemy::~Enemy()
 {
-	if (dead == false) {
-		delete raycast;
-		delete distanceObjects;
-		delete mirror;
-		delete sword;
-		delete redHealthbar;
-		delete greenHealthbar;
-	}
+	delete raycast;
+	delete distanceObjects;
+	//delete mirror;
+	delete sword;
+	delete redHealthbar;
+	delete greenHealthbar;
 }
 
 void Enemy::Update(double deltaTime)
 {
-	// Update the healthbars
-	redHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
-	greenHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
-	greenHealthbar->SetWidth(currentHealth / maxHealth * 150);
-	redHealthbar->UpdateChilderen(NULL, deltaTime);
-	redHealthbar->Draw();
-	greenHealthbar->UpdateChilderen(NULL, deltaTime);
-	greenHealthbar->Draw();
 
 	glm::vec2 rayDestination = player->GetGlobalPosition() - position;
 	rayDestination = glm::normalize(rayDestination);
@@ -82,14 +70,14 @@ void Enemy::Update(double deltaTime)
 			if (glm::length(lastPositionPlayer - position) < attackRadius) {
 				sword->localAngle -= glm::radians(180.0f) * deltaTime;
 				if (sword->localAngle < 0) {//glm::radians(90.0f) * -1) {
-					sword->localAngle = glm::radians(90.0f);
+					sword->localAngle = glm::radians(110.0f);
 				}
 				if (sword->Contact(player)) {
 					player->Damage(damage * deltaTime);
 				}
 			}
 			else {
-				sword->localAngle = glm::radians(90.0f);
+				sword->localAngle = glm::radians(110.0f);
 				acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 			}
 			playerHit = true;
@@ -100,7 +88,7 @@ void Enemy::Update(double deltaTime)
 			continue;
 		}
 		// If the raycast hit is a enemy or a sensor continue with the for loop otheriwse break it
-		else if (dynamic_cast<Enemy*>(b) != NULL || hits[i].fixture->IsSensor() || b == mirror || b->GetFilter() == 2) {
+		else if (dynamic_cast<Enemy*>(b) != NULL || hits[i].fixture->IsSensor() || b->GetFilter() == 2) {
 			continue;
 		}
 		break;
@@ -128,13 +116,17 @@ void Enemy::Update(double deltaTime)
 	}
 }
 
-void Enemy::Die()
+void Enemy::Draw()
 {
-	dead = true;
-	delete raycast;
-	delete distanceObjects;
-	delete mirror;
-	delete sword;
-	delete redHealthbar;
-	delete greenHealthbar;
+	// Update the healthbars
+	redHealthbar->UpdateChilderen(NULL, 0);
+	greenHealthbar->UpdateChilderen(NULL, 0);
+	redHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
+	greenHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
+	greenHealthbar->SetWidth(currentHealth / maxHealth * 150);
+	// Render
+	renderer->Submit(this);
+	if (body != nullptr) {
+		DebugRenderer::Submit(this);
+	}
 }

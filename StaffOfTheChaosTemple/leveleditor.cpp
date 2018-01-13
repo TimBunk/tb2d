@@ -65,7 +65,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	_player = nullptr;
 	// Wall options
 	wallCanvas = CreateCanvasPlaceable("wall");
-	CreateInputFloat(inputWallWidth, wallCanvas, "100", glm::vec2(-150, 250), "width");
+	CreateInputFloat(inputWallWidth, wallCanvas, "720", glm::vec2(-150, 250), "width");
 	CreateInputFloat(inputWallRotation, wallCanvas, "0", glm::vec2(0, 250), "rotation");
 	// Mirror options
 	mirrorCanvas = CreateCanvasPlaceable("mirror");
@@ -300,7 +300,6 @@ void LevelEditor::UpdateSelectMode()
 
 		while (bodylist != NULL) {
 			if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
-				std::cout << "mouse hit" << std::endl;
 				B2Entity* _selected = static_cast<B2Entity*>(bodylist->GetFixtureList()->GetUserData());
 				if (_player == _selected) {
 					if (currentlySelected.entity != nullptr) {
@@ -345,13 +344,14 @@ void LevelEditor::UpdateSelectMode()
 			bodylist = bodylist->GetNext();
 		}
 	}
-	if (mode == EditorMode::move) {
-		if (currentlySelected.entity != nullptr) {
+
+	if (currentlySelected.entity != nullptr) {
+		if (mode == EditorMode::move) {
 			currentlySelected.entity->localPosition = Input::GetMousePositionWorldSpace();
-			if (Input::MousePress(1)) {
-				Place();
-				currentlySelected.entity = nullptr;
-			}
+		}
+		if (Input::MousePress(1)) {
+			Place();
+			currentlySelected.entity = nullptr;
 		}
 	}
 }
@@ -381,9 +381,6 @@ void LevelEditor::UpdateTickboxes()
 			if (mode == EditorMode::place) {
 				DeleteCurrentlySeleceted();
 			}
-			/*else if (currentlySelected.entity != nullptr) {
-				Place();
-			}*/
 			tickboxes[currentPlaceable]->SetActive(false);
 			canvasEditor->RemoveChild(propertiesCanvas[currentPlaceable]);
 			currentPlaceable = static_cast<Placeables>(i);
@@ -450,7 +447,7 @@ void LevelEditor::Place()
 	else if (currentlySelected.type == Placeables::mirror) {
 		Mirror* _mirror = dynamic_cast<Mirror*>(currentlySelected.entity);
 		_mirror->SetColor(glm::vec4(0, 0, 0, 0));
-		_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
+		_mirror->CreateBoxCollider(100.0f, 110.0f, glm::vec2(0.15f, 0.0f), false, false);
 	}
 	else if (currentlySelected.type == Placeables::crystal) {
 		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
@@ -557,13 +554,13 @@ void LevelEditor::GetPlaceable()
 		return;
 	}
 	else if (currentPlaceable == Placeables::wall) {
-		B2Entity* _wall = new B2Entity(400, 750, ResourceManager::GetTexture("wall")->GetId(), world);
+		B2Entity* _wall = new B2Entity(720, 750, ResourceManager::GetTexture("wall")->GetId(), world);
 		_wall->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _wall;
 		currentlySelected.type = Placeables::wall;
 	}
 	else if (currentPlaceable == Placeables::mirror) {
-		Mirror* _mirror = new Mirror(true, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+		Mirror* _mirror = new Mirror(true, 150.0f, 150.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
 		_mirror->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _mirror;
 		currentlySelected.type = Placeables::mirror;
@@ -965,8 +962,8 @@ void LevelEditor::Load()
 				float _angle;
 				int _rotatable;
 				sscanf(lineoftext.c_str(), "mirror %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_rotatable);
-				Mirror* _mirror = new Mirror(_rotatable, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
-				_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
+				Mirror* _mirror = new Mirror(_rotatable, 150.0F, 150.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+				_mirror->CreateBoxCollider(100.0f, 110.0f, glm::vec2(0.15f, 0.0f), false, false);
 				_mirror->localPosition = _pos;
 				_mirror->localAngle = _angle;
 				eo.entity = _mirror;

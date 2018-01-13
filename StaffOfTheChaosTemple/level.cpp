@@ -66,17 +66,17 @@ void Level::Update(double deltaTime)
 	greenHealthbarPlayer->SetWidth(player->GetCurrentHealth()/player->GetMaxHealth() * 350);
 
 	// Check if the enmies are alive otherwise remove them
-	/*std::vector<Enemy*>::iterator it = enemies.begin();
+	std::vector<Enemy*>::iterator it = enemies.begin();
 	while (it != enemies.end()) {
 		if ((*it)->IsAlive() == false) {
 			RemoveChild((*it));
-			(*it)->Die();
+			delete (*it);
 			it = enemies.erase(it);
 		}
 		else {
 			++it;
 		}
-	}*/
+	}
 }
 
 bool Level::IsFinished()
@@ -128,8 +128,8 @@ void Level::Load(std::string filename)
 				float _angle;
 				int _rotatable;
 				sscanf(lineoftext.c_str(), "mirror %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_rotatable);
-				Mirror* _mirror = new Mirror(_rotatable, 45.0f, 240.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
-				_mirror->CreateBoxCollider(45.0f, 240.0f, glm::vec2(0.0f, 0.0f), false, false);
+				Mirror* _mirror = new Mirror(_rotatable, 150.0f, 150.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
+				_mirror->CreateBoxCollider(100.0f, 110.0f, glm::vec2(0.15f, 0.0f), false, false);
 				_mirror->localPosition = _pos;
 				_mirror->SetRotation(glm::degrees(_angle));
 				_mirror->localAngle = _angle;

@@ -57,11 +57,11 @@ int main() {
 	ResourceManager::CreateTexture("staff", "textures/staff.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("laser", "textures/laser.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("crystal", "textures/crystal.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
-	ResourceManager::CreateTexture("enemy", "textures/TestEnemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
-	ResourceManager::CreateTexture("sword", "textures/TestEnemySword.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("enemy", "textures/enemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("sword", "textures/weapon_enemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
-	ResourceManager::CreateTexture("mirror", "textures/container.jpg", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
-	ResourceManager::CreateTexture("rotator", "textures/container2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("mirror", "textures/mirror.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
+	ResourceManager::CreateTexture("rotator", "textures/rotator2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("laserParticle", "textures/laserParticle.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("tickboxNotActive", "textures/tickbox.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
