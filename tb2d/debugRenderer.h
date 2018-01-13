@@ -28,6 +28,8 @@ public:
 	static void Render(Camera* camera);
 	static void Line(glm::vec2 point1, glm::vec2 point2, glm::vec3 color);
 
+	static void SetActive(bool active);
+
 private:
 	DebugRenderer();
 	virtual ~DebugRenderer();
@@ -40,6 +42,7 @@ private:
 	void DrawLines(Camera* camera);
 
 	static DebugRenderer* debugRenderer;
+	bool active;
 	Shader* shader;
 	Shader* shaderLine;
 

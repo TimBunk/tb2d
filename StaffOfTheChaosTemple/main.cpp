@@ -27,16 +27,10 @@
 #include "textrenderer.h"
 #include "levelselector.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 Core* core;
-//Level1* level1;
-//Level2* level2;
 Menu* menu;
 Levelselector* levelSelector;
 LevelEditor* levelEditor;
-Text* sampletext;
 
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
@@ -51,11 +45,7 @@ enum GameState
 
 GameState gameState;
 
-int levelCounter = 0;
-std::vector<Level*> levels;
-
 int main() {
-	std::cout << "hello world" << std::endl;
 	core = new Core("Staff of the Chaos Temple", false);
 	core->ResizeWindow(1600, 900);
 	//core->ResizeWindow(800, 600);
@@ -80,102 +70,73 @@ int main() {
 
 	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("default"));
 
-	//level1 = new Level1(1920, 1080);
-	//level2 = new Level2(1920, 1080);
-
-	//levels.push_back(level2);
-	//levels.push_back(level1);
-
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
 	levelSelector = new Levelselector(1920, 1080);
 	levelEditor = new LevelEditor(1920, 1080);
 
-	sampletext = new Text("the lazy dog jumps over the fence", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec4(1, 1, 1, 0), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
-	//menu->AddChild(sampletext);
-
 	while (core->IsActive()) {
 		switch (gameState)
 		{
 		case _selector:
+			// Run the selector
+			core->Run(levelSelector);
+			// If a level has been loaded switch to the gamestate _game
 			if (levelSelector->GetLevel() != nullptr) {
-				core->Run(levelSelector->GetLevel());
-				if (levelSelector->GetLevel()->IsFinished()) {
-					levelSelector->FinishLevel();
-				}
-				else if (levelSelector->GetLevel()->IsPlayerAlive() == false) {
-					levelSelector->EndLevel();
-				}
-				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
-					levelSelector->ExitLevel();
-				}
+				gameState = _game;
 			}
-			else {
-				core->Run(levelSelector);
-				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
-					gameState = _menu;
-				}
-			}
-			break;
-		case _game:
-			/*core->Run(levels[levelCounter]);
-			if (levels[levelCounter]->IsFinished()) {
-				levelCounter++;
-				if (levelCounter == levels.size()) {
-					levelCounter = 0;
-				}
-			}
-			// if escaped is pressed go back in to the menu
+			// If escape has been pressed return to menu
 			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 				gameState = _menu;
 			}
-			break;*/
+			break;
+		case _game:
+			// Run the level
+			core->Run(levelSelector->GetLevel());
+			// If the player finished inform the levelselctor about it and switch game state
+			if (levelSelector->GetLevel()->IsFinished()) {
+				levelSelector->FinishLevel();
+				gameState = _selector;
+			}
+			// If the player died inform the levelselector about it and switch game state
+			else if (levelSelector->GetLevel()->IsPlayerAlive() == false) {
+				levelSelector->EndLevel();
+				gameState = _selector;
+			}
+			else if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+				levelSelector->ExitLevel();
+				gameState = _selector;
+			}
+			break;
 		case _editor:
-			if (levelEditor->GetCurrentLevel() != nullptr) {
-				core->Run(levelEditor->GetCurrentLevel());
-				if (Input::KeyDown(GLFW_KEY_ESCAPE)) {
-					levelEditor->StopCurrentLevel();
-				}
-			}
-			else {
-				core->Run(levelEditor);
-				if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
-					gameState = _menu;
-				}
-				else if (levelEditor->Menu()) {
-					gameState = _menu;
-				}
-
-			}
-			// if escaped is pressed go back in to the menu
-			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
+			core->Run(levelEditor);
+			// If the escape key is pressed or the menu button switch the game state to menu
+			if (Input::KeyPress(GLFW_KEY_ESCAPE) || levelEditor->Menu()) {
 				gameState = _menu;
 			}
 			break;
 		case _menu:
 			core->Run(menu);
-			// If start is pressed start the game
+			// If start is pressed open the _selector
 			if (menu->Start()) {
+				DebugRenderer::SetActive(false);
 				gameState = _selector;
 			}
+			// If editor is pressed open the editor
 			else if (menu->Editor()) {
+				DebugRenderer::SetActive(true);
 				gameState = _editor;
 			}
-			else if (menu->Restart()) {
-				// TODO: restart level
-			}
+			// If quit is pressed exit the application
 			else if (menu->Quit()) {
-				// exit the application
 				core->Close();
 			}
 			break;
 		}
 	}
 	delete menu;
-	//delete level1;
-	//delete level2;
+	delete levelSelector;
 	delete levelEditor;
-	delete sampletext;
 	delete core;
 	std::cout << "Program succeeded" << std::endl;
 	return 0;

@@ -20,6 +20,7 @@ void DebugRenderer::Destroy()
 
 void DebugRenderer::Submit(B2Entity * b2entity)
 {
+	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
 	switch (b2entity->GetShape())
 	{
 	case Shape::box:
@@ -33,6 +34,7 @@ void DebugRenderer::Submit(B2Entity * b2entity)
 
 void DebugRenderer::Render(Camera* camera)
 {
+	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
 	DebugRenderer::debugRenderer->shader->Use();
 	DebugRenderer::debugRenderer->shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	DebugRenderer::debugRenderer->shader->SetMatrix4("view", camera->GetViewMatrix());
@@ -43,6 +45,7 @@ void DebugRenderer::Render(Camera* camera)
 
 void DebugRenderer::Line(glm::vec2 point1, glm::vec2 point2, glm::vec3 color)
 {
+	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
 	DebugRenderer::debugRenderer->linesPosition.push_back(point1);
 	DebugRenderer::debugRenderer->linesPosition.push_back(point2);
 	DebugRenderer::debugRenderer->linesColor.push_back(color);
@@ -50,8 +53,14 @@ void DebugRenderer::Line(glm::vec2 point1, glm::vec2 point2, glm::vec3 color)
 	DebugRenderer::debugRenderer->linesCount++;
 }
 
+void DebugRenderer::SetActive(bool active)
+{
+	DebugRenderer::debugRenderer->active = active;
+}
+
 DebugRenderer::DebugRenderer()
 {
+	active = true;
 	shader = ResourceManager::GetShader("debugRenderer");
 	shaderLine = ResourceManager::GetShader("debugLineRenderer");
 	boxesCount = 0;
