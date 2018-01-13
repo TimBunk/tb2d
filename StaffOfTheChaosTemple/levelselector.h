@@ -27,6 +27,7 @@ private:
 	Textinput* nameReceiver;
 	Button* load;
 
+	Button* victoryDefeat;
 	Button* error;
 };
 

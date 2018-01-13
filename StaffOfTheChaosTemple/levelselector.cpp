@@ -22,8 +22,13 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 
 	error = new Button(800, 100, 0, true, camera);
 	error->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	error->SetColor(glm::vec4(0,0,0,1));
+	error->SetColor(glm::vec4(0, 0, 0, 1));
 	error->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 30), glm::vec3(1, 1, 1));
+
+	victoryDefeat = new Button(800, 100, 0, true, camera);
+	victoryDefeat->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	victoryDefeat->SetColor(glm::vec4(0, 0, 0, 1));
+	victoryDefeat->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
 }
 
 Levelselector::~Levelselector()
@@ -52,6 +57,11 @@ void Levelselector::Update(double deltaTime)
 		error->SetText("");
 		RemoveChild(error);
 	}
+	if (victoryDefeat->Down()) {
+		victoryDefeat->Update(deltaTime);
+		victoryDefeat->SetText("");
+		RemoveChild(victoryDefeat);
+	}
 }
 
 Level * Levelselector::GetLevel()
@@ -61,10 +71,22 @@ Level * Levelselector::GetLevel()
 
 void Levelselector::FinishLevel()
 {
+	if (victoryDefeat->GetText().length() != 0) {
+		RemoveChild(victoryDefeat);
+	}
+	victoryDefeat->SetText("VICTORY");
+	AddChild(victoryDefeat);
+	ExitLevel();
 }
 
 void Levelselector::EndLevel()
 {
+	if (victoryDefeat->GetText().length() != 0) {
+		RemoveChild(victoryDefeat);
+	}
+	victoryDefeat->SetText("YOU DIED");
+	AddChild(victoryDefeat);
+	ExitLevel();
 }
 
 void Levelselector::ExitLevel()
