@@ -48,9 +48,6 @@ public:
 	Tickbox* CreateTickbox(Sprite* canvas, bool startValue, glm::vec2 position, std::string text);
 	Sprite* CreateCanvasPlaceable(std::string name);
 
-	Level* GetCurrentLevel();
-	void StopCurrentLevel();
-
 	void Save();
 	void Load();
 	void ClearScene();
@@ -144,8 +141,6 @@ private:
 	//std::vector<Text*> tickboxesModeText;
 
 	Textfile* textfile;
-	Loadlevel* levelLoader;
-	Level* level;
 
 	b2World* world;
 	EditorObject currentlySelected;

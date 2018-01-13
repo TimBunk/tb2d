@@ -2,8 +2,6 @@
 
 LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
 {
-	levelLoader = new Loadlevel();
-	level = nullptr;
 	textfile = new Textfile();
 
 	world = new b2World(b2Vec2(0.0f, 0.0f));
@@ -183,10 +181,6 @@ LevelEditor::~LevelEditor()
 	}
 
 	delete world;
-	delete levelLoader;
-	if (level != nullptr) {
-		delete level;
-	}
 }
 
 void LevelEditor::Update(double deltaTime)
@@ -788,19 +782,6 @@ void LevelEditor::DeleteCurrentlySeleceted()
 		}
 		currentlySelected.entity = nullptr;
 		currentlySelected.type = Placeables::wall;
-	}
-}
-
-Level * LevelEditor::GetCurrentLevel()
-{
-	return level;
-}
-
-void LevelEditor::StopCurrentLevel()
-{
-	if (level != nullptr) {
-		delete level;
-		level = nullptr;
 	}
 }
 

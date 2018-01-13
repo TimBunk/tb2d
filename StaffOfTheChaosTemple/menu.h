@@ -37,27 +37,15 @@ public:
 	bool Start();
 	bool Editor();
 
-	/// @brief returns a boolean that will be true whenever the restart button is pressed
-	/// @return void
-	bool Restart();
-
 	/// @brief returns a boolean that will be true whenever the quit button is pressed
 	bool Quit();
 private:
 
-	/// @brief InitMenu if the menu is opened for the first time from the game it will have some extra options and the InitMenu adds that extra options like restart
-	/// @return void
-	void InitMenu();
-
-	bool init;
 	bool start; ///< @brief active Represents current state of the menu
 	bool editor;
-	bool restart; ///< @brief restart Is a boolean that will be true when the restart button is pressed
 	bool quit; ///< @brief quit Is a boolean that will be true when the quit button is pressed
-	Input* input; ///< @brief input The input is needed for when the user presses escape so he can leave the menu and get back in to the game
 	Button* startButton; ///< @brief startButton Is the a button that can be pressed for when you want to start the game
 	Button* editorButton;
-	Button* restartButton; ///< @brief restartButton Is a button that can be pressed for when you want to restart the game
 	Button* quitButton; ///< @brief quitButton Is a button that can be pressed for when you want to quit the game
 };
 
