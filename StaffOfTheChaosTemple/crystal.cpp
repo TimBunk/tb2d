@@ -1,8 +1,8 @@
 #include "crystal.h"
 
-Crystal::Crystal(int width, int height, unsigned int textureID, b2World* world) : Linkable::Linkable(width, height, textureID, world)
+Crystal::Crystal(int uniqueID, int width, int height, unsigned int textureID, b2World* world) : Linkable::Linkable(width, height, textureID, world)
 {
-
+	this->uniqueID = uniqueID;
 }
 
 Crystal::~Crystal()

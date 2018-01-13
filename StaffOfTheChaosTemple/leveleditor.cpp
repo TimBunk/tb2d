@@ -32,7 +32,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	canvasEditor->AddChild(saveButton);
 
 	warning = new Button(550, 100, 0, true, camera);
-	warning->SetColor(glm::vec4(0, 0, 0, 1));
+	warning->SetColor(glm::vec4(0.8f, 0, 0, 1));
 	warning->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
 	warning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	warningState = false;
@@ -84,12 +84,13 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	// Door options
 	doorCanvas = CreateCanvasPlaceable("door");
 	CreateInputFloat(inputDoorRotation, doorCanvas, "0", glm::vec2(-150, 250), "rotation");
+	inputDoorLink = CreateTickbox(doorCanvas, false, glm::vec2(0, 250), "link");
 	// Enemy options
 	enemyCanvas = CreateCanvasPlaceable("enemy");
 	CreateInputFloat(inputEnemyRotation, enemyCanvas, "0", glm::vec2(-150, 250), "rotation");
 	CreateInputFloat(inputEnemyHealth, enemyCanvas, "300", glm::vec2(0, 250), "health");
-	CreateInputFloat(inputEnemyDamage, enemyCanvas, "6", glm::vec2(-150, 150), "damage");
-	CreateInputFloat(inputEnemySpeed, enemyCanvas, "150", glm::vec2(0, 150), "speed");
+	CreateInputFloat(inputEnemyDamage, enemyCanvas, "6", glm::vec2(-150, 150), "speed");
+	CreateInputFloat(inputEnemySpeed, enemyCanvas, "150", glm::vec2(0, 150), "damage");
 	CreateInputFloat(inputEnemyLOS, enemyCanvas, "3000", glm::vec2(-150, 50), "line of sight");
 	// Finish options
 	finishCanvas = CreateCanvasPlaceable("finish");
@@ -118,7 +119,16 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	menu = false;
 	saving = false;
 	loading = false;
-	recentFilename = "";
+	
+	remove = new Button(400 / 3, 75, 0, true, camera);
+	remove->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	remove->CreateText("Remove", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
+	remove->SetColor(glm::vec4(1, 0, 0, 1));
+	remove->localPosition.y = -375;
+	canvasEditor->AddChild(remove);
+
+	crystalID = 0;
+	linking = false;
 }
 
 LevelEditor::~LevelEditor()
@@ -204,6 +214,11 @@ void LevelEditor::Update(double deltaTime)
 	}
 
 	// DRAW
+	for (int i = 0; i < links.size(); i++) {
+		for (int j = 0; j < links[i].crystals.size(); j++) {
+			DebugRenderer::Line(links[i].door->GetGlobalPosition(), links[i].crystals[j]->GetGlobalPosition(), glm::vec3(1, 0, 0));
+		}
+	}
 	for (int i = 0; i < floors.size(); i++) {
 		floors[i]->Draw();
 		floors[i]->DrawChilderen(this);
@@ -252,6 +267,8 @@ void LevelEditor::Update(double deltaTime)
 	UpdateTickboxes();
 	UpdateInputFloats();
 	UpdateCurrentlySelected();
+	if (linking) { return; }
+
 	if (mode == EditorMode::place) {
 		UpdatePlaceMode();
 	}
@@ -274,12 +291,15 @@ void LevelEditor::Update(double deltaTime)
 	if (menuButton->Down()) {
 		menu = true;
 	}
+	if (remove->Down()) {
+		DeleteCurrentlySeleceted();
+	}
 }
 
 void LevelEditor::UpdateSelectMode()
 {
 	//tickboxes[currentlySelected.type]->SetActive(true);
-	if (Input::MousePress(0)) {
+	if (Input::MousePress(0) && Input::GetMousePositionScreenSpace().x > -560) {
 		b2Body* bodylist = world->GetBodyList();
 		glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
 		b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
@@ -394,9 +414,11 @@ void LevelEditor::UpdateTickboxes()
 			tickboxesMode[mode]->SetActive(false);
 			if (mode == EditorMode::place) {
 				canvasEditor->RemoveChild(canvasObjects);
+				canvasEditor->AddChild(remove);
 			}
 			else if (mode != EditorMode::place && static_cast<EditorMode>(i) == EditorMode::place) {
 				canvasEditor->AddChild(canvasObjects);
+				canvasEditor->RemoveChild(remove);
 			}
 			mode = static_cast<EditorMode>(i);
 		}
@@ -553,7 +575,8 @@ void LevelEditor::GetPlaceable()
 		currentlySelected.type = Placeables::mirror;
 	}
 	else if (currentPlaceable == Placeables::crystal) {
-		Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+		crystalID++;
+		Crystal* _crystal = new Crystal(crystalID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
 		_crystal->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _crystal;
 		currentlySelected.type = Placeables::crystal;
@@ -567,10 +590,13 @@ void LevelEditor::GetPlaceable()
 		return;
 	}
 	else if (currentPlaceable == Placeables::door) {
-		Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+		Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 		_door->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _door;
 		currentlySelected.type = Placeables::door;
+		Link link;
+		link.door = _door;
+		links.push_back(link);
 	}
 	else if (currentPlaceable == Placeables::enemy) {
 		Enemy* _enemy = new Enemy(nullptr, 3000.0f, 0.6f, 0.5f, 300.0f, 6.0f, 150.0f, 70, 70, ResourceManager::GetTexture("enemy")->GetId(), world);
@@ -625,6 +651,52 @@ void LevelEditor::UpdateCurrentlySelected()
 	else if (currentlySelected.type == Placeables::door) {
 		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
 		_door->localAngle = glm::radians(inputDoorRotation.output);
+		if (inputDoorLink->IsActive() && linking == false && mode == EditorMode::select) {
+			linking = true;
+			RemoveChild(canvasEditor);
+		}
+		else if (linking) {
+			if (Input::MousePress(0)) {
+				b2Body* bodylist = world->GetBodyList();
+				glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
+				b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
+
+				while (bodylist != NULL) {
+					if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
+						B2Entity* _selected = static_cast<B2Entity*>(bodylist->GetFixtureList()->GetUserData());
+						for (int i = 0; i < editorObjects.size(); i++) {
+							// Look if the selected type is a crystal
+							if (editorObjects[i].entity == _selected && editorObjects[i].type == Placeables::crystal) {
+								for (int j = 0; j < links.size(); j++) {
+									// Look for the correct link
+									if (links[j].door == currentlySelected.entity) {
+										// Link the crystal with the door
+										links[j].crystals.push_back(dynamic_cast<Crystal*>(editorObjects[i].entity));
+										inputDoorLink->SetActive(false);
+										AddChild(canvasEditor);
+										linking = false;
+									}
+								}
+							}
+						}
+					}
+					bodylist = bodylist->GetNext();
+				}
+			}
+			else if (Input::MousePress(1)) {
+				inputDoorLink->SetActive(false);
+				AddChild(canvasEditor);
+				linking = false;
+			}
+		}
+		else if (inputDoorLink->IsActive()) {
+			inputDoorLink->SetActive(false);
+			if (warningState == false) {
+				AddChild(warning);
+				warning->SetText("Linking can only be done in select mode");
+				warningState = true;
+			}
+		}
 	}
 	else if (currentlySelected.type == Placeables::enemy) {
 		Enemy* _enemy = dynamic_cast<Enemy*>(currentlySelected.entity);
@@ -647,6 +719,14 @@ void LevelEditor::DeleteCurrentlySeleceted()
 	if (currentlySelected.entity == nullptr) {
 		return;
 	}
+	if (currentlySelected.entity == _player) {
+		delete _player;
+		_player = nullptr;
+	}
+	else if (currentlySelected.entity == _finish) {
+		delete _finish;
+		_finish = nullptr;
+	}
 	// Delete the floor object
 	if (currentlySelected.type == Placeables::floor) {
 		std::vector<B2Entity*>::iterator itFloor = floors.begin();
@@ -667,6 +747,37 @@ void LevelEditor::DeleteCurrentlySeleceted()
 		std::vector<EditorObject>::iterator itEditorObjects = editorObjects.begin();
 		while (itEditorObjects != editorObjects.end()) {
 			if ((*itEditorObjects).entity == currentlySelected.entity) {
+				// If it is a door remove the link from that door
+				if ((*itEditorObjects).type == Placeables::door) {
+					std::vector<Link>::iterator itDoors = links.begin();
+					while (itDoors != links.end()) {
+						if ((*itDoors).door == currentlySelected.entity) {
+							links.erase(itDoors);
+							break;
+						}
+						else {
+							++itDoors;
+						}
+					}
+				}
+				// If it is a crystal remove the link to that crystal if that link exists
+				else if ((*itEditorObjects).type == Placeables::crystal) {
+					std::vector<Link>::iterator itDoors = links.begin();
+					while (itDoors != links.end()) {
+						std::vector<Crystal*>::iterator itCrystals = (*itDoors).crystals.begin();
+						while (itCrystals != (*itDoors).crystals.end()) {
+							if (*itCrystals == currentlySelected.entity) {
+								(*itDoors).crystals.erase(itCrystals);
+								break;
+							}
+							else {
+								++itCrystals;
+							}
+						}
+						++itDoors;
+					}
+				}
+				// Delete the currently selected
 				delete (*itEditorObjects).entity;
 				editorObjects.erase(itEditorObjects);
 				break;
@@ -715,6 +826,9 @@ void LevelEditor::Save()
 	else {
 		return;
 	}
+	if (mode != EditorMode::select) {
+		DeleteCurrentlySeleceted();
+	}
 	std::cout << "save!" << std::endl;
 	nameReceiver->SetText("levels/" + nameReceiver->GetString() + ".LEVEL");
 	char *_levelName = new char[nameReceiver->GetString().length() + 1];
@@ -756,6 +870,7 @@ void LevelEditor::Save()
 			data += std::to_string(_crystal->localPosition.x) + " ";
 			data += std::to_string(_crystal->localPosition.y) + " ";
 			data += std::to_string(_crystal->localAngle) + " ";
+			data += std::to_string(_crystal->GetUniqueID()) + " ";
 		}
 		else if (editorObjects[i].type == Placeables::door) {
 			Door* _door = dynamic_cast<Door*>(editorObjects[i].entity);
@@ -763,6 +878,17 @@ void LevelEditor::Save()
 			data += std::to_string(_door->localPosition.x) + " ";
 			data += std::to_string(_door->localPosition.y) + " ";
 			data += std::to_string(_door->localAngle) + " ";
+			for (int i = 0; i < links.size(); i++) {
+				if (links[i].door == _door) {
+					data += std::to_string(links[i].crystals.size()) + " ";
+					textfile->Write(data);
+					for (int j = 0; j < links[i].crystals.size(); j++) {
+						textfile->Write(std::to_string(links[i].crystals[j]->GetUniqueID()));
+					}
+					break;
+				}
+			}
+			continue;
 		}
 		else if (editorObjects[i].type == Placeables::enemy) {
 			Enemy* _enemy = dynamic_cast<Enemy*>(editorObjects[i].entity);
@@ -817,10 +943,6 @@ void LevelEditor::Load()
 	strcpy(_levelName, nameReceiver->GetString().c_str());
 	nameReceiver->SetText("");
 
-	//textfile->Open(_levelName);
-	//textfile->StartReading();
-	//textfile->Close();
-
 	if (textfile->Open(_levelName)) {
 		ClearScene();
 		textfile->StartReading();
@@ -872,24 +994,37 @@ void LevelEditor::Load()
 			else if (lineoftext[0] == 'c') {
 				glm::vec2 _pos;
 				float _angle;
-				sscanf(lineoftext.c_str(), "crystal %f %f %f", &_pos.x, &_pos.y, &_angle);
-				Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+				float uniqueID;
+				sscanf(lineoftext.c_str(), "crystal %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID);
+				Crystal* _crystal = new Crystal(uniqueID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
 				_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 				_crystal->localPosition = _pos;
 				_crystal->localAngle = _angle;
 				eo.entity = _crystal;
 				eo.type = Placeables::crystal;
+				crystalID = uniqueID;
+				tmpCrystals.push_back(_crystal);
 			}
 			else if (lineoftext[0] == 'd') {
 				glm::vec2 _pos;
 				float _angle;
-				sscanf(lineoftext.c_str(), "door %f %f %f", &_pos.x, &_pos.y, &_angle);
-				Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+				float _crystals;
+				sscanf(lineoftext.c_str(), "door %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_crystals);
+				Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 				_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 				_door->localPosition = _pos;
 				_door->localAngle = _angle;
 				eo.entity = _door;
 				eo.type = Placeables::door;
+				Link link;
+				link.door = _door;
+				for (int i = 0; i < _crystals; i++) {
+					lineoftext = textfile->ReadLine();
+ 					int _crystalid;
+					sscanf(lineoftext.c_str(), "%d", &_crystalid);
+					link.crystalIDs.push_back(_crystalid);
+				}
+				links.push_back(link);
 			}
 			else if (lineoftext[0] == 'e') {
 				glm::vec2 _pos;
@@ -945,6 +1080,18 @@ void LevelEditor::Load()
 		}
 		textfile->Close();
 		currentlySelected.entity = nullptr;
+
+		// Link all of the crystals with their doors
+		for (int i = 0; i < links.size(); i++) {
+			for (int j = 0; j < links[i].crystalIDs.size(); j++) {
+				for (int k = 0; k < tmpCrystals.size(); k++) {
+					if (links[i].crystalIDs[j] == tmpCrystals[k]->GetUniqueID()) {
+						links[i].crystals.push_back(tmpCrystals[k]);
+					}
+				}
+			}
+		}
+		tmpCrystals.clear();
 		//currentlySelected.type = currentPlaceable;
 	}
 	else {
@@ -959,6 +1106,11 @@ void LevelEditor::Load()
 
 void LevelEditor::ClearScene()
 {
+	if (mode != EditorMode::select) {
+		DeleteCurrentlySeleceted();
+	}
+	crystalID = 0;
+	camera->SetPosition(glm::vec2(0, 0));
 	if (_player != nullptr) {
 		delete _player;
 		_player = nullptr;
@@ -978,6 +1130,10 @@ void LevelEditor::ClearScene()
 	while (itEditorObjects != editorObjects.end()) {
 		delete (*itEditorObjects).entity;
 		itEditorObjects = editorObjects.erase(itEditorObjects);
+	}
+	std::vector<Link>::iterator itDoors = links.begin();
+	while (itDoors != links.end()) {
+		itDoors = links.erase(itDoors);
 	}
 	currentlySelected.entity = nullptr;
 	//currentlySelected.type = currentPlaceable;

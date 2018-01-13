@@ -10,6 +10,12 @@
 #include "enemy.h"
 #include "textfile.h"
 
+struct Link {
+	Door* door = nullptr;
+	std::vector<int> crystalIDs;
+	std::vector<Crystal*> crystals;
+};
+
 class Level : public Scene
 {
 public:
@@ -38,6 +44,10 @@ private:
 	std::string LoadingErrors;
 	std::vector<Entity*> levelObjects;
 	std::vector<Enemy*> enemies;
+
+	std::vector<Link> tmpLinks;
+	std::vector<Crystal*> tmpCrystals;
+	//std::vector<int> 
 };
 
 #endif // !LEVEL_H

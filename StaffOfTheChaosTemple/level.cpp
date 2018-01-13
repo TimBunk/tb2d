@@ -141,25 +141,37 @@ void Level::Load(std::string filename)
 			else if (lineoftext[0] == 'c') {
 				glm::vec2 _pos;
 				float _angle;
-				sscanf(lineoftext.c_str(), "crystal %f %f %f", &_pos.x, &_pos.y, &_angle);
-				Crystal* _crystal = new Crystal(70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
+				float uniqueID;
+				sscanf(lineoftext.c_str(), "crystal %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID);
+				Crystal* _crystal = new Crystal(uniqueID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
 				_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 				_crystal->localPosition = _pos;
 				_crystal->localAngle = _angle;
 				AddChild(_crystal);
 				levelObjects.push_back(_crystal);
+				tmpCrystals.push_back(_crystal);
 			}
 			// DOOR
 			else if (lineoftext[0] == 'd') {
 				glm::vec2 _pos;
 				float _angle;
-				sscanf(lineoftext.c_str(), "door %f %f %f", &_pos.x, &_pos.y, &_angle);
-				Door* _door = new Door(Direction::west, 550, 550, ResourceManager::GetTexture("door")->GetId(), world);
+				float _crystals;
+				sscanf(lineoftext.c_str(), "door %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_crystals);
+				Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 				_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 				_door->localPosition = _pos;
 				_door->localAngle = _angle;
 				AddChild(_door);
 				levelObjects.push_back(_door);
+				Link link;
+				link.door = _door;
+				for (int i = 0; i < _crystals; i++) {
+					lineoftext = textfile->ReadLine();
+					int _crystalid;
+					sscanf(lineoftext.c_str(), "%d", &_crystalid);
+					link.crystalIDs.push_back(_crystalid);
+				}
+				tmpLinks.push_back(link);
 			}
 			// ENEMY
 			else if (lineoftext[0] == 'e') {
@@ -212,6 +224,17 @@ void Level::Load(std::string filename)
 			enemies[i]->SetPlayer(player);
 			enemies[i]->UpdateChilderen(this, 0);
 		}
+		for (int i = 0; i < tmpLinks.size(); i++) {
+			for (int j = 0; j < tmpLinks[i].crystalIDs.size(); j++) {
+				for (int k = 0; k < tmpCrystals.size(); k++) {
+					if (tmpLinks[i].crystalIDs[j] == tmpCrystals[k]->GetUniqueID()) {
+						tmpLinks[i].door->Link(tmpCrystals[k]);
+					}
+				}
+			}
+		}
+		tmpLinks.clear();
+		tmpCrystals.clear();
 	}
 	else {
 		LoadingErrors = "Could not find: " + filename;

@@ -55,8 +55,6 @@ public:
 	void Load();
 	void ClearScene();
 
-	std::string recentFilename;
-
 	//bool
 	bool Menu();
 
@@ -114,6 +112,7 @@ private:
 	// Door canvas
 	Sprite* doorCanvas;
 	InputFloat inputDoorRotation;
+	Tickbox* inputDoorLink;
 	// Enemy canvas
 	Sprite* enemyCanvas;
 	InputFloat inputEnemyRotation;
@@ -151,6 +150,8 @@ private:
 	b2World* world;
 	EditorObject currentlySelected;
 
+	Button* remove;
+
 	Textinput* nameReceiver;
 	Button* warning;
 	bool warningState;
@@ -160,6 +161,12 @@ private:
 	Button* loadButton;
 	bool loading;
 	Button* menuButton;
+
+	std::vector<Crystal*> tmpCrystals;
+
+	int crystalID;
+	std::vector<Link> links;
+	bool linking;
 };
 
 #endif // !LEVELEDITOR_H

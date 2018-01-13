@@ -1,9 +1,10 @@
 #include "door.h"
 
-Door::Door(Direction direction, int width, int height, unsigned int textureID, b2World* world) : Linkable::Linkable(width, height, textureID, world)
+Door::Door(int width, int height, unsigned int textureID, b2World* world) : Linkable::Linkable(width, height, textureID, world)
 {
-	this->direction = direction;
-	openPosition = glm::vec2(0.0f, 0.0f);
+	direction = glm::vec2(0.0f, 0.0f);
+	xDirectionPositive = false;
+	yDirectionPositive = false;
 }
 
 Door::~Door()
@@ -23,57 +24,47 @@ void Door::Update(double deltaTime)
 	// if all linkables are enabled start opening the door
 	if (isOpen) {
 		if (enabled == false) {
-			switch (direction)
-			{
-			case north:
-				openPosition.y = localPosition.y + this->height;
-				break;
-			case east:
-				openPosition.x = localPosition.x + this->width;
-				break;
-			case south:
-				openPosition.y = localPosition.y - this->height;
-				break;
-			case west:
-				openPosition.x = localPosition.x - this->width;
-				break;
+			direction.x = glm::cos(localAngle);
+			direction.y = glm::sin(localAngle);
+			direction = glm::normalize(direction);
+			direction *= width;
+			direction *= -1;
+			if (direction.x > 0) {
+				xDirectionPositive = true;
 			}
+			else {
+				xDirectionPositive = false;
+			}
+			if (direction.y > 0) {
+				yDirectionPositive = true;
+			}
+			else {
+				yDirectionPositive = false;
+			}
+			openPosition = direction + localPosition;
 		}
 		// Open and enable the door so that everything that this door is linked with also know it is open
 		enabled = true;
 	}
 	// Open the door by moving it its direction
 	if (enabled) {
-		switch (direction)
-		{
-		case north:
-			if (this->GetGlobalPosition().y != openPosition.y) {
-				localPosition.y = localPosition.y + (height / 2 * deltaTime);
-				if (localPosition.y > openPosition.y)
-					localPosition.y = openPosition.y;
+		if (localPosition != openPosition) {
+			glm::vec2 tmpDirection = direction;
+			tmpDirection = glm::normalize(tmpDirection);
+			tmpDirection *= width/2 * deltaTime;
+			this->localPosition += tmpDirection;
+			if (xDirectionPositive == true && localPosition.x > openPosition.x) {
+				localPosition.x = openPosition.x;
 			}
-			break;
-		case east:
-			if (this->GetGlobalPosition().x != openPosition.x) {
-				localPosition.x = localPosition.x + (width / 2 * deltaTime);
-				if (localPosition.x > openPosition.x)
-					localPosition.x = openPosition.x;
+			else if (xDirectionPositive == false && localPosition.x < openPosition.x) {
+				localPosition.x = openPosition.x;
 			}
-			break;
-		case south:
-			if (this->GetGlobalPosition().y != openPosition.y) {
-				localPosition.y = localPosition.y - (height / 2 * deltaTime);
-				if (localPosition.y < openPosition.y)
-					localPosition.y = openPosition.y;
+			if (yDirectionPositive == true && localPosition.y > openPosition.y) {
+				localPosition.y = openPosition.y;
 			}
-			break;
-		case west:
-			if (this->GetGlobalPosition().x != openPosition.x) {
-				localPosition.x = localPosition.x - (width / 2 * deltaTime);
-				if (localPosition.x < openPosition.x)
-					localPosition.x = openPosition.x;
+			else if (yDirectionPositive == false && localPosition.y < openPosition.y) {
+				localPosition.y = openPosition.y;
 			}
-			break;
 		}
 	}
 }

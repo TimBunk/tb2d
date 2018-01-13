@@ -3,27 +3,21 @@
 
 #include "linkable.h"
 
-enum Direction {
-	north,
-	east,
-	south,
-	west
-};
-
 class Door : public Linkable
 {
 public:
-	Door(Direction direction, int width, int height, unsigned int textureID, b2World* world);
+	Door(int width, int height, unsigned int textureID, b2World* world);
 	~Door();
 
 	void Update(double deltaTime);
-
 	void Link(Linkable* linkable);
 
 private:
 	std::vector<Linkable*> linkables;
+	glm::vec2 direction;
 	glm::vec2 openPosition;
-	Direction direction;
+	bool xDirectionPositive;
+	bool yDirectionPositive;
 };
 
 #endif // !DOOR_H
