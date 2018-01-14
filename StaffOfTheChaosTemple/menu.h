@@ -40,7 +40,9 @@ public:
 	/// @brief returns a boolean that will be true whenever the quit button is pressed
 	bool Quit();
 private:
-
+	Sprite* background;
+	Text* creditsProgrammer;
+	Text* creditsArtist;
 	bool start; ///< @brief active Represents current state of the menu
 	bool editor;
 	bool quit; ///< @brief quit Is a boolean that will be true when the quit button is pressed
