@@ -23,6 +23,8 @@ private:
 	void LoadLevel(std::string filename);
 
 	Level* level;
+	Button* tutorial;
+
 	Text* nameReceiverText;
 	Textinput* nameReceiver;
 	Button* load;

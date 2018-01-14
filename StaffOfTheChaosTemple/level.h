@@ -19,13 +19,16 @@ struct Link {
 class Level : public Scene
 {
 public:
-	Level(int screenWidthCamera, int screenHeightCamera, std::string filename);
+	Level(int screenWidthCamera, int screenHeightCamera);
 	virtual ~Level();
 
 	virtual void Update(double deltaTime);
 	bool IsFinished();
 	bool IsPlayerAlive() { return player->IsAlive(); }
 	std::string GetLoadingErrors() { return LoadingErrors; }
+
+	void LoadFile(std::string filename);
+	void LoadTutorial();
 
 protected:
 
@@ -39,7 +42,9 @@ protected:
 	bool finished;
 
 private:
-	void Load(std::string filename);
+	void Init();
+	void ReadLine(std::string line);
+
 	Textfile* textfile;
 	std::string LoadingErrors;
 	std::vector<Entity*> levelObjects;
@@ -47,7 +52,6 @@ private:
 
 	std::vector<Link> tmpLinks;
 	std::vector<Crystal*> tmpCrystals;
-	//std::vector<int> 
 };
 
 #endif // !LEVEL_H

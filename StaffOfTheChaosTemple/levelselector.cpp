@@ -4,6 +4,13 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 {
 	level = nullptr;
 
+	tutorial = new Button(400, 100, 0, true, camera);
+	tutorial->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	tutorial->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
+	tutorial->CreateText("tutorial", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(0, 0, 0));
+	tutorial->localPosition = glm::vec2(-480, 400);
+	AddChild(tutorial);
+
 	nameReceiver = new Textinput("", false, ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), true, 550, 100, glm::vec4(0, 0, 0, 1));
 	nameReceiver->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	nameReceiver->localPosition.y = -400;
@@ -33,6 +40,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 
 Levelselector::~Levelselector()
 {
+	delete tutorial;
 	delete nameReceiver;
 	delete nameReceiverText;
 	delete load;
@@ -43,6 +51,10 @@ Levelselector::~Levelselector()
 
 void Levelselector::Update(double deltaTime)
 {
+	if (tutorial->Down()) {
+		level = new Level(3840, 2160);
+		level->LoadTutorial();
+	}
 	if (load->Down() && nameReceiver->GetString().length() > 0) {
 		LoadLevel(nameReceiver->GetString());
 	}
@@ -98,8 +110,8 @@ void Levelselector::ExitLevel()
 void Levelselector::LoadLevel(std::string filename)
 {
 	std::string _filename = "levels/" + filename + ".LEVEL";
-	//level = new Level(1920, 1080, _filename);
-	level = new Level(3840, 2160, _filename);
+	level = new Level(3840, 2160);
+	level->LoadFile(_filename);
 	if (level->GetLoadingErrors().length() > 0) {
 		if (error->GetText().length() == 0) {
 			error->SetText(level->GetLoadingErrors());
