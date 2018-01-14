@@ -7,6 +7,7 @@ struct Particle {
 	GLuint textureID = 0;// If textureID = 0; There will be no texture instead there will be a color
 	glm::vec4 color;
 	glm::vec2 position;
+	glm::vec2 direction;
 	float angle = 0.0f; // In radians
 	int width = 0;
 	int height = 0;
