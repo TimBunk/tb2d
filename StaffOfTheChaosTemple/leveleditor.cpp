@@ -322,6 +322,7 @@ void LevelEditor::UpdateSelectMode()
 		glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
 		b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
 
+		bool foundFloor = false;
 		while (bodylist != NULL) {
 			if (bodylist->GetFixtureList()->TestPoint(mousePos)) {
 				B2Entity* _selected = static_cast<B2Entity*>(bodylist->GetFixtureList()->GetUserData());
@@ -358,14 +359,18 @@ void LevelEditor::UpdateSelectMode()
 						if (currentlySelected.entity != nullptr) {
 							Place();
 						}
+						foundFloor = true;
 						currentlySelected.entity = floors[i];
 						currentlySelected.type = Placeables::floor;
-						Select();
+						//Select();
 						continue;
 					}
 				}
 			}
 			bodylist = bodylist->GetNext();
+		}
+		if (foundFloor) {
+			Select();
 		}
 	}
 
