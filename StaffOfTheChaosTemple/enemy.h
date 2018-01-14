@@ -11,6 +11,8 @@ public:
 	Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world);
 	~Enemy();
 
+	void Init();
+
 	void Update(double deltaTime);
 	void Draw();
 

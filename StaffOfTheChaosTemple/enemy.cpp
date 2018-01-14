@@ -35,14 +35,20 @@ Enemy::~Enemy()
 {
 	delete raycast;
 	delete distanceObjects;
-	//delete mirror;
 	delete sword;
 	delete redHealthbar;
 	delete greenHealthbar;
 }
 
+void Enemy::Init()
+{
+	lastPositionPlayer = this->localPosition;
+}
+
 void Enemy::Update(double deltaTime)
 {
+	// Update the healthbar
+	greenHealthbar->SetWidth(currentHealth / maxHealth * 150);
 
 	glm::vec2 rayDestination = player->GetGlobalPosition() - position;
 	rayDestination = glm::normalize(rayDestination);
@@ -116,7 +122,6 @@ void Enemy::Draw()
 	greenHealthbar->UpdateChilderen(NULL, 0);
 	redHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
 	greenHealthbar->localPosition = glm::vec2(position.x - 75, position.y + 125);
-	greenHealthbar->SetWidth(currentHealth / maxHealth * 150);
 	// Render
 	renderer->Submit(this);
 	if (body != nullptr) {

@@ -223,6 +223,7 @@ void Level::Load(std::string filename)
 		for (int i = 0; i < enemies.size(); i++) {
 			enemies[i]->SetPlayer(player);
 			enemies[i]->UpdateChilderen(this, 0);
+			enemies[i]->Init();
 		}
 		for (int i = 0; i < tmpLinks.size(); i++) {
 			for (int j = 0; j < tmpLinks[i].crystalIDs.size(); j++) {

@@ -46,8 +46,8 @@ enum GameState
 GameState gameState;
 
 int main() {
-	core = new Core("Staff of the Chaos Temple", false);
-	core->ResizeWindow(1600, 900);
+	core = new Core("Staff of the Chaos Temple", true);
+	//core->ResizeWindow(1600, 900);
 	//core->ResizeWindow(800, 600);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 
@@ -75,7 +75,6 @@ int main() {
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
 	levelSelector = new Levelselector(1920, 1080);
-	//levelEditor = new LevelEditor(1920, 1080);
 	levelEditor = new LevelEditor(3840, 2160);
 
 	while (core->IsActive()) {
@@ -137,10 +136,12 @@ int main() {
 			break;
 		}
 	}
+	// Delete the scenes and the core
 	delete menu;
 	delete levelSelector;
 	delete levelEditor;
 	delete core;
+	// Program succeeded!
 	std::cout << "Program succeeded" << std::endl;
 	return 0;
 }
