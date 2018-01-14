@@ -10,14 +10,7 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 
 	distanceObjects = new B2Entity(width, height, 0, world);
 	distanceObjects->CreateCircleCollider(65, true, true);
-	distanceObjects->SetDebugColor(glm::vec3(1, 0, 0));
 	this->AddChild(distanceObjects);
-
-	/*mirror = new Mirror(false, 45.0f, 120.0f, ResourceManager::GetTexture("mirror")->GetId(), world);
-	mirror->localPosition.x = 100;
-	mirror->CreateBoxCollider(45.0f, 120.0f, glm::vec2(0.0f, 0.0f), false, false);
-	mirror->SetFilter(2);
-	AddChild(mirror);*/
 
 	attackRadius = 150.0f;
 	sword = new B2Entity(75, 120, ResourceManager::GetTexture("sword")->GetId(), world);
