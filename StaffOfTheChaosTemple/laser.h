@@ -7,13 +7,14 @@
 class Laser : public Sprite
 {
 public:
-	Laser(float damage, float laserRange, int width, int height, unsigned int texture, b2World* world);
+	Laser(float damage, int width, int height, unsigned int texture, b2World* world);
 	~Laser();
 
 	void Update(double deltaTime);
 	void Draw();
+	void DrawParticles(double deltaTime);
 
-	void UpdateParticles(double deltaTime);
+	void SpawnParticles();
 
 	void SetDirection(glm::vec2 direction) { this->direction = direction; };
 	bool Hit() { return hit; };
@@ -22,7 +23,6 @@ public:
 
 private:
 	float damage;
-	float laserRange;
 	ParticleRenderer* pr;
 
 	bool hit;
@@ -31,9 +31,8 @@ private:
 	glm::vec2 hitPosition;
 	glm::vec2 reflection;
 
+	unsigned int particleTextureID;
 	std::vector<Particle> particles;
-	std::vector<float> randomLengths;
-	std::vector<glm::vec2> randomOffsets;
 };
 
 #endif // !LASER_H

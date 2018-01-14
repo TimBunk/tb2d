@@ -68,7 +68,8 @@ int main() {
 	ResourceManager::CreateTexture("tickboxActive", "textures/tickboxactive.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("textinput", "textures/textinput.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 
-	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("default"));
+	ResourceManager::CreateShader("laser", "shaders\\basic.vs", "shaders\\laserParticle.fs");
+	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("laser"));
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);

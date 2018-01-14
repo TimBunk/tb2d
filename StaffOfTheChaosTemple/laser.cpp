@@ -2,12 +2,13 @@
 #include "mirror.h"
 #include "person.h"
 
-Laser::Laser(float damage, float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
+Laser::Laser(float damage, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
 	this->damage = damage;
-	this->laserRange = laserRange;
 	raycast = new Raycast(world);
 	pr = RenderManager::GetParticleRenderer("particle");
+	particleTextureID = ResourceManager::GetTexture("laserParticle")->GetId();
+	color = glm::vec4(0.6f, 0.9f, 0.84f, 1);
 }
 
 Laser::~Laser()
@@ -37,7 +38,7 @@ void Laser::Update(double deltaTime)
 			reflection = intersectionPoint - (2 * glm::dot(intersectionPoint, rh.normal) * rh.normal);
 
 			localScale.y = rh.fraction;
-			UpdateParticles(deltaTime);
+			SpawnParticles();
 			return;
 
 		}
@@ -60,7 +61,7 @@ void Laser::Update(double deltaTime)
 			hit = false;
 			hitPosition = rh.point;
 			reflection = glm::vec2();
-			UpdateParticles(deltaTime);
+			SpawnParticles();
 			return;
 		}
 		// HIT B2ENTITY
@@ -70,7 +71,7 @@ void Laser::Update(double deltaTime)
 			hit = false;
 			hitPosition = rh.point;
 			reflection = glm::vec2();
-			UpdateParticles(deltaTime);
+			SpawnParticles();
 			return;
 		}
 	}
@@ -78,65 +79,48 @@ void Laser::Update(double deltaTime)
 	hit = false;
 	hitPosition = destination;
 	reflection = glm::vec2();
-	UpdateParticles(deltaTime);
 }
 
 void Laser::Draw()
 {
-	for (int i = 0; i < particles.size(); i++) {
-		pr->Submit(particles[i]);
+	if (renderer != nullptr) {
+		renderer->Submit(this);
 	}
 }
 
-void Laser::UpdateParticles(double deltaTime)
+void Laser::DrawParticles(double deltaTime)
 {
-	glm::vec2 diff = hitPosition - position;
-	float distance = glm::length(diff);
-	// Iterate through our vectors and update them or delete them if neccesary
-	std::vector<Particle>::iterator itParticles = particles.begin();
-	std::vector<float>::iterator itRandomPositions = randomLengths.begin();
-	std::vector<glm::vec2>::iterator itRandomOffets = randomOffsets.begin();
-	while (itParticles != particles.end()) {
-		// Delete the particle and its randomPosition if the randomPosition is greather then the distance
-		if (glm::length((*itRandomPositions) * diff) > distance) {
-			itParticles = particles.erase(itParticles);
-			itRandomPositions = randomLengths.erase(itRandomPositions);
-			itRandomOffets = randomOffsets.erase(itRandomOffets);
+	for (int i = 0;i < particles.size(); ) {
+		particles[i].color.a -= deltaTime;
+		glm::vec2 velocity = particles[i].direction;
+		velocity *= deltaTime;
+		particles[i].position += velocity;
+		if (particles[i].color.a <= 0) {
+			particles.erase(particles.begin() + i);
 		}
-		// Update the position of the particles
 		else {
-			// Move particle
-			(*itRandomPositions) += (glm::normalize((*itRandomPositions)) * deltaTime * 0.25f);
-			glm::vec2 randomVec2 = diff * (*itRandomPositions) + (*itRandomOffets);
-			(*itParticles).position = randomVec2 + position;
-			++itParticles;
-			++itRandomPositions;
-			++itRandomOffets;
+			pr->Submit(particles[i]);
+			i++;
 		}
 	}
-	int amountParticles = ((int)(localScale.y * 100.0f));
-	for (int i = particles.size(); i < amountParticles; i++) {
+}
+
+void Laser::SpawnParticles()
+{
+	for (int i = particles.size(); i < 100; i++) {
 		Particle p;
-		
-		float randomLength = ((float)(std::rand() % 1000)/1000);
-		randomLengths.push_back(randomLength);
-
-		glm::vec2 randomOffset;
-		randomOffset.x = ((float)(std::rand() % 20) - 10);
-		randomOffset.y = ((float)(std::rand() % 20) -  10);
-		randomOffsets.push_back(randomOffset);
-
-		glm::vec2 randomVec2 = diff * randomLength + randomOffset;
-		p.position = randomVec2 + position;
-
-		p.textureID = textureID;
-		p.width = width;
-		p.height = height;
+		p.angle = (((float)(std::rand() % (int)((float)M_PI * 2 * 1000.0f))) / 1000.0f);
+		p.textureID = particleTextureID;
+		p.color = glm::vec4(0, 0, 0, ((float)(std::rand() % 2000)) / 1000.0f);
+		p.width = 32;
+		p.height = 32;
+		p.position = hitPosition;
+		float _angle = localAngle + glm::radians(90.0f);
+		_angle += (((float)(std::rand() % (int)((float)M_PI * 1000.0f))) - (float)M_PI_2 * 1000.0f) / 1000.0f;
+		glm::vec2 _direction = glm::vec2(glm::cos(_angle), glm::sin(_angle));
+		p.direction = _direction;
+		p.direction = glm::normalize(p.direction);
+		p.direction *= 10.0f + ((float)(std::rand() % 40));
 		particles.push_back(p);
-	}
-	while (particles.size() > amountParticles) {
-		particles.pop_back();
-		randomLengths.pop_back();
-		randomOffsets.pop_back();
 	}
 }

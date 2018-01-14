@@ -6,7 +6,7 @@ Staff::Staff(float damage, float laserRange, int width, int height, unsigned int
 	this->laserRange = laserRange;
 	this->world = world;
 	// In order to make the lasers work we need atleast one already in the vector
-	lasers.push_back(new Laser(damage, laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
+	lasers.push_back(new Laser(damage, 10, laserRange, 0, world));
 	lasers[0]->SetPivot(glm::vec2(0.0f, -0.5f));
 	shooting = false;
 }
@@ -22,6 +22,9 @@ Staff::~Staff()
 
 void Staff::Update(double deltaTime)
 {
+	for (int i = 0; i < lasers.size(); i++) {
+		lasers[i]->DrawParticles(deltaTime);
+	}
 	if (shooting) {
 		shooting = false;
 		float angleStaff = GetGlobalAngle();
@@ -43,7 +46,7 @@ void Staff::Update(double deltaTime)
 			while (i <= lasers.size()) {
 				// If the latest laser has a hit create a new one
 				if (i == lasers.size() && lasers[i - 1]->Hit() && i < 15) {
-					lasers.push_back(new Laser(damage, laserRange, 32, 32, ResourceManager::GetTexture("laserParticle")->GetId(), world));
+					lasers.push_back(new Laser(damage, 10, laserRange, 0, world));
 					lasers[i]->SetPivot(glm::vec2(0.0f, -0.5f));
 					direction = lasers[i - 1]->GetReflection();
 					direction = glm::normalize(direction);

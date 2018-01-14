@@ -61,7 +61,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	CreateInputFloat(inputPlayerRotation, playerCanvas, "0", glm::vec2(-150, 250), "rotation");
 	CreateInputFloat(inputPlayerHealth, playerCanvas, "800", glm::vec2(0, 250), "health");
 	CreateInputFloat(inputPlayerDamage, playerCanvas, "10", glm::vec2(-150, 150), "damage");
-	CreateInputFloat(inputPlayerSpeed, playerCanvas, "50", glm::vec2(0, 150), "speed");
+	CreateInputFloat(inputPlayerSpeed, playerCanvas, "10", glm::vec2(0, 150), "speed");
 	_player = nullptr;
 	// Wall options
 	wallCanvas = CreateCanvasPlaceable("wall");

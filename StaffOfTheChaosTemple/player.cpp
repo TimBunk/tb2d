@@ -16,10 +16,6 @@ Player::~Player()
 
 void Player::Update(double deltaTime)
 {
-	// If mouse down start shooting a laser
-	if (Input::MouseDown(GLFW_MOUSE_BUTTON_1)) {
-		staff->Shoot();
-	}
 	// Movement player
 	glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
 	if (Input::KeyDown(GLFW_KEY_W) || Input::KeyDown(GLFW_KEY_UP)) {
@@ -37,7 +33,13 @@ void Player::Update(double deltaTime)
 	// The velocity has to be not equal to zero otherwise if I normalze the vec2 it will return nand-id
 	if (velocity.x != 0 || velocity.y != 0) {
 		velocity = glm::normalize(velocity);
-		velocity *= 10.0f;
+		velocity *= speed;
+	}
+	// If mouse down start shooting a laser
+	if (Input::MouseDown(GLFW_MOUSE_BUTTON_1)) {
+		staff->Shoot();
+		// The speed of the player 
+		velocity *= 0.5f;
 	}
 	localPosition = ApplyVelocityB2body(velocity);
 	camera->SetPosition(GetGlobalPosition());
