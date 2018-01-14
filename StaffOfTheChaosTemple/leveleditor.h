@@ -47,16 +47,13 @@ public:
 	void CreateInputFloat(InputFloat& inputFloat, Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
 	Tickbox* CreateTickbox(Sprite* canvas, bool startValue, glm::vec2 position, std::string text);
 	Sprite* CreateCanvasPlaceable(std::string name);
+	void AddTextToGuide(std::string text, int fontsize, glm::vec2 position);
 
 	void Save();
 	void Load();
 	void ClearScene();
 
-	//bool
-	bool Menu();
-
 private:
-	bool menu;
 	enum Placeables
 	{
 		player,
@@ -155,13 +152,16 @@ private:
 	bool saving;
 	Button* loadButton;
 	bool loading;
-	Button* menuButton;
 
 	std::vector<Crystal*> tmpCrystals;
 
 	int crystalID;
 	std::vector<Link> links;
+	Text* linkingText;
 	bool linking;
+
+	bool guide;
+	Sprite* canvasGuide;
 };
 
 #endif // !LEVELEDITOR_H

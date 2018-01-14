@@ -113,7 +113,7 @@ int main() {
 		case _editor:
 			core->Run(levelEditor);
 			// If the escape key is pressed or the menu button switch the game state to menu
-			if (Input::KeyPress(GLFW_KEY_ESCAPE) || levelEditor->Menu()) {
+			if (Input::KeyPress(GLFW_KEY_ESCAPE)) {
 				gameState = _menu;
 			}
 			break;

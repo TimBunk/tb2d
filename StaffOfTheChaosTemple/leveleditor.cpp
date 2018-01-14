@@ -19,10 +19,10 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	nameReceiver = new Textinput("", false, ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), true, 1100, 200, glm::vec4(0, 0, 0, 1));
 	nameReceiver->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	nameReceiverText = new Text("Type the name of the file here", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
-	nameReceiverText->localPosition.y = 1140;
+	nameReceiverText->localPosition.y = 200;
 	textVector.push_back(nameReceiverText);
 
-	saveButton = new Button(800/3, 150, 0, true, camera);
+	saveButton = new Button(800/2, 150, 0, true, camera);
 	saveButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
 	saveButton->localPosition = glm::vec2(-400 + saveButton->GetWidth()/2 * 1, -1080 + 150 / 2);
@@ -35,19 +35,12 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	warning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	warningState = false;
 
-	loadButton = new Button(800/3, 150, 0, true, camera);
+	loadButton = new Button(800/2, 150, 0, true, camera);
 	loadButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	loadButton->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
 	loadButton->localPosition = glm::vec2(-400 + loadButton->GetWidth() / 2 + saveButton->GetWidth(), -1080 + 150 / 2);
 	loadButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(loadButton);
-
-	menuButton = new Button(800 / 3, 150, 0, true, camera);
-	menuButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	menuButton->CreateText("menu", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
-	menuButton->localPosition = glm::vec2(-400 + menuButton->GetWidth() / 2 + loadButton->GetWidth() + saveButton->GetWidth(), -1080 + 150 / 2);
-	menuButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	canvasEditor->AddChild(menuButton);
 
 	CreateEditorModeTickbox("select", glm::vec2(-300, -520));
 	CreateEditorModeTickbox("place", glm::vec2(-150, -520));
@@ -99,7 +92,6 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 
 	canvasObjects = new Entity();
 	canvasObjects->localPosition = glm::vec2(0,-600);
-	//canvasEditor->AddChild(canvasObjects);
 	CreatePlaceablesTickbox("player", glm::vec2(-300, -75));
 	CreatePlaceablesTickbox("wall", glm::vec2(-150, -75));
 	CreatePlaceablesTickbox("mirror", glm::vec2(0, -75));
@@ -114,7 +106,6 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	currentlySelected.type = currentPlaceable;
 	tickboxes[0]->SetActive(true);
 
-	menu = false;
 	saving = false;
 	loading = false;
 	
@@ -127,6 +118,33 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 
 	crystalID = 0;
 	linking = false;
+	linkingText = new Text("Press left mouse button on a crystal to link it with the door or right mouse button to cancel the linking", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1,1,1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	linkingText->localPosition.y = 500;
+	textVector.push_back(linkingText);
+
+	Text* openGuideText = new Text("To open or close the guide press g", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	openGuideText->localPosition.y = 1000;
+	AddChild(openGuideText);
+	textVector.push_back(openGuideText);
+	guide = false;
+	canvasGuide = new Sprite(3000, 1800, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
+	canvasGuide->localPosition.x = 400;
+	canvasGuide->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	AddTextToGuide("Editor guide", 120, glm::vec2(-300, 800));
+	AddTextToGuide("Place mode", 70, glm::vec2(-1400, 700));
+	AddTextToGuide("In place mode you can place any of the object showns in the bottom left corner.", 50, glm::vec2(-1400, 650));
+	AddTextToGuide("If you press right mouse button you can place the object in to the scene.", 50, glm::vec2(-1400, 600));
+	AddTextToGuide("Also you can edit their properties that are shown all the way on the left.", 50, glm::vec2(-1400, 550));
+	AddTextToGuide("Select mode", 70, glm::vec2(-1400, 450));
+	AddTextToGuide("In select mode you can edit the properties of already placed objects in place mode.", 50, glm::vec2(-1400, 400));
+	AddTextToGuide("To select a object press left mouse button to deselect press right mouse button.", 50, glm::vec2(-1400, 350));
+	AddTextToGuide("Also you can delete the object by pressing the remove button once you selected something.", 50, glm::vec2(-1400, 300));
+	AddTextToGuide("Move mode", 70, glm::vec2(-1400, 200));
+	AddTextToGuide("Move mode is the same as select mode only you can then also move the objects around.", 50, glm::vec2(-1400, 150));
+	AddTextToGuide("Camera movement", 70, glm::vec2(-1400, 50));
+	AddTextToGuide("You can move the camera around using the arrow keys or holding the middle mouse button and moving the mouse.", 50, glm::vec2(-1400, 0));
+	AddTextToGuide("Saving and loading", 70, glm::vec2(-1400, -100));
+	AddTextToGuide("You can press the save or load button in the bottom left corner and then type a name for the file to save to or load from.", 50, glm::vec2(-1400, -150));
 }
 
 LevelEditor::~LevelEditor()
@@ -138,7 +156,6 @@ LevelEditor::~LevelEditor()
 	delete nameReceiver;
 	delete warning;
 	delete loadButton;
-	delete menuButton;
 
 	delete canvasEditor;
 	delete properties;
@@ -194,16 +211,16 @@ void LevelEditor::Update(double deltaTime)
 	else {
 		// Move the camera using the arrow keys
 		if (Input::KeyDown(GLFW_KEY_LEFT)) {
-			camera->PositionAdd(glm::vec2(-400.0f * deltaTime, 0.0f));
+			camera->PositionAdd(glm::vec2(-700.0f * deltaTime, 0.0f));
 		}
 		if (Input::KeyDown(GLFW_KEY_UP)) {
-			camera->PositionAdd(glm::vec2(0.0f, 400.0f * deltaTime));
+			camera->PositionAdd(glm::vec2(0.0f, 700.0f * deltaTime));
 		}
 		if (Input::KeyDown(GLFW_KEY_RIGHT)) {
-			camera->PositionAdd(glm::vec2(400.0f * deltaTime, 0.0f));
+			camera->PositionAdd(glm::vec2(700.0f * deltaTime, 0.0f));
 		}
 		if (Input::KeyDown(GLFW_KEY_DOWN)) {
-			camera->PositionAdd(glm::vec2(0.0f, -400.0f * deltaTime));
+			camera->PositionAdd(glm::vec2(0.0f, -700.0f * deltaTime));
 		}
 	}
 
@@ -234,6 +251,16 @@ void LevelEditor::Update(double deltaTime)
 		_player->DrawChilderen(this);
 	}
 	// END OF DRAWING
+	if (Input::KeyPress(GLFW_KEY_G)) {
+		if (guide == false) {
+			AddChild(canvasGuide);
+			guide = true;
+		}
+		else {
+			RemoveChild(canvasGuide);
+			guide = false;
+		}
+	}
 	// If saving or loading wait for the user to enter a name to load or save to
 	if (saving || loading) {
 		if (nameReceiver->IsActive() == false) {
@@ -281,9 +308,6 @@ void LevelEditor::Update(double deltaTime)
 	if (loadButton->Down()) {
 		//level = levelLoader->LoadFromFile("level3.bin");
 		Load();
-	}
-	if (menuButton->Down()) {
-		menu = true;
 	}
 	if (remove->Down()) {
 		DeleteCurrentlySeleceted();
@@ -645,9 +669,10 @@ void LevelEditor::UpdateCurrentlySelected()
 		if (inputDoorLink->IsActive() && linking == false && mode == EditorMode::select) {
 			linking = true;
 			RemoveChild(canvasEditor);
+			AddChild(linkingText);
 		}
 		else if (linking) {
-			if (Input::MousePress(0)) {
+			if (Input::MousePress(0) || Input::MousePress(1)) {
 				b2Body* bodylist = world->GetBodyList();
 				glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
 				b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
@@ -661,11 +686,38 @@ void LevelEditor::UpdateCurrentlySelected()
 								for (int j = 0; j < links.size(); j++) {
 									// Look for the correct link
 									if (links[j].door == currentlySelected.entity) {
-										// Link the crystal with the door
-										links[j].crystals.push_back(dynamic_cast<Crystal*>(editorObjects[i].entity));
-										inputDoorLink->SetActive(false);
-										AddChild(canvasEditor);
-										linking = false;
+										if (Input::MousePress(0)) {
+											// Check if it was not already linked otherwise remove that one first
+											std::vector<Crystal*>::iterator itCrystals = links[j].crystals.begin();
+											while (itCrystals != links[j].crystals.end()) {
+												if ((*itCrystals) == dynamic_cast<Crystal*>(editorObjects[i].entity)) {
+													links[j].crystals.erase(itCrystals);
+													break;
+												}
+												else {
+													++itCrystals;
+												}
+											}
+											// Link the crystal with the door
+											links[j].crystals.push_back(dynamic_cast<Crystal*>(editorObjects[i].entity));
+											inputDoorLink->SetActive(false);
+											AddChild(canvasEditor);
+											RemoveChild(linkingText);
+											linking = false;
+										}
+										else {
+											// Delete the crystal link if right mouse button was clicked on it and it was linked with that door
+											std::vector<Crystal*>::iterator itCrystals = links[j].crystals.begin();
+											while (itCrystals != links[j].crystals.end()) {
+												if ((*itCrystals) == dynamic_cast<Crystal*>(editorObjects[i].entity)) {
+													links[j].crystals.erase(itCrystals);
+													break;
+												}
+												else {
+													++itCrystals;
+												}
+											}
+										}
 									}
 								}
 							}
@@ -674,9 +726,10 @@ void LevelEditor::UpdateCurrentlySelected()
 					bodylist = bodylist->GetNext();
 				}
 			}
-			else if (Input::MousePress(1)) {
+			if (Input::MousePress(1)) {
 				inputDoorLink->SetActive(false);
 				AddChild(canvasEditor);
+				RemoveChild(linkingText);
 				linking = false;
 			}
 		}
@@ -796,6 +849,7 @@ void LevelEditor::Save()
 	if (saving == false || nameReceiver->GetString().size() > 0) {
 		if (nameReceiver->GetString().size() == 0) {
 			saving = true;
+			nameReceiverText->SetText("Type the name of the file you want to save to here");
 			AddChild(nameReceiverText);
 			AddChild(nameReceiver);
 			return;
@@ -906,6 +960,7 @@ void LevelEditor::Load()
 	if (loading == false || nameReceiver->GetString().size() > 0) {
 		if (nameReceiver->GetString().size() == 0) {
 			loading= true;
+			nameReceiverText->SetText("Type the name of the save file you want to load here");
 			AddChild(nameReceiverText);
 			AddChild(nameReceiver);
 			return;
@@ -1117,15 +1172,6 @@ void LevelEditor::ClearScene()
 	//currentlySelected.type = currentPlaceable;
 }
 
-bool LevelEditor::Menu()
-{
-	if (menu) {
-		menu = false;
-		return true;
-	}
-	return false;
-}
-
 void LevelEditor::CreatePlaceablesTickbox(std::string text, glm::vec2 position)
 {
 	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
@@ -1200,4 +1246,12 @@ Sprite * LevelEditor::CreateCanvasPlaceable(std::string name)
 	canvas->AddChild(t);
 
 	return canvas;
+}
+
+void LevelEditor::AddTextToGuide(std::string text, int fontsize, glm::vec2 position)
+{
+	Text* _text = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 1024, fontsize), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	_text->localPosition = position;
+	canvasGuide->AddChild(_text);
+	textVector.push_back(_text);
 }
