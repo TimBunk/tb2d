@@ -64,12 +64,12 @@ SimpleRenderer::~SimpleRenderer()
 
 void SimpleRenderer::Submit(Sprite* sprite)
 {
-	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, 0.0f, 0.0f));// lower left
-	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// lower right
-	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y)); // upper left
-	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// lower right
-	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// upper right
-	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y)); // upper left
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y));// lower left
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// lower right
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, 0.0f)); // upper left
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// lower right
+	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// upper right
+	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, 0.0f)); // upper left
 
 	int id = 0;
 	if (sprite->GetTextureID() > 0) {
