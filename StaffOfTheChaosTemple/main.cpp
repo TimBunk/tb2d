@@ -74,7 +74,8 @@ int main() {
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
 	levelSelector = new Levelselector(1920, 1080);
-	levelEditor = new LevelEditor(1920, 1080);
+	//levelEditor = new LevelEditor(1920, 1080);
+	levelEditor = new LevelEditor(3840, 2160);
 
 	while (core->IsActive()) {
 		switch (gameState)

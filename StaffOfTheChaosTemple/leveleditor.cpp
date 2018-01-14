@@ -7,107 +7,107 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetAllowSleeping(false);
 
-	canvasEditor = new Sprite(400, 1080, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
+	canvasEditor = new Sprite(800, 2160, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
 	canvasEditor->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	canvasEditor->localPosition.x = -760;
+	canvasEditor->localPosition.x = -1520;
 	this->AddChild(canvasEditor);
 
-	properties = new Text("properties:", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1,1,1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
-	properties->localPosition = glm::vec2(properties->GetWidth() * -1 + 25, 515);
+	properties = new Text("properties:", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1,1,1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	properties->localPosition = glm::vec2(properties->GetWidth() * -1 + 50, 1030);
 	canvasEditor->AddChild(properties);
 
-	nameReceiver = new Textinput("", false, ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), true, 550, 100, glm::vec4(0, 0, 0, 1));
+	nameReceiver = new Textinput("", false, ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), true, 1100, 200, glm::vec4(0, 0, 0, 1));
 	nameReceiver->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	nameReceiverText = new Text("Type the name of the file here", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
-	nameReceiverText->localPosition.y = 60;
+	nameReceiverText = new Text("Type the name of the file here", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	nameReceiverText->localPosition.y = 1140;
 	textVector.push_back(nameReceiverText);
 
-	saveButton = new Button(400/3, 75, 0, true, camera);
+	saveButton = new Button(800/3, 150, 0, true, camera);
 	saveButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
-	saveButton->localPosition = glm::vec2(-200 + saveButton->GetWidth()/2 * 1, -540 + 75 / 2);
+	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
+	saveButton->localPosition = glm::vec2(-400 + saveButton->GetWidth()/2 * 1, -1080 + 150 / 2);
 	saveButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(saveButton);
 
-	warning = new Button(550, 100, 0, true, camera);
+	warning = new Button(1100, 200, 0, true, camera);
 	warning->SetColor(glm::vec4(0.8f, 0, 0, 1));
-	warning->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
+	warning->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1));
 	warning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	warningState = false;
 
-	loadButton = new Button(400/3, 75, 0, true, camera);
+	loadButton = new Button(800/3, 150, 0, true, camera);
 	loadButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	loadButton->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
-	loadButton->localPosition = glm::vec2(-200 + loadButton->GetWidth() / 2 + saveButton->GetWidth(), -540 + 75 / 2);
+	loadButton->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
+	loadButton->localPosition = glm::vec2(-400 + loadButton->GetWidth() / 2 + saveButton->GetWidth(), -1080 + 150 / 2);
 	loadButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(loadButton);
 
-	menuButton = new Button(400 / 3, 75, 0, true, camera);
+	menuButton = new Button(800 / 3, 150, 0, true, camera);
 	menuButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-	menuButton->CreateText("menu", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
-	menuButton->localPosition = glm::vec2(-200 + menuButton->GetWidth() / 2 + loadButton->GetWidth() + saveButton->GetWidth(), -540 + 75 / 2);
+	menuButton->CreateText("menu", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
+	menuButton->localPosition = glm::vec2(-400 + menuButton->GetWidth() / 2 + loadButton->GetWidth() + saveButton->GetWidth(), -1080 + 150 / 2);
 	menuButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(menuButton);
 
-	CreateEditorModeTickbox("select", glm::vec2(-150, -260));
-	CreateEditorModeTickbox("place", glm::vec2(-75, -260));
-	CreateEditorModeTickbox("move", glm::vec2(0, -260));
+	CreateEditorModeTickbox("select", glm::vec2(-300, -520));
+	CreateEditorModeTickbox("place", glm::vec2(-150, -520));
+	CreateEditorModeTickbox("move", glm::vec2(0, -520));
 
 	mode = EditorMode::select;
 	tickboxesMode[0]->SetActive(true);
 
 	// Player options
 	playerCanvas = CreateCanvasPlaceable("player");
-	CreateInputFloat(inputPlayerRotation, playerCanvas, "0", glm::vec2(-150, 250), "rotation");
-	CreateInputFloat(inputPlayerHealth, playerCanvas, "800", glm::vec2(0, 250), "health");
-	CreateInputFloat(inputPlayerDamage, playerCanvas, "10", glm::vec2(-150, 150), "damage");
-	CreateInputFloat(inputPlayerSpeed, playerCanvas, "10", glm::vec2(0, 150), "speed");
+	CreateInputFloat(inputPlayerRotation, playerCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateInputFloat(inputPlayerHealth, playerCanvas, "800", glm::vec2(100, 500), "health");
+	CreateInputFloat(inputPlayerDamage, playerCanvas, "10", glm::vec2(-200, 250), "damage");
+	CreateInputFloat(inputPlayerSpeed, playerCanvas, "10", glm::vec2(100, 250), "speed");
 	_player = nullptr;
 	// Wall options
 	wallCanvas = CreateCanvasPlaceable("wall");
-	CreateInputFloat(inputWallWidth, wallCanvas, "720", glm::vec2(-150, 250), "width");
-	CreateInputFloat(inputWallRotation, wallCanvas, "0", glm::vec2(0, 250), "rotation");
+	CreateInputFloat(inputWallWidth, wallCanvas, "720", glm::vec2(-200, 500), "width");
+	CreateInputFloat(inputWallRotation, wallCanvas, "0", glm::vec2(100, 500), "rotation");
 	// Mirror options
 	mirrorCanvas = CreateCanvasPlaceable("mirror");
-	CreateInputFloat(inputMirrorRotation, mirrorCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputMirrorRotator = CreateTickbox(mirrorCanvas, true, glm::vec2(0, 250), "rotator");
+	CreateInputFloat(inputMirrorRotation, mirrorCanvas, "0", glm::vec2(-200, 500), "rotation");
+	inputMirrorRotator = CreateTickbox(mirrorCanvas, true, glm::vec2(100, 500), "rotator");
 	// Crystal options
 	crystalCanvas = CreateCanvasPlaceable("crystal");
-	CreateInputFloat(inputCrystalRotation, crystalCanvas, "0", glm::vec2(-150, 250), "rotation");
+	CreateInputFloat(inputCrystalRotation, crystalCanvas, "0", glm::vec2(-200, 500), "rotation");
 	// Floor options
 	floorCanvas = CreateCanvasPlaceable("floor");
-	CreateInputFloat(inputFloorRotation, floorCanvas, "0", glm::vec2(-150, 250), "rotation");
-	CreateInputFloat(inputFloorWidth, floorCanvas, "200", glm::vec2(0, 250), "width");
-	CreateInputFloat(inputFloorHeight, floorCanvas, "200", glm::vec2(-150, 150), "height");
+	CreateInputFloat(inputFloorRotation, floorCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateInputFloat(inputFloorWidth, floorCanvas, "200", glm::vec2(100, 500), "width");
+	CreateInputFloat(inputFloorHeight, floorCanvas, "200", glm::vec2(-200, 250), "height");
 	// Door options
 	doorCanvas = CreateCanvasPlaceable("door");
-	CreateInputFloat(inputDoorRotation, doorCanvas, "0", glm::vec2(-150, 250), "rotation");
-	inputDoorLink = CreateTickbox(doorCanvas, false, glm::vec2(0, 250), "link");
+	CreateInputFloat(inputDoorRotation, doorCanvas, "0", glm::vec2(-200, 500), "rotation");
+	inputDoorLink = CreateTickbox(doorCanvas, false, glm::vec2(100, 500), "link");
 	// Enemy options
 	enemyCanvas = CreateCanvasPlaceable("enemy");
-	CreateInputFloat(inputEnemyRotation, enemyCanvas, "0", glm::vec2(-150, 250), "rotation");
-	CreateInputFloat(inputEnemyHealth, enemyCanvas, "300", glm::vec2(0, 250), "health");
-	CreateInputFloat(inputEnemyDamage, enemyCanvas, "6", glm::vec2(-150, 150), "speed");
-	CreateInputFloat(inputEnemySpeed, enemyCanvas, "150", glm::vec2(0, 150), "damage");
-	CreateInputFloat(inputEnemyLOS, enemyCanvas, "3000", glm::vec2(-150, 50), "line of sight");
+	CreateInputFloat(inputEnemyRotation, enemyCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateInputFloat(inputEnemyHealth, enemyCanvas, "300", glm::vec2(100, 500), "health");
+	CreateInputFloat(inputEnemyDamage, enemyCanvas, "6", glm::vec2(-200, 250), "speed");
+	CreateInputFloat(inputEnemySpeed, enemyCanvas, "150", glm::vec2(100, 250), "damage");
+	CreateInputFloat(inputEnemyLOS, enemyCanvas, "3000", glm::vec2(-200, 0), "line of sight");
 	// Finish options
 	finishCanvas = CreateCanvasPlaceable("finish");
-	CreateInputFloat(inputFinishRotation, finishCanvas, "0", glm::vec2(-150, 250), "rotation");
-	CreateInputFloat(inputFinishWidth, finishCanvas, "400", glm::vec2(0, 250), "width");
-	CreateInputFloat(inputFinishHeight, finishCanvas, "100", glm::vec2(-150, 150), "height");
+	CreateInputFloat(inputFinishRotation, finishCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateInputFloat(inputFinishWidth, finishCanvas, "400", glm::vec2(100, 500), "width");
+	CreateInputFloat(inputFinishHeight, finishCanvas, "100", glm::vec2(-200, 250), "height");
 	_finish = nullptr;
 
 	canvasObjects = new Entity();
-	canvasObjects->localPosition = glm::vec2(0,-300);
+	canvasObjects->localPosition = glm::vec2(0,-600);
 	//canvasEditor->AddChild(canvasObjects);
-	CreatePlaceablesTickbox("player", glm::vec2(-150, -40));
-	CreatePlaceablesTickbox("wall", glm::vec2(-75, -40));
-	CreatePlaceablesTickbox("mirror", glm::vec2(0, -40));
-	CreatePlaceablesTickbox("crystal", glm::vec2(75, -40));
-	CreatePlaceablesTickbox("floor", glm::vec2(150, -40));
-	CreatePlaceablesTickbox("door", glm::vec2(-150, -115));
-	CreatePlaceablesTickbox("enemy", glm::vec2(-75, -115));
-	CreatePlaceablesTickbox("finish", glm::vec2(0, -115));
+	CreatePlaceablesTickbox("player", glm::vec2(-300, -75));
+	CreatePlaceablesTickbox("wall", glm::vec2(-150, -75));
+	CreatePlaceablesTickbox("mirror", glm::vec2(0, -75));
+	CreatePlaceablesTickbox("crystal", glm::vec2(150, -75));
+	CreatePlaceablesTickbox("floor", glm::vec2(300, -75));
+	CreatePlaceablesTickbox("door", glm::vec2(-300, -190));
+	CreatePlaceablesTickbox("enemy", glm::vec2(-150, -190));
+	CreatePlaceablesTickbox("finish", glm::vec2(0, -190));
 
 	canvasEditor->AddChild(playerCanvas);
 	currentPlaceable = Placeables::player;
@@ -118,11 +118,11 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	saving = false;
 	loading = false;
 	
-	remove = new Button(400 / 3, 75, 0, true, camera);
+	remove = new Button(800 / 3, 150, 0, true, camera);
 	remove->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	remove->CreateText("Remove", ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1));
+	remove->CreateText("Remove", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1));
 	remove->SetColor(glm::vec4(1, 0, 0, 1));
-	remove->localPosition.y = -375;
+	remove->localPosition.y = -750;
 	canvasEditor->AddChild(remove);
 
 	crystalID = 0;
@@ -194,16 +194,16 @@ void LevelEditor::Update(double deltaTime)
 	else {
 		// Move the camera using the arrow keys
 		if (Input::KeyDown(GLFW_KEY_LEFT)) {
-			camera->PositionAdd(glm::vec2(-200.0f * deltaTime, 0.0f));
+			camera->PositionAdd(glm::vec2(-400.0f * deltaTime, 0.0f));
 		}
 		if (Input::KeyDown(GLFW_KEY_UP)) {
-			camera->PositionAdd(glm::vec2(0.0f, 200.0f * deltaTime));
+			camera->PositionAdd(glm::vec2(0.0f, 400.0f * deltaTime));
 		}
 		if (Input::KeyDown(GLFW_KEY_RIGHT)) {
-			camera->PositionAdd(glm::vec2(200.0f * deltaTime, 0.0f));
+			camera->PositionAdd(glm::vec2(400.0f * deltaTime, 0.0f));
 		}
 		if (Input::KeyDown(GLFW_KEY_DOWN)) {
-			camera->PositionAdd(glm::vec2(0.0f, -200.0f * deltaTime));
+			camera->PositionAdd(glm::vec2(0.0f, -400.0f * deltaTime));
 		}
 	}
 
@@ -293,7 +293,7 @@ void LevelEditor::Update(double deltaTime)
 void LevelEditor::UpdateSelectMode()
 {
 	//tickboxes[currentlySelected.type]->SetActive(true);
-	if (Input::MousePress(0) && Input::GetMousePositionScreenSpace().x > -560) {
+	if (Input::MousePress(0) && Input::GetMousePositionScreenSpace().x > -1120) {
 		b2Body* bodylist = world->GetBodyList();
 		glm::vec2 _mousePos = Input::GetMousePositionWorldSpace();
 		b2Vec2 mousePos = b2Vec2(_mousePos.x * B2Entity::p2m, _mousePos.y * B2Entity::p2m);
@@ -1128,30 +1128,28 @@ bool LevelEditor::Menu()
 
 void LevelEditor::CreatePlaceablesTickbox(std::string text, glm::vec2 position)
 {
-	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 25, 25, ResourceManager::GetTexture("tickboxActive")->GetId());
+	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
 	tb->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	tb->localPosition = position;
-	//canvasEditor->AddChild(tb);
 	tickboxes.push_back(tb);
 	canvasObjects->AddChild(tb);
 	
-	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 256, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
-	t->localPosition = glm::vec2(position.x, position.y + 25);
-	//canvasEditor->AddChild(t);
+	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	t->localPosition = glm::vec2(position.x, position.y + 50);
 	textVector.push_back(t);
 	canvasObjects->AddChild(t);
 }
 
 void LevelEditor::CreateEditorModeTickbox(std::string text, glm::vec2 position)
 {
-	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 25, 25, ResourceManager::GetTexture("tickboxActive")->GetId());
+	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
 	tb->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	tb->localPosition = position;
 	canvasEditor->AddChild(tb);
 	tickboxesMode.push_back(tb);
 
-	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 256, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
-	t->localPosition = glm::vec2(position.x, position.y + 25);
+	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	t->localPosition = glm::vec2(position.x, position.y + 50);
 	canvasEditor->AddChild(t);
 	textVector.push_back(t);
 }
@@ -1159,9 +1157,9 @@ void LevelEditor::CreateEditorModeTickbox(std::string text, glm::vec2 position)
 void LevelEditor::CreateInputFloat(InputFloat& inputFloat, Sprite * canvas, std::string startValue, glm::vec2 position, std::string text)
 {
 	//InputFloat inputFloat;
-	inputFloat.text = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
-	inputFloat.text->localPosition = glm::vec2(position.x, position.y + 50);
-	inputFloat.input = new Textinput(startValue, true, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), true, 100, 40, ResourceManager::GetTexture("textinput")->GetId());
+	inputFloat.text = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	inputFloat.text->localPosition = glm::vec2(position.x, position.y + 100);
+	inputFloat.input = new Textinput(startValue, true, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), true, 200, 80, ResourceManager::GetTexture("textinput")->GetId());
 	inputFloat.input->SetMaxLength(7);
 	inputFloat.input->SetMaxDecimals(2);
 	inputFloat.input->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
@@ -1175,14 +1173,14 @@ void LevelEditor::CreateInputFloat(InputFloat& inputFloat, Sprite * canvas, std:
 
 Tickbox* LevelEditor::CreateTickbox(Sprite * canvas, bool startValue, glm::vec2 position, std::string text)
 {
-	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 25, 25, ResourceManager::GetTexture("tickboxActive")->GetId());
+	Tickbox* tb = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
 	tb->SetActive(startValue);
 	tb->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	tb->localPosition = position;
 	canvas->AddChild(tb);
 	editorObjectsTickBoxes.push_back(tb);
-	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 22), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
-	t->localPosition = glm::vec2(position.x, position.y + 50);
+	Text* t = new Text(text, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	t->localPosition = glm::vec2(position.x, position.y + 100);
 	canvas->AddChild(t);
 	textVector.push_back(t);
 	return tb;
@@ -1190,14 +1188,14 @@ Tickbox* LevelEditor::CreateTickbox(Sprite * canvas, bool startValue, glm::vec2 
 
 Sprite * LevelEditor::CreateCanvasPlaceable(std::string name)
 {
-	Sprite* canvas = new Sprite(400, 650, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
-	canvas->localPosition.y = 140;
+	Sprite* canvas = new Sprite(800, 1300, glm::vec4(0.0f, 0.5f, 0.5f, 0.5f));
+	canvas->localPosition.y = 280;
 	canvas->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	propertiesCanvas.push_back(canvas);
 
-	Text* t = new Text(name, ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
-	t->localPosition.x = 35;
-	t->localPosition.y = 375;
+	Text* t = new Text(name, ResourceManager::GetFont("fonts/arial.ttf", 1024, 88), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	t->localPosition.x = 70;
+	t->localPosition.y = 750;
 	textVector.push_back(t);
 	canvas->AddChild(t);
 

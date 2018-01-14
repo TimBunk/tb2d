@@ -98,8 +98,8 @@ void Levelselector::ExitLevel()
 void Levelselector::LoadLevel(std::string filename)
 {
 	std::string _filename = "levels/" + filename + ".LEVEL";
-	level = new Level(1920, 1080, _filename);
-	//level = new Level(3840, 2160, _filename);
+	//level = new Level(1920, 1080, _filename);
+	level = new Level(3840, 2160, _filename);
 	if (level->GetLoadingErrors().length() > 0) {
 		if (error->GetText().length() == 0) {
 			error->SetText(level->GetLoadingErrors());
