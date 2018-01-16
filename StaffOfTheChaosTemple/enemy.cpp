@@ -77,8 +77,8 @@ void Enemy::Update(double deltaTime)
 			}
 			else {
 				sword->localAngle = glm::radians(110.0f);
-				acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 			}
+			acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 			playerHit = true;
 			glm::vec2 diff = player->GetGlobalPosition() - position;
 			diff = glm::normalize(diff);
