@@ -22,6 +22,7 @@ void Mirror::Update(double deltaTime)
 
 void Mirror::SetRotation(float degrees)
 {
+	if (rotator == nullptr) { return; }
 	rotator->SetRotation(degrees);
 }
 
