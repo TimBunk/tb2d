@@ -71,6 +71,7 @@ int main() {
 
 	ResourceManager::CreateShader("laser", "shaders\\basic.vs", "shaders\\laserParticle.fs");
 	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("laser"));
+	RenderManager::CreateTextRenderer(0, "freetypeworld", ResourceManager::GetShader("freetype"), false);
 
 	gameState = _menu;
 	menu = new Menu(1920, 1080);

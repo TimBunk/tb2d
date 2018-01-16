@@ -6,7 +6,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 
 	tutorial = new Button(400, 100, 0, true, camera);
 	tutorial->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
-	tutorial->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
+	tutorial->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
 	tutorial->CreateText("tutorial", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(0, 0, 0));
 	tutorial->localPosition = glm::vec2(-480, 400);
 	AddChild(tutorial);

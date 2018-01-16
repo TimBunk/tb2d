@@ -9,6 +9,7 @@
 #include "box2Dclasses/contactListener.h"
 #include "enemy.h"
 #include "textfile.h"
+#include "text.h"
 
 struct Link {
 	Door* door = nullptr;
@@ -49,6 +50,7 @@ private:
 	std::string LoadingErrors;
 	std::vector<Entity*> levelObjects;
 	std::vector<Enemy*> enemies;
+	std::vector<Text*> textVector;
 
 	std::vector<Link> tmpLinks;
 	std::vector<Crystal*> tmpCrystals;

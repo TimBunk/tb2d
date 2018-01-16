@@ -236,6 +236,10 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     COPY StaffOfTheChaosTemple/textures
     DESTINATION ${CMAKE_BINARY_DIR}
   )
+  file(
+    COPY StaffOfTheChaosTemple/levels
+    DESTINATION ${CMAKE_BINARY_DIR}
+  )
 endif()
 
 ####################################################################

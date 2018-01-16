@@ -49,6 +49,11 @@ Level::~Level()
 		delete (*it);
 		it = enemies.erase(it);
 	}
+	std::vector<Text*>::iterator itText = textVector.begin();
+	while (itText != textVector.end()) {
+		delete (*itText);
+		itText = textVector.erase(itText);
+	}
 
 	delete world;
 	delete contactListener;
@@ -275,7 +280,7 @@ void Level::LoadTutorial()
 		"wall -1064.328125 3711.977539 0.000000 1440",
 		"crystal -784.328125 3319.977539 0.000000 4",
 		"crystal -788.328125 4099.977539 0.000000 5",
-		"mirror 71.671875 3705.977539 3.141593 1",
+		"mirror 71.671875 3705.977539 4.3 1",
 		"wall 261.416016 5478.670410 1.570796 1440",
 		"wall -390.583984 5472.670410 1.570796 1440",
 		"wall 261.787109 6909.774414 1.570796 1440",
@@ -312,4 +317,47 @@ void Level::LoadTutorial()
 	}
 	// Init the tutorial
 	Init();
+	// Place the text for the tutorial
+	Text* text = new Text("Move the player with w-a-s-d or the arrow keys", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 300;
+	text->localPosition.y = -750;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("Rotate the player using the mouse", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 300;
+	text->localPosition.y = 750;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("Aim your mouse at the crystal and shoot your laser", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 300;
+	text->localPosition.y = 2500;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("by holding left mouse button to open the door", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 300;
+	text->localPosition.y = 2440;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("Try hitting both of the crystals using the mirror", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 200;
+	text->localPosition.y = 3750;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("but be carefull a enemy awaits you on the other side of the door", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 200;
+	text->localPosition.y = 3690;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
+	text = new Text("Also note that the mirror can be rotated by pushing it", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text->localPosition.x = 200;
+	text->localPosition.y = 3630;
+	text->SetTextRenderer(RenderManager::GetTextRendererer("freetypeworld"));
+	AddChild(text);
+	textVector.push_back(text);
 }
