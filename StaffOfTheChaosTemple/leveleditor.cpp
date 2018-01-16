@@ -251,16 +251,11 @@ void LevelEditor::Update(double deltaTime)
 		_player->DrawChilderen(this);
 	}
 	// END OF DRAWING
-	if (Input::KeyPress(GLFW_KEY_G)) {
-		if (guide == false) {
-			AddChild(canvasGuide);
-			guide = true;
-		}
-		else {
-			RemoveChild(canvasGuide);
-			guide = false;
-		}
-	}
+
+	UpdateTickboxes();
+	UpdateInputFloats();
+	UpdateCurrentlySelected();
+
 	// If saving or loading wait for the user to enter a name to load or save to
 	if (saving || loading) {
 		if (nameReceiver->IsActive() == false) {
@@ -284,10 +279,18 @@ void LevelEditor::Update(double deltaTime)
 		return;
 	}
 
+	// If the user pressed g open or close the guide
+	if (Input::KeyPress(GLFW_KEY_G)) {
+		if (guide == false) {
+			AddChild(canvasGuide);
+			guide = true;
+		}
+		else {
+			RemoveChild(canvasGuide);
+			guide = false;
+		}
+	}
 
-	UpdateTickboxes();
-	UpdateInputFloats();
-	UpdateCurrentlySelected();
 	if (linking) { return; }
 
 	if (mode == EditorMode::place) {
