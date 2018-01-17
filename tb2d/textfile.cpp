@@ -22,7 +22,6 @@ bool Textfile::Open(const char * filename)
 	file.close();
 	file.open(filename, std::ios::out | std::ios::in);
 	if (!file.is_open()) {
-		std::cout << "Error opening the file: " << filename << std::endl;
 		return false;
 	}
 	return true;
