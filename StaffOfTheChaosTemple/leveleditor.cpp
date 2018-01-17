@@ -25,7 +25,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	nameReceiverText->localPosition.y = 200;
 	textVector.push_back(nameReceiverText);
 	// save button
-	saveButton = new Button(800/3, 150, 0, true, camera);
+	saveButton = new Button(800/3, 150, 0, true);
 	saveButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	saveButton->CreateText("save", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
 	saveButton->localPosition = glm::vec2(-400 + saveButton->GetWidth()/2 * 1, -1080 + 150 / 2);
@@ -33,7 +33,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	saving = false;
 	canvasEditor->AddChild(saveButton);
 	// load button
-	loadButton = new Button(800/3, 150, 0, true, camera);
+	loadButton = new Button(800/3, 150, 0, true);
 	loadButton->SetColor(glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
 	loadButton->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
 	loadButton->localPosition = glm::vec2(-400 + loadButton->GetWidth() / 2 + saveButton->GetWidth(), -1080 + 150 / 2);
@@ -41,14 +41,14 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	loading = false;
 	canvasEditor->AddChild(loadButton);
 	// Clear button
-	clearButton = new Button(800 / 3, 150, 0, true, camera);
+	clearButton = new Button(800 / 3, 150, 0, true);
 	clearButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	clearButton->CreateText("clear", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
 	clearButton->localPosition = glm::vec2(-400 + clearButton->GetWidth() /2 + loadButton->GetWidth() + saveButton->GetWidth(), -1080 + 150 / 2);
 	clearButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	canvasEditor->AddChild(clearButton);
 	// Warning button that will pop up whenever you do something that is not allowed
-	warning = new Button(1100, 200, 0, true, camera);
+	warning = new Button(1100, 200, 0, true);
 	warning->SetColor(glm::vec4(0.8f, 0, 0, 1));
 	warning->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1));
 	warning->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
@@ -119,7 +119,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	currentlySelected.type = currentPlaceable;
 	tickboxesPlaceable[0]->SetActive(true);
 	// Buttont that can remove objects from scene
-	remove = new Button(800 / 3, 150, 0, true, camera);
+	remove = new Button(800 / 3, 150, 0, true);
 	remove->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	remove->CreateText("Remove", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1));
 	remove->SetColor(glm::vec4(1, 0, 0, 1));

@@ -4,7 +4,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 {
 	level = nullptr;
 
-	tutorial = new Button(400, 100, 0, true, camera);
+	tutorial = new Button(400, 100, 0, true);
 	tutorial->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	tutorial->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
 	tutorial->CreateText("tutorial", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(0, 0, 0));
@@ -19,7 +19,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 	nameReceiverText->localPosition.y = -340;
 	AddChild(nameReceiverText);
 
-	load = new Button(300, 100, 0, true, camera);
+	load = new Button(300, 100, 0, true);
 	load->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	load->SetColor(glm::vec4(0.75f, 0.75f, 0.75f, 1));
 	load->CreateText("load", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));
@@ -27,12 +27,12 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 	load->localPosition.y = -400;
 	AddChild(load);
 
-	error = new Button(800, 100, 0, true, camera);
+	error = new Button(800, 100, 0, true);
 	error->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	error->SetColor(glm::vec4(0, 0, 0, 1));
 	error->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 30), glm::vec3(1, 1, 1));
 
-	victoryDefeat = new Button(800, 100, 0, true, camera);
+	victoryDefeat = new Button(800, 100, 0, true);
 	victoryDefeat->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	victoryDefeat->SetColor(glm::vec4(0, 0, 0, 1));
 	victoryDefeat->CreateText("", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1));

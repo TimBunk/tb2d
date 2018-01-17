@@ -14,19 +14,19 @@ Menu::Menu(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenW
 	creditsArtist->localPosition = glm::vec2(-800, -200);
 	AddChild(creditsArtist);
 	// Initialize all of the buttons
-	startButton = new Button(camera->GetWidth()/3, 150, 0, true, camera);
+	startButton = new Button(camera->GetWidth()/3, 150, 0, true);
 	startButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
 	startButton->CreateText("start", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	startButton->localPosition = glm::vec2(500, 100);
 	startButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	this->AddChild(startButton);
-	editorButton = new Button(camera->GetWidth() / 3, 150, 0, true, camera);
+	editorButton = new Button(camera->GetWidth() / 3, 150, 0, true);
 	editorButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
 	editorButton->CreateText("editor", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	editorButton->localPosition = glm::vec2(500, -150);
 	editorButton->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	this->AddChild(editorButton);
-	quitButton = new Button(camera->GetWidth()/3, 150, 0, true, camera);
+	quitButton = new Button(camera->GetWidth()/3, 150, 0, true);
 	quitButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
 	quitButton->CreateText("quit", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(0, 0, 0));
 	quitButton->localPosition = glm::vec2(500, -400);

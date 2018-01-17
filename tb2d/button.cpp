@@ -1,19 +1,21 @@
 #include "button.h"
 
-Button::Button(int width, int height, unsigned int textureID, bool hud, Camera* camera) : Sprite::Sprite(width, height, textureID) {
+Button::Button(int width, int height, unsigned int textureID, bool hud) : Sprite::Sprite(width, height, textureID) {
+	// Initialize the variables
 	this->hud = hud;
-	this->camera = camera;
 	this->text = nullptr;
 	hover = false;
 	down = false;
 }
 Button::~Button() {
+	// Check if text has been created and if so delete it
 	if (text != nullptr) {
 		delete text;
 	}
 }
 
 void Button::Update(double deltaTime) {
+	// Get mouse position from input
 	glm::vec2 mousePos;
 	if (hud) {
 		mousePos = Input::GetMousePositionScreenSpace();
@@ -21,8 +23,10 @@ void Button::Update(double deltaTime) {
 	else {
 		mousePos = Input::GetMousePositionWorldSpace();
 	}
+	// Checks if mousePosition is inside the Buttons space
 	if (mousePos.x >= (this->position.x - (this->width/2 * scale.x)) && mousePos.x <= (this->position.x + (this->width/2 * scale.x)) && mousePos.y >= (this->position.y - (this->height/2 * scale.y)) && mousePos.y <= (this->position.y + (this->height/2 * scale.y))) {
 		hover = true;
+		// If left mouse button has been pressed set down to true otherwise set it to false
 		if (Input::MousePress(0)) {
 			down = true;
 		}
@@ -43,12 +47,14 @@ void Button::CreateText(std::string text, Font font, glm::vec3 color)
 		RemoveChild(this->text);
 		delete this->text;
 	}
+	// Create text with the information that we received
 	this->text = new Text(text, font, color, Text::AlignmentX::centerX, Text::AlignmentY::centerY);
 	AddChild(this->text);
 
 }
 
 void Button::SetText(std::string text) {
+	// Set the text string if the text has been created
 	if (this->text != nullptr) {
 		this->text->SetText(text);
 	}
@@ -56,15 +62,8 @@ void Button::SetText(std::string text) {
 
 void Button::SetTextColor(glm::vec4 color)
 {
+	// Set the text color if the text has been created
 	if (text != nullptr) {
 		text->SetColor(color);
 	}
-}
-
-bool Button::Hover() {
-	return hover;
-}
-
-bool Button::Down() {
-	return down;
 }
