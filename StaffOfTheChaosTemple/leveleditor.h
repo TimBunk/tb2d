@@ -28,6 +28,32 @@ public:
 	~LevelEditor();
 
 	void Update(double deltaTime);
+
+private:
+	// Enums
+	enum Placeables
+	{
+		player,
+		wall,
+		mirror,
+		crystal,
+		floor,
+		door,
+		enemy,
+		finish
+	};
+	enum EditorMode
+	{
+		select,
+		place,
+		move
+	};
+	// Structs
+	struct EditorObject {
+		Entity* entity = nullptr;
+		Placeables type;
+	};
+	// Functions
 	void UpdateSelectMode();
 	void UpdatePlaceMode();
 
@@ -52,36 +78,32 @@ public:
 	void Save();
 	void Load();
 	void ClearScene();
+	void Linking();
+	// Variables
+	std::vector<EditorObject> editorObjects; // All of the objects that will be placed in the scene
+	std::vector<B2Entity*> floors; // Floors will be saved seperatly from the editorobjects because we always want those to be at the bottom
+	std::vector<Tickbox*> editorObjectsTickBoxes; // All of the tickboxes
+	std::vector<Sprite*> propertiesCanvas; // Canvas that will show all of the properties of the current seleted placeable
+	std::vector<InputFloat*> inputFloats; // The user can enter a input and will return a floor
+	std::vector<Text*> textVector; // All of the text can be saved in this single vector
+	
+	Sprite* canvasEditor; // Canvas for the editor
+	Entity* canvasObjects; // Canvas for all of the objects
 
-private:
-	enum Placeables
-	{
-		player,
-		wall,
-		mirror,
-		crystal,
-		floor,
-		door,
-		enemy,
-		finish
-	};
-	struct EditorObject {
-		Entity* entity = nullptr;
-		Placeables type;
-	};
-	std::vector<B2Entity*> floors;
-	std::vector<EditorObject> editorObjects;
-	std::vector<Tickbox*> editorObjectsTickBoxes;
-	Sprite* canvasEditor;
-	Text* properties;
+	Placeables currentPlaceable; // the current object that the user wants to place
+	std::vector<Tickbox*> tickboxesPlaceable; // All of the tickboxes for all of the different placeables will be saved here
 
-	Entity* canvasObjects;
+	EditorMode mode; // The current editor mode
+	std::vector<Tickbox*> tickboxesMode; // All of the tickboxes for all of the different editor modes
 
-	std::vector<Sprite*> propertiesCanvas;
-	std::vector<InputFloat*> inputFloats;
+	// Textfile for saving and loading files
+	Textfile* textfile;
+
+	b2World* world; // b2World for the objects
+	EditorObject currentlySelected; // The currently selected object
 
 	// Player canvas
-	Sprite* playerCanvas;
+	Sprite* playerCanvas; 
 	InputFloat inputPlayerRotation;
 	InputFloat inputPlayerHealth;
 	InputFloat inputPlayerDamage;
@@ -121,47 +143,27 @@ private:
 	InputFloat inputFinishHeight;
 	B2Entity* _finish;
 
-	std::vector<Text*> textVector;
-
-	Placeables currentPlaceable;
-	std::vector<Tickbox*> tickboxes;
-	//std::vector<Text*> tickboxesText;
-
-	enum EditorMode
-	{
-		select,
-		place,
-		move
-	};
-	EditorMode mode;
-	std::vector<Tickbox*> tickboxesMode;
-	//std::vector<Text*> tickboxesModeText;
-
-	Textfile* textfile;
-
-	b2World* world;
-	EditorObject currentlySelected;
-
-	Button* remove;
-
-	Textinput* nameReceiver;
-	Button* warning;
+	Textinput* nameReceiver; // Namereceiver will receive names for loading and saving files
+	Button* warning; // Warning will show warning when needed
 	bool warningState;
-	Text* nameReceiverText;
-	Button* saveButton;
+	Text* nameReceiverText; // Text of the namereceiver
+	Button* saveButton; // Button for saving
 	bool saving;
-	Button* loadButton;
+	Button* loadButton; // Button for loading
 	bool loading;
+	Button* clearButton; // Button to remove all of the placed objects from the scene
 
-	std::vector<Crystal*> tmpCrystals;
+	Button* remove; // Button to remove the currentlyselected
 
-	int crystalID;
-	std::vector<Link> links;
-	Text* linkingText;
+	std::vector<Crystal*> tmpCrystals; // tmp crystals for when loading a file
+
+	int crystalID; // CrystalID is the id that will be given to a crystal when a crystal is created
+	std::vector<Link> links; // All of the links between doors and crystals will be saved in this vector
+	Text* linkingText; // Linking text will give info on how to link a door with a crystal
 	bool linking;
 
 	bool guide;
-	Sprite* canvasGuide;
+	Sprite* canvasGuide; // The guide for using the editor
 };
 
 #endif // !LEVELEDITOR_H
