@@ -2,13 +2,14 @@
 
 Core::Core(const char * screenName, bool fullscreen)
 {
+	// Create the window
 	window = new Window(screenName, fullscreen);
 	// Initalize variables for deltaTime
 	deltaTime = 0.0f;
 	lastFrame = glfwGetTime();
 	totalTime = 0.0f;
 	fpsCount = 0;
-	// Initialize the rendermanager
+	// Initialize all of the singletons
 	ResourceManager::Initialize();
 	RenderManager::Initalize();
 	DebugRenderer::Initialize();
@@ -16,6 +17,7 @@ Core::Core(const char * screenName, bool fullscreen)
 
 Core::~Core()
 {
+	// Delete the allocated memory
 	delete window;
 	ResourceManager::Destroy();
 	RenderManager::Destroy();
@@ -24,29 +26,38 @@ Core::~Core()
 
 void Core::Run(Scene * scene)
 {
-	// rendering commands
+	// Clear the window
 	window->Clear();
+	// Calculate fps and deltaTime
 	CalculateFrameRate();
-
+	
+	// Update the scene
 	scene->Update(deltaTime);
+	// Render scene by the camera of the scene
 	RenderManager::Render(scene->GetCamera());
+	// Update the childeren
 	scene->UpdateChilderen(NULL, deltaTime);
+	// Render all of the debug information
 	DebugRenderer::Render(scene->GetCamera());
 
+	// SwapBuffers
 	window->SwapBuffers();
+	// Update the input by the camera of the scene
 	Input::Update(scene->GetCamera());
 }
 
-bool Core::IsActive()
+bool Core::IsWindowActive()
 {
+	// Checks if the window has not yet been exited
 	if (window->ShouldClose()) {
 		return false;
 	}
 	return true;
 }
 
-void Core::Close()
+void Core::CloseWindow()
 {
+	// Closes the window
 	window->CloseWindow();
 }
 
@@ -57,16 +68,19 @@ double Core::GetDeltaTime()
 
 void Core::ResizeWindow(int width, int height)
 {
+	// Resizes the window
 	window->Resize(width, height);
 }
 
 void Core::SetWindowBackgroundColor(glm::vec3 color)
 {
+	// Sets the background color of the window
 	window->SetBackgroundColor(color);
 }
 
 void Core::CalculateFrameRate()
 {
+	// Calculate deltaTime and fps
 	double currentFrame = glfwGetTime();
 	deltaTime = (currentFrame - lastFrame);
 	lastFrame = currentFrame;
