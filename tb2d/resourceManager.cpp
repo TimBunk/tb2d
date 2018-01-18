@@ -2,20 +2,19 @@
 
 ResourceManager* ResourceManager::rm = nullptr;
 
-ResourceManager* ResourceManager::GetInstance()
+void ResourceManager::Initialize()
 {
 	if (ResourceManager::rm == nullptr) {
 		ResourceManager::rm = new ResourceManager();
 		// The default shader
-		ResourceManager::CreateShader("default", "shaders\\basic.vs", "shaders\\basic.fs");
+		CreateShader("default", "shaders\\basic.vs", "shaders\\basic.fs");
 		// The default freetype shader
-		ResourceManager::CreateShader("freetype", "shaders\\freetype.vs", "shaders\\freetype.fs");
-		// Debug Renderer
-		ResourceManager::CreateShader("debugRenderer", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
-		// Debug Line Renderer
-		ResourceManager::CreateShader("debugLineRenderer", "shaders\\debugLineRenderer.vs", "shaders\\debugLineRenderer.fs");
+		CreateShader("freetype", "shaders\\freetype.vs", "shaders\\freetype.fs");
+		// Debug Renderer shader
+		CreateShader("debugRenderer", "shaders\\debugRenderer.vs", "shaders\\debugRenderer.fs");
+		// Debug Line Renderer shader
+		CreateShader("debugLineRenderer", "shaders\\debugLineRenderer.vs", "shaders\\debugLineRenderer.fs");
 	}
-	return ResourceManager::rm;
 }
 
 void ResourceManager::Destroy()
@@ -30,15 +29,14 @@ void ResourceManager::CreateShader(std::string nameOfShader, const char * vertex
 {
 	Shader* shader;
 	shader = new Shader(vertexPath, fragmentPath);
-	ResourceManager::GetInstance()->shaders[nameOfShader] = shader;
+	ResourceManager::rm->shaders[nameOfShader] = shader;
 }
 
 Shader * ResourceManager::GetShader(std::string name)
 {
-	ResourceManager* _rm = ResourceManager::GetInstance();
 	// Search for an excisting shader that has already been loaded once
-	if (_rm->shaders.find(name) != _rm->shaders.end()) {
-		return _rm->shaders[name];
+	if (ResourceManager::rm->shaders.find(name) != ResourceManager::rm->shaders.end()) {
+		return ResourceManager::rm->shaders[name];
 	}
 	std::cout << "ResourceManager could not find the shader: " << name << std::endl;
 	return nullptr;
@@ -48,15 +46,14 @@ void ResourceManager::CreateTexture(std::string nameOfTexture, const char * file
 {
 	Texture* texture;
 	texture = new Texture(filePath, textureWrap, textureFilter, mipmapFilter);
-	ResourceManager::GetInstance()->textures[nameOfTexture] = texture;
+	ResourceManager::rm->textures[nameOfTexture] = texture;
 }
 
 Texture * ResourceManager::GetTexture(std::string name)
 {
-	ResourceManager* _rm = ResourceManager::GetInstance();
 	// Search for an excisting texture that has already been loaded once
-	if (_rm->textures.find(name) != _rm->textures.end()) {
-		return _rm->textures[name];
+	if (ResourceManager::rm->textures.find(name) != ResourceManager::rm->textures.end()) {
+		return ResourceManager::rm->textures[name];
 	}
 	std::cout << "ResourceManager could not find the texture: " << name << std::endl;
 	return nullptr;
@@ -64,12 +61,10 @@ Texture * ResourceManager::GetTexture(std::string name)
 
 Font ResourceManager::GetFont(std::string filePath, int textureAtlasSize, int fontSize)
 {
-	ResourceManager* _rm = ResourceManager::GetInstance();
-
-	if (_rm->fonts.find(filePath) != _rm->fonts.end()) {
-		if (_rm->fonts[filePath].find(fontSize) != _rm->fonts[filePath].end()) {
-			if (_rm->fonts[filePath][fontSize].find(textureAtlasSize) != _rm->fonts[filePath][fontSize].end()) {
-				return _rm->fonts[filePath][fontSize][textureAtlasSize];
+	if (ResourceManager::rm->fonts.find(filePath) != ResourceManager::rm->fonts.end()) {
+		if (ResourceManager::rm->fonts[filePath].find(fontSize) != ResourceManager::rm->fonts[filePath].end()) {
+			if (ResourceManager::rm->fonts[filePath][fontSize].find(textureAtlasSize) != ResourceManager::rm->fonts[filePath][fontSize].end()) {
+				return ResourceManager::rm->fonts[filePath][fontSize][textureAtlasSize];
 			}
 		}
 	}
@@ -91,7 +86,7 @@ Font ResourceManager::GetFont(std::string filePath, int textureAtlasSize, int fo
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font.textureAtlas->width, font.textureAtlas->height, 0, GL_RED, GL_UNSIGNED_BYTE, font.textureAtlas->data);
 
-	_rm->fonts[filePath][fontSize][textureAtlasSize] = font;
+	ResourceManager::rm->fonts[filePath][fontSize][textureAtlasSize] = font;
 
 	return font;
 }

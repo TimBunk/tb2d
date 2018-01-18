@@ -19,7 +19,7 @@ struct Font {
 
 class ResourceManager {
 public:
-
+	static void Initialize();
 	static void Destroy();
 
 	// Example: CreateShader("shader", "shaders//shader.vs", "shaders//shader.fs");
@@ -33,7 +33,6 @@ public:
 	static Font GetFont(std::string filePath, int textureAtlasSize, int fontSize);
 
 private:
-	static ResourceManager* GetInstance();
 	ResourceManager();
 	~ResourceManager();
 

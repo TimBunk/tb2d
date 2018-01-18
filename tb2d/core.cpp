@@ -9,6 +9,7 @@ Core::Core(const char * screenName, bool fullscreen)
 	totalTime = 0.0f;
 	fpsCount = 0;
 	// Initialize the rendermanager
+	ResourceManager::Initialize();
 	RenderManager::Initalize();
 	DebugRenderer::Initialize();
 }
