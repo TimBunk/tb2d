@@ -1,27 +1,4 @@
-#include <iostream>
-#include <string>
-
-#include <gl\glew.h>
-#include <glfw3.h>
-#include <glm-0.9.8.4\glm\glm.hpp>
-#include <glm-0.9.8.4\glm\gtc\matrix_transform.hpp>
-#include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
-#include <glm-0.9.8.4\glm\gtx\matrix_decompose.hpp>
-
-#include "window.h"
-#include "box2Dclasses/contactListener.h"
-#include "sprite.h"
-#include "scene.h"
 #include "menu.h"
-#include "button.h"
-#include "box2Dclasses/b2entity.h"
-#include "player.h"
-#include "level1.h"
-#include "level2.h"
-#include "mirror.h"
-#include "rotator.h"
-#include "crystal.h"
-#include "door.h"
 #include "core.h"
 #include "leveleditor.h"
 #include "textrenderer.h"

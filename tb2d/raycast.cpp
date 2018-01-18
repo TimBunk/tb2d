@@ -14,6 +14,7 @@ void Raycast::Update(glm::vec2 startingPoint, glm::vec2 endPoint)
 	this->startingPoint = startingPoint;
 	this->endPoint = endPoint;
 	hits.clear();
+	// Shoot the raycast in to the world but first conver it from pixels to meters
 	world->RayCast(this, b2Vec2(startingPoint.x * B2Entity::p2m, startingPoint.y * B2Entity::p2m), b2Vec2(endPoint.x * B2Entity::p2m, endPoint.y * B2Entity::p2m));
 	if (hits.size() > 0) {
 		// Sort the hits by fraction from low to high

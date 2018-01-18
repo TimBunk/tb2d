@@ -1,7 +1,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include "box2Dclasses/b2entity.h"
+#include "b2entity.h"
 #include "linkable.h"
 
 class Person : public Linkable

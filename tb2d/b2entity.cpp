@@ -95,9 +95,6 @@ void B2Entity::Draw() {
 }
 
 void B2Entity::CreateBoxCollider(int w, int h, glm::vec2 pivot, bool dynamic, bool sensor) {
-	/*if (pivot.x != 0.0f) {
-		std::cout << "The pivot = " << pivot.x << std::endl;
-	}*/
 	colliderPivot = pivot;
 	shape = Shape::box;
 	// If the body was created make sure to delete everything as well

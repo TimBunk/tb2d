@@ -79,12 +79,12 @@ add_definitions(
 )
 
 set(TB2DSOURCE
-  tb2d/box2Dclasses/b2entity.cpp
-  tb2d/box2Dclasses/b2entity.h
-  tb2d/box2Dclasses/contactListener.cpp
-  tb2d/box2Dclasses/contactListener.h
-  tb2d/box2Dclasses/raycast.cpp
-  tb2d/box2Dclasses/raycast.h
+  tb2d/b2entity.cpp
+  tb2d/b2entity.h
+  tb2d/contactListener.cpp
+  tb2d/contactListener.h
+  tb2d/raycast.cpp
+  tb2d/raycast.h
   tb2d/texture.cpp
   tb2d/texture.h
   tb2d/shader.cpp

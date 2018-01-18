@@ -1,7 +1,7 @@
 #ifndef ROTATOR_H
 #define ROTATOR_H
 
-#include "box2Dclasses/b2entity.h"
+#include "b2entity.h"
 class Rotator : public B2Entity
 {
 public:

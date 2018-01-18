@@ -2,7 +2,7 @@
 #define LASER_H
 
 #include "crystal.h"
-#include "box2Dclasses/raycast.h"
+#include "raycast.h"
 
 class Laser : public Sprite
 {

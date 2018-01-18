@@ -2,7 +2,7 @@
 #define ENEMY_H
 
 #include "player.h"
-#include "box2Dclasses/raycast.h"
+#include "raycast.h"
 #include "mirror.h"
 
 class Enemy : public Person

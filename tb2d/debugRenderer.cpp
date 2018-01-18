@@ -1,5 +1,5 @@
 #include "debugRenderer.h"
-#include "box2Dclasses/b2entity.h"
+#include "b2entity.h"
 
 DebugRenderer* DebugRenderer::debugRenderer = nullptr;
 

@@ -6,7 +6,7 @@
 #include "crystal.h"
 #include "door.h"
 #include "player.h"
-#include "box2Dclasses/contactListener.h"
+#include "contactListener.h"
 #include "enemy.h"
 #include "textfile.h"
 #include "text.h"

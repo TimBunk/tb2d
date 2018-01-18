@@ -6,9 +6,9 @@
 #include <iomanip>
 
 #include "scene.h"
-#include "box2Dclasses/b2entity.h"
+#include "b2entity.h"
 #include "button.h"
-#include "box2Dclasses/contactListener.h"
+#include "contactListener.h"
 #include "textfile.h"
 #include "loadlevel.h"
 #include "tickbox.h"
