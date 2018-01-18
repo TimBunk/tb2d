@@ -3,15 +3,11 @@
 
 Renderer::Renderer(Shader* shader)
 {
+	// Set the shader
 	this->shader = shader;
 }
 
 Renderer::~Renderer()
 {
 	
-}
-
-void Renderer::Render(Camera* camera)
-{
-
 }

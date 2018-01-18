@@ -1,30 +1,35 @@
+/**
+* @file renderer.h
+*
+* @brief The Renderer header file.
+*/
+
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <vector>
-
-#include <gl\glew.h>
-#include <glfw3.h>
-#include <glm-0.9.8.4\glm\glm.hpp>
-#include <glm-0.9.8.4\glm\gtc\matrix_transform.hpp>
-#include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
-
-#include "texture.h"
+#include "resourceManager.h"
 #include "camera.h"
 #include "scene.h"
 
 class Sprite;
 
+/**
+* @brief The Renderer class
+*/
 class Renderer
 {
 public:
+	/// @brief Constructor of the Renderer
+	/// @param shader is the shader that will be used by the Renderer
 	Renderer(Shader* shader);
-	~Renderer();
+	/// @brief Destructor of the Renderer
+	virtual ~Renderer();
 
-	virtual void Render(Camera* camera);
+	/// @brief Render is currently empty but can be used to do rendering
+	virtual void Render(Camera* camera) { }
 
 protected:
-	Shader* shader;
+	Shader* shader; ///< @brief shader is the shader that can be used for the renderer
 
 };
 

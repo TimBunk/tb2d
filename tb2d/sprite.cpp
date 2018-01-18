@@ -2,6 +2,7 @@
 
 Sprite::Sprite(int width, int height, unsigned int textureID) : Entity::Entity()
 {
+	// Initialize the variables
 	this->width = width;
 	this->height = height;
 	this->textureID = textureID;
@@ -12,6 +13,7 @@ Sprite::Sprite(int width, int height, unsigned int textureID) : Entity::Entity()
 
 Sprite::Sprite(int width, int height, glm::vec4 color)
 {
+	// Initialize the variables
 	this->width = width;
 	this->height = height;
 	this->color = color;
@@ -26,6 +28,7 @@ Sprite::~Sprite() {
 
 void Sprite::Draw()
 {
+	// Submit this to the renderer
 	if (renderer != nullptr) {
 		renderer->Submit(this);
 	}

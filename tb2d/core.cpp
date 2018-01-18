@@ -11,7 +11,7 @@ Core::Core(const char * screenName, bool fullscreen)
 	fpsCount = 0;
 	// Initialize all of the singletons
 	ResourceManager::Initialize();
-	RenderManager::Initalize();
+	RenderManager::Initialize();
 	DebugRenderer::Initialize();
 }
 

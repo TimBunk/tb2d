@@ -56,7 +56,7 @@ ParticleRenderer::ParticleRenderer(Shader* shader) : Renderer::Renderer(shader)
 	// Unbind the VAO and VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
+	// Fill the activeTextureArray
 	for (int i = 0; i < 32; i++) {
 		activeTextureArray[i] = i;
 	}
@@ -64,6 +64,7 @@ ParticleRenderer::ParticleRenderer(Shader* shader) : Renderer::Renderer(shader)
 
 ParticleRenderer::~ParticleRenderer()
 {
+	// Delete all allocated memory
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_position);
 	glDeleteBuffers(1, &EBO_position);

@@ -3,6 +3,7 @@
 
 SimpleRenderer::SimpleRenderer(Shader* shader, bool hud) : Renderer::Renderer(shader)
 {
+	// Initialize variables
 	this->hud = hud;
 	drawCount = 0;
 
@@ -47,7 +48,7 @@ SimpleRenderer::SimpleRenderer(Shader* shader, bool hud) : Renderer::Renderer(sh
 	// Unbind the VAO and VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
+	// Fill the activeTextureArray
 	for (int i = 0; i < 32; i++) {
 		activeTextureArray[i] = i;
 	}
@@ -55,6 +56,7 @@ SimpleRenderer::SimpleRenderer(Shader* shader, bool hud) : Renderer::Renderer(sh
 
 SimpleRenderer::~SimpleRenderer()
 {
+	// Delete all allocated memory
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_position);
 	glDeleteBuffers(1, &VBO_texture);
@@ -64,13 +66,14 @@ SimpleRenderer::~SimpleRenderer()
 
 void SimpleRenderer::Submit(Sprite* sprite)
 {
+	// Set the sprite vertices
 	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, 0.0f, sprite->GetRepeatableUV().y));// lower left
 	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// lower right
 	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, 0.0f)); // upper left
 	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, -0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, sprite->GetRepeatableUV().y));// lower right
 	positions.push_back(glm::vec4(0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, sprite->GetRepeatableUV().x, 0.0f));// upper right
 	positions.push_back(glm::vec4(-0.5f + sprite->GetPivot().x, 0.5f + sprite->GetPivot().y, 0.0f, 0.0f)); // upper left
-
+	// Set the textureID
 	int id = 0;
 	if (sprite->GetTextureID() > 0) {
 		bool found = false;
@@ -107,9 +110,9 @@ void SimpleRenderer::Submit(Sprite* sprite)
 
 void SimpleRenderer::Render(Camera* camera)
 {
-	// If there is nothing to draw
+	// If there is nothing to draw return
 	if (drawCount == 0) { return; };
-
+	// Set the uniforms of the shader
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	if (!hud) {

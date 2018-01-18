@@ -2,9 +2,6 @@
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
-	// save the paths for later use
-	this->vertexPath = vertexPath;
-	this->fragmentPath = fragmentPath;
 	// create the shader program
 	CreateProgram(vertexPath, fragmentPath);
 }
@@ -17,11 +14,6 @@ Shader::~Shader()
 void Shader::Use()
 {
 	glUseProgram(this->program);
-}
-
-void Shader::ReloadShaders()
-{
-	CreateProgram(this->vertexPath, this->fragmentPath);
 }
 
 void Shader::SetBool(const std::string & name, bool value)

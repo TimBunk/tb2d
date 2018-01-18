@@ -1,29 +1,33 @@
+/**
+* @file scene.h
+*
+* @brief The Scene header file.
+*/
+
+
 #ifndef SCENE_H
 #define SCENE_H
 
-#define _USE_MATH_DEFINES
-
-#include <iostream>
-#include <vector>
-
 #include "camera.h"
 #include "entity.h"
-#include "resourceManager.h"
 
-#include <GL/glew.h>
-#include <glm-0.9.8.4/glm/glm.hpp>
-#include <glm-0.9.8.4/glm/gtc/matrix_transform.hpp>
-#include <glm-0.9.8.4/glm/gtc/type_ptr.hpp>
-#include <Box2D/Box2D.h>
-
+/**
+* @brief The Scene class
+*/
 class Scene : public Entity {
 public:
+	/// @brief Constructor of the Scene
+	/// @param screenWidthCamera will be used for setting the width of the projection matrix of the camera
+	/// @param screenHeightCamera will be used for setting the height of the projection matrix of the camera
 	Scene(int screenWidthCamera, int screenHeightCamera);
+	/// @brief Destructor of the Scene
 	virtual ~Scene();
 
-	Camera* GetCamera();
+	/// @brief GetCamera returns the camera of this Scene
+	/// @return Camera*
+	Camera* GetCamera() { return camera; }
 protected:
-	Camera* camera;
+	Camera* camera; ///< @brief camera the camera of this Scene
 
 private:
 

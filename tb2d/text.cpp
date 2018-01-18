@@ -2,12 +2,14 @@
 
 Text::Text(std::string text, Font font, glm::vec3 color, AlignmentX xAlignment, AlignmentY yAlignment) : Entity::Entity()
 {
-	textRenderer = RenderManager::GetTextRendererer("freetype");
+	// Get the default text renderer from the renderManager
+	textRenderer = RenderManager::GetTextRenderer("freetype");
+	// Intialize the variables
 	this->font = font;
 	this->color = color;
 	this->xAlignment = xAlignment;
 	this->yAlignment = yAlignment;
-
+	// Set the text
 	SetText(text);
 }
 
@@ -18,6 +20,7 @@ Text::~Text()
 
 void Text::Draw()
 {
+	// Send the information of this Text to the textRenderer
 	textRenderer->Submit(this);
 }
 
@@ -26,7 +29,7 @@ void Text::SetText(std::string text)
 	this->text = text;
 	width = 0;
 	height = 0;
-
+	// Calculate the width and height of this text
 	for (int i = 0; i < text.length(); i++) {
 		char c = text[i];
 		const char* cc = &c;
@@ -38,6 +41,7 @@ void Text::SetText(std::string text)
 			}
 		}
 	}
+	// Set the alignment
 	SetAlignment(xAlignment, yAlignment);
 }
 
@@ -45,7 +49,7 @@ void Text::SetAlignment(AlignmentX xAlignment, AlignmentY yAlignment)
 {
 	this->xAlignment = xAlignment;
 	this->yAlignment = yAlignment;
-
+	// Calculate the offset for the alignment
 	switch (xAlignment)
 	{
 	case leftX:
