@@ -49,10 +49,10 @@ void B2Entity::UpdateChilderen(Entity * parent, double deltaTime)
 		body->SetTransform(b2Vec2(this->position.x * p2m, this->position.y * p2m), this->angle);
 	}
 	// Update and draw all of the childeren and their childeren
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Draw();
-		entities[i]->Update(deltaTime);
-		entities[i]->UpdateChilderen(this, deltaTime);
+	for (int i = 0; i < childeren.size(); i++) {
+		childeren[i]->Draw();
+		childeren[i]->Update(deltaTime);
+		childeren[i]->UpdateChilderen(this, deltaTime);
 	}
 }
 
@@ -81,9 +81,9 @@ void B2Entity::DrawChilderen(Entity * parent)
 		body->SetTransform(b2Vec2(this->position.x * p2m, this->position.y * p2m), this->angle);
 	}
 	// Update and draw all of the childeren and their childeren
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Draw();
-		entities[i]->DrawChilderen(this);
+	for (int i = 0; i < childeren.size(); i++) {
+		childeren[i]->Draw();
+		childeren[i]->DrawChilderen(this);
 	}
 }
 

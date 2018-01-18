@@ -16,43 +16,16 @@ Entity::~Entity()
 
 }
 
-void Entity::Update(double deltaTime)
-{
-
-}
-
-void Entity::Draw()
-{
-
-}
-
-glm::mat4 Entity::GetModelMatrix()
-{
-	return model;
-}
-
-glm::vec2 Entity::GetGlobalPosition() {
-	return position;
-}
-
-float Entity::GetGlobalAngle() {
-	return angle;
-}
-
-glm::vec2 Entity::GetGlobalScale() {
-	return scale;
-}
-
 void Entity::AddChild(Entity* child)
 {
-	entities.push_back(child);
+	childeren.push_back(child);
 }
 
 void Entity::RemoveChild(Entity* child) {
-	std::vector<Entity*>::iterator it = entities.begin();
-	while (it != entities.end()) {
+	std::vector<Entity*>::iterator it = childeren.begin();
+	while (it != childeren.end()) {
 		if ((*it) == child) {
-			it = entities.erase(it);
+			it = childeren.erase(it);
 			return;
 		}
 		++it;
@@ -78,10 +51,10 @@ void Entity::UpdateChilderen(Entity * parent, double deltaTime)
 		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
 		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Draw();
-		entities[i]->Update(deltaTime);
-		entities[i]->UpdateChilderen(this, deltaTime);
+	for (int i = 0; i < childeren.size(); i++) {
+		childeren[i]->Draw();
+		childeren[i]->Update(deltaTime);
+		childeren[i]->UpdateChilderen(this, deltaTime);
 	}
 }
 
@@ -103,8 +76,8 @@ void Entity::DrawChilderen(Entity * parent)
 		model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
 		model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 	}
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Draw();
-		entities[i]->DrawChilderen(this);
+	for (int i = 0; i < childeren.size(); i++) {
+		childeren[i]->Draw();
+		childeren[i]->DrawChilderen(this);
 	}
 }

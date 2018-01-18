@@ -5,6 +5,7 @@ DebugRenderer* DebugRenderer::debugRenderer = nullptr;
 
 void DebugRenderer::Initialize()
 {
+	// Check if the debugRenderer was not already initliazed
 	if (DebugRenderer::debugRenderer == nullptr) {
 		DebugRenderer::debugRenderer = new DebugRenderer();
 	}
@@ -12,6 +13,7 @@ void DebugRenderer::Initialize()
 
 void DebugRenderer::Destroy()
 {
+	// Only if there is already a existing debugRenderer delete it
 	if (DebugRenderer::debugRenderer != nullptr) {
 		delete DebugRenderer::debugRenderer;
 		DebugRenderer::debugRenderer = nullptr;
@@ -21,6 +23,7 @@ void DebugRenderer::Destroy()
 void DebugRenderer::Submit(B2Entity * b2entity)
 {
 	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
+	// If the b2entity is a box add it to boxes otherwise to the circles
 	switch (b2entity->GetShape())
 	{
 	case Shape::box:
@@ -35,9 +38,11 @@ void DebugRenderer::Submit(B2Entity * b2entity)
 void DebugRenderer::Render(Camera* camera)
 {
 	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
+	// Setup the shaders uniforms
 	DebugRenderer::debugRenderer->shader->Use();
 	DebugRenderer::debugRenderer->shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	DebugRenderer::debugRenderer->shader->SetMatrix4("view", camera->GetViewMatrix());
+	// Start drawing
 	DebugRenderer::debugRenderer->DrawBoxes();
 	DebugRenderer::debugRenderer->DrawCircles();
 	DebugRenderer::debugRenderer->DrawLines(camera);
@@ -46,6 +51,7 @@ void DebugRenderer::Render(Camera* camera)
 void DebugRenderer::Line(glm::vec2 point1, glm::vec2 point2, glm::vec3 color)
 {
 	if (DebugRenderer::debugRenderer->active == false) { return; }// Return if it is not active
+	// Add a line
 	DebugRenderer::debugRenderer->linesPosition.push_back(point1);
 	DebugRenderer::debugRenderer->linesPosition.push_back(point2);
 	DebugRenderer::debugRenderer->linesColor.push_back(color);
@@ -60,6 +66,7 @@ void DebugRenderer::SetActive(bool active)
 
 DebugRenderer::DebugRenderer()
 {
+	// Initialize variables
 	active = true;
 	shader = ResourceManager::GetShader("debugRenderer");
 	shaderLine = ResourceManager::GetShader("debugLineRenderer");
@@ -166,6 +173,7 @@ DebugRenderer::DebugRenderer()
 
 DebugRenderer::~DebugRenderer()
 {
+	// Delete allocated memory
 	glDeleteBuffers(1, &VBO_position);
 	glDeleteBuffers(1, &VBO_color);
 
@@ -183,6 +191,7 @@ DebugRenderer::~DebugRenderer()
 
 void DebugRenderer::AddBox(B2Entity* b2entity)
 {
+	// Add a box
 	glm::vec2 pivot = b2entity->GetColliderPivot();
 	boxesPosition.push_back(glm::vec2(-0.5f + pivot.x, -0.5f + pivot.y));	//	lower left	1
 	boxesPosition.push_back(glm::vec2(0.5f + pivot.x, -0.5f + pivot.y));	//	lower right	1
@@ -204,6 +213,7 @@ void DebugRenderer::AddBox(B2Entity* b2entity)
 
 void DebugRenderer::AddCircle(B2Entity* b2entity)
 {
+	// Add a circle
 	glm::mat4 model = b2entity->GetModelMatrix();
 	model = glm::scale(model, glm::vec3(b2entity->GetColliderWidth(), b2entity->GetColliderHeight(), 0.0f));
 	circlesModel.push_back(model);
@@ -213,7 +223,7 @@ void DebugRenderer::AddCircle(B2Entity* b2entity)
 
 void DebugRenderer::DrawBoxes()
 {
-	if (boxesCount == 0) { return; }
+	if (boxesCount == 0) { return; } // Return if there a no boxes
 
 	// Bind the VAO
 	glBindVertexArray(VAO_box);
@@ -246,7 +256,7 @@ void DebugRenderer::DrawBoxes()
 
 void DebugRenderer::DrawCircles()
 {
-	if (circlesCount == 0) { return; }
+	if (circlesCount == 0) { return; } // Return if there are no circles
 	
 	// Bind the VAO
 	glBindVertexArray(VAO_circle);
@@ -275,7 +285,8 @@ void DebugRenderer::DrawCircles()
 
 void DebugRenderer::DrawLines(Camera* camera)
 {
-	if (linesCount == 0) { return; }
+	if (linesCount == 0) { return; } // Return if there are no lines
+	// Setup the shaders uniforms
 	shaderLine->Use();
 	shaderLine->SetMatrix4("projection", camera->GetProjectionMatrix());
 	shaderLine->SetMatrix4("view", camera->GetViewMatrix());

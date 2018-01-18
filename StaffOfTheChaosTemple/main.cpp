@@ -78,7 +78,7 @@ int main() {
 	levelSelector = new Levelselector(1920, 1080);
 	levelEditor = new LevelEditor(3840, 2160);
 
-	while (core->IsActive()) {
+	while (core->IsWindowActive()) {
 		switch (gameState)
 		{
 		case _selector:
@@ -132,7 +132,7 @@ int main() {
 			}
 			// If quit is pressed exit the application
 			else if (menu->Quit()) {
-				core->Close();
+				core->CloseWindow();
 			}
 			break;
 		}
