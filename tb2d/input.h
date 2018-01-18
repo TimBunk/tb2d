@@ -43,7 +43,7 @@ public:
 	/// @param mouse the mouse key for example: GLFW_MOUSE_BUTTON_1
 	/// @return bool
 	static bool MouseDown(int mouse);
-	/// @brieff MouseUp checks if the specified mouse button is not being held down
+	/// @brief MouseUp checks if the specified mouse button is not being held down
 	/// @param mouse the mouse key for example: GLFW_MOUSE_BUTTON_1
 	/// @return bool
 	static bool MouseUp(int mouse);

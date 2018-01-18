@@ -95,7 +95,7 @@ public:
 private:
 	/// @brief GetUniformLocation return the location of a uniform. If that uniform does not exist it will retun -1
 	/// @param name is the name of the uniform
-	/// @retun GLint
+	/// @return GLint
 	GLint GetUniformLocation(const std::string &name);
 	/// @brief CreateProgram creates a shader program from the specified vertext and fragmentPath
 	/// @param vertexPath is the path to a vertext shader for example: "shaders\\basic.vs"

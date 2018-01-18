@@ -2,6 +2,7 @@
 
 Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, unsigned int textureID) : Sprite(width, height, textureID)
 {
+	// Initialize the variables
 	this->onlyNumbers = onlyNumbers;
 	this->hud = hud;
 	this->text = new Text(text, font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
@@ -19,6 +20,7 @@ Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 te
 
 Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, glm::vec4 color) : Sprite(width, height, 0)
 {
+	// Intialize the variables
 	this->onlyNumbers = onlyNumbers;
 	this->hud = hud;
 	this->text = new Text(text, font, textColor, Text::AlignmentX::leftX, Text::AlignmentY::centerY);
@@ -53,6 +55,7 @@ void Textinput::Update(double deltaTime)
 	if (Input::MousePress(0) || Input::KeyPress(GLFW_KEY_ENTER)) {
 		active = false;
 	}
+	// Check if the mouse is hovering over the textinput
 	if (mousePos.x >= (this->position.x - (this->width / 2 * scale.x)) && mousePos.x <= (this->position.x + (this->width / 2 * scale.x)) && mousePos.y >= (this->position.y - (this->height / 2 * scale.y)) && mousePos.y <= (this->position.y + (this->height / 2 * scale.y))) {
 		if (Input::MousePress(0)) {
 			active = true;
@@ -60,6 +63,7 @@ void Textinput::Update(double deltaTime)
 	}
 
 	if (active) {
+		// If the user pressed backspace and the lenght of the input is longer then 0 pop_back the last character
 		if (Input::KeyPress(GLFW_KEY_BACKSPACE)) {
 			if (input.length() > 0) {
 				input.pop_back();
@@ -77,6 +81,7 @@ void Textinput::Update(double deltaTime)
 				text->SetText(input);
 			}
 		}
+		// If a new char got entered by the user type it into the textinput if maxlength has not yet been reached
 		if (Input::NewChar()) {
 			if (input.length() >= maxLength) {
 				return;
@@ -124,6 +129,7 @@ void Textinput::Update(double deltaTime)
 
 void Textinput::SetText(std::string text)
 {
+	// Set the text
 	input = text;
 	number = 0;
 	std::stringstream myStream(input);

@@ -27,7 +27,7 @@ public:
 	/// @param height is the height of the Sprite
 	/// @param color is the color of the Sprite
 	Sprite(int width, int height, glm::vec4 color);
-	/// @bried Destructor of the Sprite
+	/// @brief Destructor of the Sprite
 	virtual ~Sprite();
 
 	/// @brief Draw submits this Sprite to the renderer which is by default the "default" SimpleRenderer created by the RenderManager

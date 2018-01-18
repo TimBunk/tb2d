@@ -3,6 +3,7 @@
 
 TextRenderer::TextRenderer(Shader * shader, bool hud) : Renderer::Renderer(shader)
 {
+	// Initialize varaibles
 	this->hud = hud;
 
 	// Generate and bind the VAO
@@ -54,6 +55,7 @@ TextRenderer::TextRenderer(Shader * shader, bool hud) : Renderer::Renderer(shade
 
 TextRenderer::~TextRenderer()
 {
+	// Delete all allocted memory
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_position);
 	glDeleteBuffers(1, &VBO_texture);
@@ -63,6 +65,7 @@ TextRenderer::~TextRenderer()
 
 void TextRenderer::Submit(Text * text)
 {
+	// Get the textureID
 	int id = 0;
 	bool found = false;
 	for (; id < textureSlots.size(); id++) {
@@ -79,15 +82,14 @@ void TextRenderer::Submit(Text * text)
 		textureSlots.push_back(text->GetAtlasID());
 	}
 
-	//glm::vec2 pos = text->GetGlobalPosition();
 	float posX = 0.0f;
+	// Load all the glyps and get the correct vertices and textureCoordinates
 	for (int i = 0; i < text->GetText().length(); i++) {
 		char c = text->GetText()[i];
 		const char* cc = &c;
 		ftgl::texture_glyph_t* glyph = texture_font_get_glyph(text->GetFont(), cc);
 		if (glyph != 0) {
 			float x0 = posX + glyph->offset_x;
-			//std::cout << c << " offset = " << glyph->offset_y << " height = " << glyph->height << " difference = " << glyph->height - glyph->offset_y << std::endl;
 			float y0 = 0.0f - ((glyph->height - glyph->offset_y));
 			float x1 = x0 + glyph->width;
 			float y1 = y0 + glyph->height;
@@ -107,7 +109,6 @@ void TextRenderer::Submit(Text * text)
 			// Get the model matrix from the text
 			glm::mat4 model = text->GetModelMatrix();
 			model = glm::translate(model, glm::vec3(text->GetOffset().x, text->GetOffset().y, 0.0f));
-			//model = glm::scale(model, glm::vec3(1080.0f, 1080.0f, 0.0f));
 			// Push back 6 times because we have 6 vertices
 			for (int i = 0; i < 6; i++) {
 				textures.push_back((GLfloat(id) + 1.0f));
@@ -123,7 +124,7 @@ void TextRenderer::Render(Camera * camera)
 {
 	// If there is nothing to draw
 	if (positions.size() == 0) { return; };
-
+	// Set all of the uniforms of the shader
 	shader->Use();
 	shader->SetMatrix4("projection", camera->GetProjectionMatrix());
 	if (!hud) {

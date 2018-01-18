@@ -39,11 +39,11 @@ Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter t
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		break;
 	}
-	// load the image data and create Mipmap
+	// load the image data and create the texture
 	data = SOIL_load_image(filePath, &width, &height, 0, SOIL_LOAD_RGBA);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
+		// If mimmapfilter does not equals none create a mimpmap and set the specified filter
 		if (mipmapFilter != MipmapFilter::none) {
 			glGenerateMipmap(GL_TEXTURE_2D);
 			switch (mipmapFilter)
@@ -74,9 +74,4 @@ Texture::Texture(const char * filePath, TextureWrap textureWrap, TextureFilter t
 Texture::~Texture()
 {
 	glDeleteTextures(1, &id);
-}
-
-unsigned int Texture::GetId()
-{
-	return id;
 }

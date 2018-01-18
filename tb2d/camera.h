@@ -31,7 +31,7 @@ public:
 	/// @param position is the value that will be added to thee currentPosition
 	/// @return void
 	void PositionAdd(glm::vec2 position);
-	/// @brieff GetPosition return the currentposition of the camera
+	/// @brief GetPosition return the currentposition of the camera
 	/// @return glm::vec2
 	glm::vec2 GetPosition();
 

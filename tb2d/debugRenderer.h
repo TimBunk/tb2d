@@ -98,7 +98,7 @@ private:
 	GLuint EBO_circlePosition; ///< @brief EBO_circlePosition is a buffer that indexes the VBO_circlePosition
 	GLuint VBO_circleColor; ///< @brief VBO_circleColor is a buffer for all of the differnt circle colors
 	GLuint VBO_circleModel; ///< @brief VBO_circleModel is a buffer for all of the different circle models
-	std::vector<glm::vec3> circlesColor; ///< @briefcirclesColor a vector that keeps track of all of the different circleColors
+	std::vector<glm::vec3> circlesColor; ///< @brief circlesColor a vector that keeps track of all of the different circleColors
 	std::vector<glm::mat4> circlesModel; ///< @brief circlesModel a vector that keeps track of all of the differnt model matrices of the circles
 	int circlesCount; ///< @brief circlesCount is the amount of circle that have to be drawn
 	// line

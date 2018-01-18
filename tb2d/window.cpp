@@ -40,15 +40,17 @@ Window::Window(const char* screenName, bool fullScreen) {
 		glfwTerminate();
 	}
 
+	// Set bleding on for alpha values
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
+	// Initialize input by the GLFWwindow
 	Input::Initialize(window, mode->width, mode->height);
 }
 
 
 Window::~Window() {
+	// Delete the allocated memory
 	Input::Destroy();
 	glfwDestroyWindow(window);
 	glfwTerminate();
