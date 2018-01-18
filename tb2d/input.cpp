@@ -1,51 +1,38 @@
 #include "input.h"
 
-Input* Input::_input = nullptr;
+Input* Input::input = nullptr;
 
-void Input::Init(GLFWwindow * window, float screenWidth, float screenHeight)
+void Input::Initialize(GLFWwindow * window, float screenWidth, float screenHeight)
 {
-	if (Input::_input == nullptr) {
-		Input::_input = new Input(window, screenWidth, screenHeight);
+	if (input == nullptr) {
+		// Create a instance of the input
+		input = new Input(window, screenWidth, screenHeight);
 
 		// Set charCallback function for the input
 		glfwSetCharCallback(window, [](GLFWwindow* window, unsigned int keyCode) {
-			Input::_input->c = keyCode;
-			Input::_input->newChar = true;
+			input->c = keyCode;
+			input->newChar = true;
 		});
-		return;
+		// Set mousecursorcallback function for the input
+		glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+			input->mousePosition.x = xpos;
+			input->mousePosition.y = ypos;
+		});
 	}
-	std::cout << "Input is already initialized!" << std::endl;
-}
-
-Input* Input::GetInstance()
-{
-	if (Input::_input != nullptr) {
-		return Input::_input;
-	}
-	std::cout << "Input has not yet been intialized" << std::endl;
-	return nullptr;
 }
 
 void Input::Destroy()
 {
-	if (Input::_input != nullptr) {
-		delete Input::_input;
-		Input::_input = nullptr;
-		return;
+	// Delete the instance of the input if it was intialized
+	if (input != nullptr) {
+		delete input;
+		input = nullptr;
 	}
-	std::cout << "You need to initialize the input before destroying it!" << std::endl;
-}
-
-void Input::MouseCallback(GLFWwindow * window, double xpos, double ypos)
-{
-	// Get the position according to the window's size
-	mousePosition.x = xpos;
-	mousePosition.y = ypos;
 }
 
 glm::vec2 Input::GetMousePositionScreenSpace() {
-	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionScreenSpace;
+	// Calculate the mousePosition in screenSpace if a camera exists
 	if (input->camera != nullptr) {
 		mousePositionScreenSpace = glm::vec2(input->camera->GetWidth() / input->screenWidth*input->mousePosition.x - input->camera->GetWidth() / 2, ((input->camera->GetHeight() / input->screenHeight*input->mousePosition.y) - input->camera->GetHeight()) * -1 - input->camera->GetHeight() / 2);
 	}
@@ -53,8 +40,8 @@ glm::vec2 Input::GetMousePositionScreenSpace() {
 }
 
 glm::vec2 Input::GetMousePositionWorldSpace() {
-	Input* input = Input::GetInstance();
 	glm::vec2 mousePositionWorldSpace;
+	// Calculate the mousePosition in worldSpace if a camera exists
 	if (input->camera != nullptr) {
 		mousePositionWorldSpace = glm::vec2(input->camera->GetWidth() / input->screenWidth*input->mousePosition.x + input->camera->GetPosition().x - input->camera->GetWidth() / 2, ((input->camera->GetHeight() / input->screenHeight*input->mousePosition.y) - input->camera->GetHeight()) * -1 + input->camera->GetPosition().y - input->camera->GetHeight() / 2);
 	}
@@ -62,22 +49,23 @@ glm::vec2 Input::GetMousePositionWorldSpace() {
 }
 
 bool Input::MousePress(int mouse) {
-	Input* input = Input::GetInstance();
+	// Checks if the mouse is being pressed
 	input->SetMouseState(mouse);
 	if (input->mousePressedSecond[mouse]) {
+		// Return false if the mouse is still being held down at the second frame and wait for it to be released again
 		return false;
 	}
 	return input->mousePressed[mouse];
 }
 
 bool Input::MouseDown(int mouse) {
-	Input* input = Input::GetInstance();
+	// Check if the mouse is being held down
 	input->SetMouseState(mouse);
 	return input->mouseDown[mouse];
 }
 
 bool Input::MouseUp(int mouse) {
-	Input* input = Input::GetInstance();
+	// Check if the mouse is not being held down
 	input->SetMouseState(mouse);
 	return input->mouseUp[mouse];
 }
@@ -101,40 +89,44 @@ void Input::SetMouseState(int mouse)
 }
 
 bool Input::KeyPress(int key) {
-	Input* input = Input::GetInstance();
+	// Check if the key is being pressed
 	input->SetKeyState(key);
 	if (input->keysPressedSecond[key]) {
+		// Return false if the key is still being held down at the second frame and wait for it to be released again
 		return false;
 	}
 	return input->keysPressed[key];
 }
 
 bool Input::KeyDown(int key) {
-	Input* input = Input::GetInstance();
+	// Check if the key is being held down
 	input->SetKeyState(key);
 	return input->keysDown[key];
 }
 
 bool Input::KeyUp(int key) {
-	Input* input = Input::GetInstance();
+	// Check if the key is not being held down
 	input->SetKeyState(key);
 	return input->keysUp[key];
 }
 
 bool Input::NewChar()
 {
-	return Input::GetInstance()->newChar;
+	// Return true whenever the user entered a new char
+	return input->newChar;
 }
 
 char Input::GetKeyPressChar()
 {
-	return Input::GetInstance()->c;
+	// Return the pressed char
+	return input->c;
 }
 
 void Input::Update(Camera* camera)
 {
-	Input* input = Input::GetInstance();
+	// Set the camera
 	input->camera = camera;
+	// Loop through characters and update them
 	for (int i = 0; i < 348; i++) {
 		if (i < 8) {
 			if (input->mousePressed[i]) {
@@ -145,6 +137,7 @@ void Input::Update(Camera* camera)
 			input->keysPressedSecond[i] = true;
 		}
 	}
+	// Set new char always to false
 	input->newChar = false;
 }
 
@@ -167,6 +160,7 @@ void Input::SetKeyState(int key)
 }
 
 Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
+	// Intialize all of the variables
 	this->window = window;
 	this->camera = nullptr;
 	this->screenWidth = screenWidth;
@@ -186,13 +180,6 @@ Input::Input(GLFWwindow* window, float screenWidth, float screenHeight) {
 	}
 	newChar = false;
 	c = ' ';
-
-	// A hacky kinda way to get events working for member functions
-	// https://stackoverflow.com/questions/7676971/pointing-to-a-function-that-is-a-class-member-glfw-setkeycallback
-	glfwSetWindowUserPointer(window, this);
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-		static_cast<Input*>(glfwGetWindowUserPointer(window))->MouseCallback(window, xpos, ypos);
-	});
 }
 
 Input::~Input() {

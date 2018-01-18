@@ -44,7 +44,7 @@ Window::Window(const char* screenName, bool fullScreen) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	Input::Init(window, mode->width, mode->height);
+	Input::Initialize(window, mode->width, mode->height);
 }
 
 
@@ -90,7 +90,7 @@ void Window::Resize(int screenWidth, int screenHeight)
 {
 	// Destroy and initalize the input again because otherwise the mouse position calculations will be wrong
 	Input::Destroy();
-	Input::Init(window, screenWidth, screenHeight);
+	Input::Initialize(window, screenWidth, screenHeight);
 	glfwSetWindowSize(window, screenWidth, screenHeight);
 }
 
