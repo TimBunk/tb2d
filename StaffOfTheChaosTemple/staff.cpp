@@ -2,6 +2,7 @@
 
 Staff::Staff(float damage, float laserRange, int width, int height, unsigned int textureID, b2World* world) : Sprite::Sprite(width, height, textureID)
 {
+	// Initialize the variables
 	this->damage = damage;
 	this->laserRange = laserRange;
 	this->world = world;
@@ -13,6 +14,7 @@ Staff::Staff(float damage, float laserRange, int width, int height, unsigned int
 
 Staff::~Staff()
 {
+	// Delete the allocated memory
 	std::vector<Laser*>::iterator it = lasers.begin();
 	while (it != lasers.end()) {
 		delete (*it);
@@ -22,6 +24,7 @@ Staff::~Staff()
 
 void Staff::Update(double deltaTime)
 {
+	// Draw the particles of the lasers
 	for (int i = 0; i < lasers.size(); i++) {
 		lasers[i]->DrawParticles(deltaTime);
 	}
@@ -58,7 +61,6 @@ void Staff::Update(double deltaTime)
 					lasers[i]->Update(deltaTime);
 					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
-					//i++;
 				}
 				// Update and draw the lasers that already exist
 				else if (lasers[i - 1]->Hit() && i < 15) {
@@ -72,7 +74,6 @@ void Staff::Update(double deltaTime)
 					lasers[i]->Update(deltaTime);
 					lasers[i]->UpdateChilderen(NULL, deltaTime);
 					lasers[i]->Draw();
-					//i++;
 				}
 				// If a laser does not hit anything delete every laser that comes after it
 				else if (i > 0 && lasers[i - 1]->Hit() == false) {
@@ -81,24 +82,20 @@ void Staff::Update(double deltaTime)
 						delete lasers[lasers.size() - 1];
 						lasers.pop_back();
 					}
-					// Break out of the while loop otherwise the program will crash
+					// Break out of the while loop
 					break;
 				}
 				i++;
+				// 15 are the maximum allowed of lasers
 				if (lasers.size() > 15) {
 					while (lasers.size() > 15) {
 						delete lasers[lasers.size() - 1];
 						lasers.pop_back();
 					}
-					// Break out of the while loop otherwise the program will crash
+					// Break out of the while loop
 					break;
 				}
 			}
 		}
 	}
-}
-
-void Staff::Shoot()
-{
-	shooting = true;
 }

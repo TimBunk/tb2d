@@ -2,16 +2,17 @@
 
 Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float forceFromAbstacles, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world) : Person::Person(health, speed, damage, width, height, textureID, world)
 {
+	// Initialize the variables
 	this->player = player;
 	this->lineOfSight = lineOfSight;
 	this->forceTowardsPlayer = forceTowardsPlayer;
 	this->forceFromObstacles = forceFromAbstacles;
 	raycast = new Raycast(world);
-
+	// Distance objects if for checking whenever something is in the radius of this enemy
 	distanceObjects = new B2Entity(width, height, 0, world);
 	distanceObjects->CreateCircleCollider(65, true, true);
 	this->AddChild(distanceObjects);
-
+	// Add the sword to the enemy
 	attackRadius = 150.0f;
 	sword = new B2Entity(75, 120, ResourceManager::GetTexture("sword")->GetId(), world);
 	sword->SetPivot(glm::vec2(0.0f, -0.5f));
@@ -20,7 +21,7 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 	sword->localAngle = glm::radians(110.0f);
 	sword->SetFilter(2);
 	AddChild(sword);
-
+	// Healthbar enemy
 	redHealthbar = new Sprite(150, 15, 0);
 	redHealthbar->SetColor(glm::vec4(1, 0, 0, 1));
 	redHealthbar->SetPivot(glm::vec2(0.5f, 0.0f));
@@ -33,6 +34,7 @@ Enemy::Enemy(Player* player, float lineOfSight, float forceTowardsPlayer, float 
 
 Enemy::~Enemy()
 {
+	// Delete the allocated memory
 	delete raycast;
 	delete distanceObjects;
 	delete sword;
@@ -42,6 +44,7 @@ Enemy::~Enemy()
 
 void Enemy::Init()
 {
+	// Set the lastPosition player to his own position because lastPositionPlayer will be 0,0 and the enemy will then start moving towards 0,0
 	lastPositionPlayer = this->localPosition;
 }
 
@@ -49,7 +52,7 @@ void Enemy::Update(double deltaTime)
 {
 	// Update the healthbar
 	greenHealthbar->SetWidth(currentHealth / maxHealth * 150);
-
+	// Shoot a ray towards the player
 	glm::vec2 rayDestination = player->GetGlobalPosition() - position;
 	rayDestination = glm::normalize(rayDestination);
 	rayDestination *= lineOfSight;
@@ -66,6 +69,7 @@ void Enemy::Update(double deltaTime)
 		if (b == player) {
 			// hitted player
 			lastPositionPlayer = player->GetGlobalPosition();
+			// Start swinging the sword if the player is in attackRadius
 			if (glm::length(lastPositionPlayer - position) < attackRadius) {
 				sword->localAngle -= glm::radians(180.0f) * deltaTime;
 				if (sword->localAngle < 0) {//glm::radians(90.0f) * -1) {
@@ -78,6 +82,7 @@ void Enemy::Update(double deltaTime)
 			else {
 				sword->localAngle = glm::radians(110.0f);
 			}
+			// Move the enemy towards the player
 			acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 			playerHit = true;
 			glm::vec2 diff = player->GetGlobalPosition() - position;
@@ -92,6 +97,7 @@ void Enemy::Update(double deltaTime)
 		}
 		break;
 	}
+	// If the player is not in lineofsight anymore move the enemy to the lastposition of the player
 	if (!playerHit && glm::length(position - lastPositionPlayer) > 75.0f) {
 		acceleration += (glm::normalize(lastPositionPlayer - position) * forceTowardsPlayer);
 		glm::vec2 diff = lastPositionPlayer - position;
@@ -99,7 +105,7 @@ void Enemy::Update(double deltaTime)
 		float _angle = glm::atan(diff.y, diff.x);
 		localAngle = _angle;
 	}
-
+	// Check if there are any objects in range of the enemy that are blocking him, and push the enemy with a force away from it
 	std::vector<B2Entity*> inRangeObjects = distanceObjects->GetAllContacts();
 	for (int i = 0; i < inRangeObjects.size(); i++) {
 		if (inRangeObjects[i] != this && inRangeObjects[i] != player && inRangeObjects[i]->GetFilter() != 2) {
@@ -107,6 +113,7 @@ void Enemy::Update(double deltaTime)
 			acceleration += (glm::normalize(position - inRangeObjects[i]->GetGlobalPosition()) * forceFromObstacles);
 		}
 	}
+	// Apply the acceleration to the Enemy
 	if (acceleration.x != 0 || acceleration.y != 0) {
 		velocity += acceleration;
 		velocity = glm::normalize(velocity);

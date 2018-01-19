@@ -2,6 +2,7 @@
 
 Crystal::Crystal(int uniqueID, int width, int height, unsigned int textureID, b2World* world) : B2Entity::B2Entity(width, height, textureID, world)
 {
+	// Initialize the variables
 	this->uniqueID = uniqueID;
 	enabled = false;
 	hit = false;
@@ -14,6 +15,7 @@ Crystal::~Crystal()
 
 void Crystal::Update(double deltaTime)
 {
+	// If the crystal is being hit enable it and set a bright color over it
 	if (hit) {
 		enabled = true;
 		hit = false;

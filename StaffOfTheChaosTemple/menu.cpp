@@ -35,6 +35,7 @@ Menu::Menu(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenW
 }
 
 Menu::~Menu() {
+	// Delete the allocated memory
 	delete background;
 	delete creditsProgrammer;
 	delete creditsArtist;
@@ -44,9 +45,10 @@ Menu::~Menu() {
 }
 
 void Menu::Update(double deltaTime) {
-	// If the start button is pressed set the menu to not active
+	// If hovering over the startbutton make it a differnt color
 	if (startButton->Hover()) {
 		startButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 0.5f));
+		// If start button is down set statrt tot true
 		if (startButton->Down()) {
 			start = true;
 		}
@@ -54,8 +56,10 @@ void Menu::Update(double deltaTime) {
 	else {
 		startButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
 	}
+	// If hovering over the editorbutton make it a differnt color
 	if (editorButton->Hover()) {
 		editorButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 0.5f));
+		// If editor button is down set statrt tot true
 		if (editorButton->Down()) {
 			editor = true;
 		}
@@ -63,9 +67,10 @@ void Menu::Update(double deltaTime) {
 	else {
 		editorButton->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 0.5f));
 	}
-	// If the quit button is pressed exit the application
+	// If hovering over the quitbutton make it a differnt color
 	if (quitButton->Hover()) {
 		quitButton->SetColor(glm::vec4(0.40f, 0.35f, 0.47f, 0.5f));
+		// If quit button is down set statrt tot true
 		if (quitButton->Down()) {
 			quit = true;
 		}

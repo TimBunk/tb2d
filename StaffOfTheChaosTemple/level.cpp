@@ -2,10 +2,11 @@
 
 Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(screenWidthCamera, screenHeightCamera)
 {
+	// Initialize variables
 	player = nullptr;
 	finish = nullptr;
 	finished = false;
-
+	// Create healthbar player
 	redHealthbarPlayer = new Sprite(700, 150, 0);
 	redHealthbarPlayer->SetColor(glm::vec4(1, 0, 0, 1));
 	redHealthbarPlayer->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
@@ -18,18 +19,19 @@ Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(scree
 	greenHealthbarPlayer->localPosition = glm::vec2(-1720, -850);
 	greenHealthbarPlayer->SetPivot(glm::vec2(0.5f, 0.0f));
 	AddChild(greenHealthbarPlayer);
-
+	// Create the world
 	contactListener = new ContactListener();
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetAllowSleeping(false);
 	world->SetContactListener(contactListener);
-
+	// Create the textfile for loading files
 	LoadingErrors = "";
 	textfile = new Textfile();
 }
 
 Level::~Level()
 {
+	// Delete the allocated memory
 	std::vector<Entity*>::iterator itLevelObjects = levelObjects.begin();
 	while (itLevelObjects != levelObjects.end()) {
 		delete (*itLevelObjects);
@@ -61,12 +63,13 @@ Level::~Level()
 
 void Level::Update(double deltaTime)
 {
+	// Check if the player contacted the finish
 	if (finish->Contact(player)) {
-		std::cout << "FINISH" << std::endl;
 		finished = true;
 	}
+	// Update the world
 	world->Step(deltaTime, 8, 3);
-	Draw();
+	// Update the healthbar
 	greenHealthbarPlayer->SetWidth(player->GetCurrentHealth()/player->GetMaxHealth() * 700);
 
 	// Check if the enmies are alive otherwise remove them
@@ -94,27 +97,33 @@ bool Level::IsFinished()
 
 void Level::LoadFile(std::string filename)
 {
+	// Try to open the file
 	if (textfile->Open(filename.c_str())) {
+		// Start reading the filee
 		textfile->StartReading();
 		while (!textfile->EndOfFile()) {
 			std::string lineoftext = textfile->ReadLine();
 			ReadLine(lineoftext);
 		}
+		// Close the file and initialize the level
 		textfile->Close();
 		Init();
 	}
 	else {
+		// file could not be opened so throw a erorr
 		LoadingErrors = "Could not find: " + filename;
 	}
 }
 
 void Level::Init()
 {
+	// Set the the player and intiialize the enemies
 	for (int i = 0; i < enemies.size(); i++) {
 		enemies[i]->SetPlayer(player);
 		enemies[i]->UpdateChilderen(this, 0);
 		enemies[i]->Init();
 	}
+	// Links the doors with the crystals
 	for (int i = 0; i < tmpLinks.size(); i++) {
 		for (int j = 0; j < tmpLinks[i].crystalIDs.size(); j++) {
 			for (int k = 0; k < tmpCrystals.size(); k++) {
@@ -124,6 +133,7 @@ void Level::Init()
 			}
 		}
 	}
+	// Clear all the the tmp link data
 	tmpLinks.clear();
 	tmpCrystals.clear();
 }
@@ -258,6 +268,7 @@ void Level::ReadLine(std::string line)
 
 void Level::LoadTutorial()
 {
+	// All of the data of the tutorial level
 	std::string tutorialString[] {
 		"floor -52.000000 910.000000 0.000000 550 4000",
 		"floor -78.134888 3714.808594 0.000000 3300 2100",

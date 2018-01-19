@@ -11,7 +11,6 @@ public:
 	~Laser();
 
 	void Update(double deltaTime);
-	void Draw();
 	void DrawParticles(double deltaTime);
 
 	void SpawnParticles();

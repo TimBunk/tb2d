@@ -2,6 +2,7 @@
 
 Door::Door(int width, int height, unsigned int textureID, b2World* world) : B2Entity::B2Entity(width, height, textureID, world)
 {
+	// Initialize the variables
 	direction = glm::vec2(0.0f, 0.0f);
 	xDirectionPositive = false;
 	yDirectionPositive = false;
@@ -44,10 +45,10 @@ void Door::Update(double deltaTime)
 			}
 			openPosition = direction + localPosition;
 		}
-		// Open and enable the door so that everything that this door is linked with also know it is open
+		// Open and enable the door
 		enabled = true;
 	}
-	// Open the door by moving it its direction
+	// Open the door by moving its direction
 	if (enabled) {
 		if (localPosition != openPosition) {
 			glm::vec2 tmpDirection = direction;

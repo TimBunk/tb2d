@@ -1,13 +1,8 @@
 #ifndef STAFF_H
 #define STAFF_H
 
-#include <gl\glew.h>
-#include <glm-0.9.8.4\glm\glm.hpp>
-#include <glm-0.9.8.4\glm\gtc\matrix_transform.hpp>
-#include <glm-0.9.8.4\glm\gtc\type_ptr.hpp>
 #include <Box2D/Box2D.h>
 
-#include "sprite.h"
 #include "laser.h"
 
 class Staff : public Sprite
@@ -17,7 +12,7 @@ public:
 	~Staff();
 
 	void Update(double deltaTime);
-	void Shoot();
+	void Shoot() { shooting = true; }
 
 private:
 	float damage;

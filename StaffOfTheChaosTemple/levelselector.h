@@ -14,7 +14,7 @@ public:
 
 	void Update(double deltaTime);
 
-	Level* GetLevel();
+	Level* GetLevel() { return level; }
 	void FinishLevel();
 	void EndLevel();
 	void ExitLevel();

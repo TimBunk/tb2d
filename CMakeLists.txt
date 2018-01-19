@@ -187,19 +187,11 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/door.cpp
     StaffOfTheChaosTemple/level.h
     StaffOfTheChaosTemple/level.cpp
-    StaffOfTheChaosTemple/level1.h
-    StaffOfTheChaosTemple/level1.cpp
-    StaffOfTheChaosTemple/level2.h
-    StaffOfTheChaosTemple/level2.cpp
     StaffOfTheChaosTemple/menu.h
     StaffOfTheChaosTemple/menu.cpp
     StaffOfTheChaosTemple/main.cpp
     StaffOfTheChaosTemple/leveleditor.h
     StaffOfTheChaosTemple/leveleditor.cpp
-    StaffOfTheChaosTemple/savelevel.h
-    StaffOfTheChaosTemple/savelevel.cpp
-    StaffOfTheChaosTemple/loadlevel.h
-    StaffOfTheChaosTemple/loadlevel.cpp
     StaffOfTheChaosTemple/levelselector.h
     StaffOfTheChaosTemple/levelselector.cpp
   )

@@ -9,9 +9,11 @@ Menu* menu;
 Levelselector* levelSelector;
 LevelEditor* levelEditor;
 
+// m2p to and p2m for the box2D world
 float B2Entity::m2p = 50.0f;
 float B2Entity::p2m = 1.0f / B2Entity::m2p;
 
+// Gamestates
 enum GameState
 {
 	_selector,
@@ -23,11 +25,11 @@ enum GameState
 GameState gameState;
 
 int main() {
+	// Create the core
 	core = new Core("Staff of the Chaos Temple", false);
 	core->ResizeWindow(1600, 900);
-	//core->ResizeWindow(800, 600);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
-
+	// Load the textures
 	ResourceManager::CreateTexture("awesome", "textures/awesomeface.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::none);
 	ResourceManager::CreateTexture("wall", "textures/wall.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
@@ -45,11 +47,13 @@ int main() {
 	ResourceManager::CreateTexture("tickboxActive", "textures/tickboxactive.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("textinput", "textures/textinput.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("menu", "textures/menu.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
-
+	// Load the shaders
 	ResourceManager::CreateShader("laser", "shaders\\basic.vs", "shaders\\laserParticle.fs");
+	// Create the renderers
 	RenderManager::CreateParticleRenderer(1, "particle", ResourceManager::GetShader("laser"));
 	RenderManager::CreateTextRenderer(0, "freetypeworld", ResourceManager::GetShader("freetype"), false);
 
+	// Create all the different scenes
 	gameState = _menu;
 	menu = new Menu(1920, 1080);
 	levelSelector = new Levelselector(1920, 1080);

@@ -2,6 +2,7 @@
 #define ROTATOR_H
 
 #include "b2entity.h"
+
 class Rotator : public B2Entity
 {
 public:
@@ -11,8 +12,8 @@ public:
 	void Update(double deltaTime);
 	
 	void Rotate(bool clockWise, float degrees);
-	float GetRotation();
-	void SetRotation(float degrees);
+	float GetRotation() { return rotation; }
+	void SetRotation(float degrees) { rotation = glm::radians(degrees); }
 
 private:
 	float rotation;

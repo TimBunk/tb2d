@@ -6,14 +6,12 @@
 #include <iomanip>
 
 #include "scene.h"
-#include "b2entity.h"
 #include "button.h"
-#include "contactListener.h"
 #include "textfile.h"
-#include "loadlevel.h"
 #include "tickbox.h"
 #include "textinput.h"
-#include "player.h"
+#include "level.h"
+
 
 struct InputFloat {
 	Text* text = nullptr;

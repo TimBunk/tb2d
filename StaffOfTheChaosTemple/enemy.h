@@ -34,7 +34,8 @@ private:
 	glm::vec2 lastPositionPlayer;
 	glm::vec2 velocity;
 	float forceTowardsPlayer;
-	float forceFromObstacles;
+	float forceFromObstacles; // If the enemy walks against a wall then a force will be applied to the enemy pushing him away from the wall
+	// Distance objects if for checking whenever something is in the radius of this enemy and push the enemy with a force away from it
 	B2Entity* distanceObjects;
 	Raycast* raycast;
 };

@@ -21,7 +21,7 @@ class Level : public Scene
 {
 public:
 	Level(int screenWidthCamera, int screenHeightCamera);
-	virtual ~Level();
+	~Level();
 
 	virtual void Update(double deltaTime);
 	bool IsFinished();
@@ -31,27 +31,26 @@ public:
 	void LoadFile(std::string filename);
 	void LoadTutorial();
 
-protected:
-
-	Sprite* greenHealthbarPlayer;
-	Sprite* redHealthbarPlayer;
-
-	b2World* world;
-	ContactListener* contactListener;
-	Player* player;
-	B2Entity* finish;
-	bool finished;
-
 private:
 	void Init();
 	void ReadLine(std::string line);
-
+	// Healthbar player
+	Sprite* greenHealthbarPlayer;
+	Sprite* redHealthbarPlayer;
+	// World
+	b2World* world;
+	ContactListener* contactListener;
+	// Player and finish
+	Player* player;
+	B2Entity* finish;
+	bool finished;
+	// Variables for loading the level
 	Textfile* textfile;
 	std::string LoadingErrors;
 	std::vector<Entity*> levelObjects;
 	std::vector<Enemy*> enemies;
 	std::vector<Text*> textVector;
-
+	// Tmp vectors for creating the links between a door and a crystal
 	std::vector<Link> tmpLinks;
 	std::vector<Crystal*> tmpCrystals;
 };

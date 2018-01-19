@@ -15,7 +15,6 @@ public:
 
 	void Rotatable(bool boolean);
 	bool IsRotatable();
-	virtual void SetFilter(unsigned int filter);
 
 private:
 	Rotator* rotator;

@@ -2,6 +2,7 @@
 
 Player::Player(Camera* camera, float health, float speed, float damage, int width, int height, unsigned int textureID, b2World* world) : Person::Person(health, speed, damage, width, height, textureID, world)
 {
+	// Initialze the variables
 	this->camera = camera;
 	staff = new Staff(damage, 1000.0f, 100, 200, ResourceManager::GetTexture("staff")->GetId(), world);
 	staff->localPosition.x = -25;
@@ -11,6 +12,7 @@ Player::Player(Camera* camera, float health, float speed, float damage, int widt
 
 Player::~Player()
 {
+	// Delete the allocated memory
 	delete staff;
 }
 
@@ -82,8 +84,6 @@ void Player::Update(double deltaTime)
 			float difference = anglePlayer - angleRot;
 
 			// Rotate the mirror's rotator
-			// Sometimes there is a huge difference betweent the angle of the player and the rotator
-			// so a hacky kinda way is: asking if it higher or lower helps me find out of what side the player is pushing from
 			if (difference > -250.0f && difference < 0.0f || difference > 250.0f) {
 				rot->Rotate(true, (50.0f * deltaTime));
 			}

@@ -2,6 +2,7 @@
 
 Person::Person(float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world) : B2Entity::B2Entity(width, height, textureID, world)
 {
+	// Initialze variables
 	this->currentHealth = health;
 	this->maxHealth = health;
 	this->speed = speed;

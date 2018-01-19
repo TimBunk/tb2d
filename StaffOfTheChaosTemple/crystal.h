@@ -14,6 +14,7 @@ public:
 	void Hit() { hit = true; }
 	bool IsEnabled() { return enabled; }
 private:
+	// Every crystal has its own uniqueID
 	int uniqueID;
 	bool hit;
 	bool enabled;
