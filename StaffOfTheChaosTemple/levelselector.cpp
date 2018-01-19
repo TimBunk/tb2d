@@ -4,7 +4,8 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 {
 	// Intialize the variables
 	level = nullptr;
-	CreateLevelButton("level1", "level1", glm::vec2(20, 400));
+	CreateLevelButton("level: 1", "level1", glm::vec2(20, 400));
+	CreateLevelButton("level: run", "run", glm::vec2(-480, 250));
 	// Create a button for the tutorial level
 	tutorial = new Button(400, 100, 0, true);
 	tutorial->SetRenderer(RenderManager::GetSimpleRenderer("hud"));

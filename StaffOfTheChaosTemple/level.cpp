@@ -363,7 +363,7 @@ void Level::LoadTutorial()
 	text->SetTextRenderer(RenderManager::GetTextRenderer("freetypeworld"));
 	AddChild(text);
 	textVector.push_back(text);
-	text = new Text("but be carefull a enemy awaits you on the other side of the door", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text = new Text("but be careful a enemy awaits you on the other side of the door", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
 	text->localPosition.x = 200;
 	text->localPosition.y = 3690;
 	text->SetTextRenderer(RenderManager::GetTextRenderer("freetypeworld"));
