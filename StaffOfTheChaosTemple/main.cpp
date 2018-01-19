@@ -25,8 +25,7 @@ GameState gameState;
 
 int main() {
 	// Create the core
-	core = new Core("Staff of the Chaos Temple", false);
-	core->ResizeWindow(1600, 900);
+	core = new Core("Staff of the Chaos Temple", true);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 	// Load the textures
 	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);

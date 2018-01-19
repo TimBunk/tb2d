@@ -21,6 +21,7 @@ public:
 
 private:
 	void LoadLevel(std::string filename);
+	void CreateLevelButton(std::string name, std::string level, glm::vec2 position);
 
 	Level* level;
 	Button* tutorial;
@@ -31,6 +32,9 @@ private:
 
 	Button* victoryDefeat;
 	Button* error;
+
+	std::vector<Button*> buttons;
+	std::vector<std::string> levelname;
 };
 
 #endif // !LEVELSELECTOR_H

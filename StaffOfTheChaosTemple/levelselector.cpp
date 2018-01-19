@@ -4,6 +4,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 {
 	// Intialize the variables
 	level = nullptr;
+	CreateLevelButton("level1", "level1", glm::vec2(20, 400));
 	// Create a button for the tutorial level
 	tutorial = new Button(400, 100, 0, true);
 	tutorial->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
@@ -42,17 +43,29 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 Levelselector::~Levelselector()
 {
 	// Delete the allocated memory
-	delete tutorial;
 	delete nameReceiver;
 	delete nameReceiverText;
+	delete tutorial;
 	delete load;
+	delete error;
+	delete victoryDefeat;
 	if (level != nullptr) {
 		delete level;
+	}
+	std::vector<Button*>::iterator it = buttons.begin();
+	while (it != buttons.end()) {
+		delete (*it);
+		it = buttons.erase(it);
 	}
 }
 
 void Levelselector::Update(double deltaTime)
 {
+	for (int i = 0; i < buttons.size(); i++) {
+		if (buttons[i]->Down()) {
+			LoadLevel(levelname[i]);
+		}
+	}
 	// Load the tutorial
 	if (tutorial->Down()) {
 		level = new Level(3840, 2160);
@@ -131,4 +144,16 @@ void Levelselector::LoadLevel(std::string filename)
 		delete level;
 		level = nullptr;
 	}
+}
+
+void Levelselector::CreateLevelButton(std::string name, std::string level, glm::vec2 position)
+{
+	Button* b = new Button(400, 100, 0, true);
+	b->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	b->SetColor(glm::vec4(0.505882353f, 0.411764706f, 0.458823529f, 1.0f));
+	b->CreateText(name, ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(0, 0, 0));
+	b->localPosition = position;
+	AddChild(b);
+	buttons.push_back(b);
+	levelname.push_back(level);
 }
