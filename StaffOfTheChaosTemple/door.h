@@ -1,19 +1,20 @@
 #ifndef DOOR_H
 #define DOOR_H
 
-#include "linkable.h"
+#include "crystal.h"
 
-class Door : public Linkable
+class Door : public B2Entity
 {
 public:
 	Door(int width, int height, unsigned int textureID, b2World* world);
 	~Door();
 
 	void Update(double deltaTime);
-	void Link(Linkable* linkable);
+	void Link(Crystal* linkable);
 
 private:
-	std::vector<Linkable*> linkables;
+	bool enabled;
+	std::vector<Crystal*> linkables;
 	glm::vec2 direction;
 	glm::vec2 openPosition;
 	bool xDirectionPositive;

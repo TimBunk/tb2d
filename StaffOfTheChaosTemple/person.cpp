@@ -1,6 +1,6 @@
 #include "person.h"
 
-Person::Person(float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world) : Linkable::Linkable(width, height, textureID, world)
+Person::Person(float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world) : B2Entity::B2Entity(width, height, textureID, world)
 {
 	this->currentHealth = health;
 	this->maxHealth = health;
@@ -19,7 +19,6 @@ void Person::Damage(float damage)
 	}
 	else {
 		currentHealth = 0.0f;
-		enabled = true;
 	}
 }
 

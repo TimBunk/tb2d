@@ -2,9 +2,8 @@
 #define PERSON_H
 
 #include "b2entity.h"
-#include "linkable.h"
 
-class Person : public Linkable
+class Person : public B2Entity
 {
 public:
 	Person(float health, float speed, float damage, int width, int height, unsigned int textureID, b2World * world);

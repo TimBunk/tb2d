@@ -77,12 +77,9 @@ void Player::Update(double deltaTime)
 			//angle = atan2(det, dot)  # atan2(y, x) or atan2(sin, cos)
 			float det = a.x*b.y - a.y*b.x;//      # determinant
 
-			float anglePlayer = (glm::atan(det, dot) * 180.0f / M_PI);//(glm::acos(glm::dot(a, b)) * 180.0f / M_PI);
-			//std::cout << " angle player = " << anglePlayer << std::endl;
+			float anglePlayer = (glm::atan(det, dot) * 180.0f / M_PI);
 			float angleRot = (rot->GetRotation() * 180.0f / M_PI);
-			//std::cout << " angle rotator = " << angleRot << std::endl;
 			float difference = anglePlayer - angleRot;
-			//std::cout << " difference = " << anglePlayer - angleRot << std::endl;
 
 			// Rotate the mirror's rotator
 			// Sometimes there is a huge difference betweent the angle of the player and the rotator

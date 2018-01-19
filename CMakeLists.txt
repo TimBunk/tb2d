@@ -185,8 +185,6 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/crystal.cpp
     StaffOfTheChaosTemple/door.h
     StaffOfTheChaosTemple/door.cpp
-    StaffOfTheChaosTemple/linkable.h
-    StaffOfTheChaosTemple/linkable.cpp
     StaffOfTheChaosTemple/level.h
     StaffOfTheChaosTemple/level.cpp
     StaffOfTheChaosTemple/level1.h
