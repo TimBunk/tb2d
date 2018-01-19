@@ -7,6 +7,10 @@ Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(scree
 	finish = nullptr;
 	finished = false;
 	// Create healthbar player
+	Text* health = new Text("health", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), Text::AlignmentX::leftX, Text::AlignmentY::centerY);
+	health->localPosition = glm::vec2(-1700, -700);
+	AddChild(health);
+	textVector.push_back(health);
 	redHealthbarPlayer = new Sprite(700, 150, 0);
 	redHealthbarPlayer->SetColor(glm::vec4(1, 0, 0, 1));
 	redHealthbarPlayer->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
