@@ -78,6 +78,7 @@ private:
 	int maxDecimalsAfterDot; ///< @brief maxDecimalsAfterDot is the lenght of the currentText + the maxDecimals so that we always know how long the text is allowed to be
 
 	Text* text; ///< @brief text is the Text that will be rendered inside the Textinput
+	float timer; ///< @brief timer this timer keeps track of when the user is holding backspace that a character will removed every 0.1 seconds
 	std::string input; ///< @brief input is the entered text in the Textinput
 	float number; ///< @brief number is the input converted to a float
 };

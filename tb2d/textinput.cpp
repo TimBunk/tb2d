@@ -16,6 +16,7 @@ Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 te
 	maxLength = 9000;
 	maxDecimals = 9000;
 	maxDecimalsAfterDot = 9000;
+	timer = 0.0f;
 }
 
 Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 textColor, bool hud, int width, int height, glm::vec4 color) : Sprite(width, height, 0)
@@ -35,6 +36,7 @@ Textinput::Textinput(std::string text, bool onlyNumbers, Font font, glm::vec3 te
 	maxLength = 9000;
 	maxDecimals = 9000;
 	maxDecimalsAfterDot = 9000;
+	timer = 0.0f;
 }
 
 Textinput::~Textinput()
@@ -61,10 +63,11 @@ void Textinput::Update(double deltaTime)
 			active = true;
 		}
 	}
-
+	timer += deltaTime;
 	if (active) {
 		// If the user pressed backspace and the lenght of the input is longer then 0 pop_back the last character
-		if (Input::KeyPress(GLFW_KEY_BACKSPACE)) {
+		if (Input::KeyDown(GLFW_KEY_BACKSPACE) && timer > 0.1f) {
+			timer = 0.0f;
 			if (input.length() > 0) {
 				input.pop_back();
 				if (onlyNumbers) {
