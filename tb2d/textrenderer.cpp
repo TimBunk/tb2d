@@ -82,41 +82,17 @@ void TextRenderer::Submit(Text * text)
 		textureSlots.push_back(text->GetAtlasID());
 	}
 
-	float posX = 0.0f;
+	// Get the vertices from the text
+	std::vector<glm::vec4> verts = text->GetVertices();
+	positions.insert(positions.end(), verts.begin(), verts.end());
+	// Get the model matrix from the text
+	glm::mat4 model = text->GetModelMatrix();
+	model = glm::translate(model, glm::vec3(text->GetOffset().x, text->GetOffset().y, 0.0f));
 	// Load all the glyps and get the correct vertices and textureCoordinates
-	for (int i = 0; i < text->GetText().length(); i++) {
-		char c = text->GetText()[i];
-		const char* cc = &c;
-		ftgl::texture_glyph_t* glyph = texture_font_get_glyph(text->GetFont(), cc);
-		if (glyph != 0) {
-			float x0 = posX + glyph->offset_x;
-			float y0 = 0.0f - ((glyph->height - glyph->offset_y));
-			float x1 = x0 + glyph->width;
-			float y1 = y0 + glyph->height;
-
-			float u0 = glyph->s0;
-			float v0 = glyph->t0;
-			float u1 = glyph->s1;
-			float v1 = glyph->t1;
-
-			positions.push_back(glm::vec4(x0, y0, u0, v1));// lower left
-			positions.push_back(glm::vec4(x1, y0, u1, v1));// lower right
-			positions.push_back(glm::vec4(x0, y1, u0, v0)); // upper left
-			positions.push_back(glm::vec4(x1, y0, u1, v1));// lower right
-			positions.push_back(glm::vec4(x1, y1, u1, v0));// upper right
-			positions.push_back(glm::vec4(x0, y1, u0, v0)); // upper left
-
-			// Get the model matrix from the text
-			glm::mat4 model = text->GetModelMatrix();
-			model = glm::translate(model, glm::vec3(text->GetOffset().x, text->GetOffset().y, 0.0f));
-			// Push back 6 times because we have 6 vertices
-			for (int i = 0; i < 6; i++) {
-				textures.push_back((GLfloat(id) + 1.0f));
-				colors.push_back(text->GetColor());
-				matrices.push_back(model);
-			}
-			posX += glyph->advance_x;
-		}
+	for (int i = 0; i < verts.size(); i++) {
+		textures.push_back((GLfloat(id) + 1.0f));
+		colors.push_back(text->GetColor());
+		matrices.push_back(model);
 	}
 }
 

@@ -86,8 +86,13 @@ public:
 	/// @return glm::vec2
 	glm::vec2 GetOffset() { return offset; }
 
+	/// @brief GetVertices returns a list of vertices that contains position and uv coordinates for the text
+	/// @return vector<glm::vec4>
+	std::vector<glm::vec4> GetVertices() { return vertices; }
+
 private:
 	TextRenderer* textRenderer; ///< @brief textRenderer is the TextRenderer that is being used by this Text
+	std::vector<glm::vec4> vertices; ///< @brief vertices is a vector that contains all of the position + uv coordinates(x,y position - y, w uv's)
 
 	std::string text; ///< @brief text is the string that has to be rendered
 	Font font; ///< @brief font is the Font that is being used for rendering this Text
