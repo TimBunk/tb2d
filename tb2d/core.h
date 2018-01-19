@@ -13,6 +13,7 @@
 #include "debugRenderer.h"
 #include "resourceManager.h"
 #include "scene.h"
+#include "textfile.h"
 
 /**
 * @brief The Core class

@@ -1,7 +1,6 @@
 #include "menu.h"
 #include "core.h"
 #include "leveleditor.h"
-#include "textrenderer.h"
 #include "levelselector.h"
 
 Core* core;
