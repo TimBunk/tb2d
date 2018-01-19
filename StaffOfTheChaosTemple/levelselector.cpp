@@ -16,7 +16,7 @@ Levelselector::Levelselector(int screenWidthCamera, int screenHeightCamera) : Sc
 	nameReceiver->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	nameReceiver->localPosition.y = -400;
 	AddChild(nameReceiver);
-	nameReceiverText = new Text("Type the name of the custom level you want to play here:", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	nameReceiverText = new Text("Load and play a custom level by name here:", ResourceManager::GetFont("fonts/arial.ttf", 512, 48), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
 	nameReceiverText->localPosition.y = -340;
 	AddChild(nameReceiverText);
 	// Load buttonf or loading cutom levels
