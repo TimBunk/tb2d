@@ -18,7 +18,7 @@ To generate the documentation open your command prompt(or terminal depending on 
   doxygen Doxyfile
 ```
 
-Then open `index.html` in the `documentation/html` directory.
+Then open `documentation.html` in the `documentation/` directory.
 
 ## Libraries
 
