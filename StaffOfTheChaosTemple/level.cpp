@@ -150,7 +150,7 @@ void Level::ReadLine(std::string line)
 		Sprite* _floor = new Sprite(_width, _height, ResourceManager::GetTexture("floor")->GetId());
 		_floor->localPosition = _pos;
 		_floor->localAngle = _angle;
-		_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
+		_floor->SetUV(glm::vec4(0, 0, _floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
 		AddChild(_floor);
 		levelObjects.push_back(_floor);
 	}
@@ -164,7 +164,7 @@ void Level::ReadLine(std::string line)
 		_wall->CreateBoxCollider(_width, 100, glm::vec2(0.0f, 0.0f), false, false);
 		_wall->localPosition = _pos;
 		_wall->localAngle = _angle;
-		_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
+		_wall->SetUV(glm::vec4(0, 0, _wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
 		AddChild(_wall);
 		levelObjects.push_back(_wall);
 	}

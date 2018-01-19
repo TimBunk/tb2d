@@ -8,7 +8,7 @@ Sprite::Sprite(int width, int height, unsigned int textureID) : Entity::Entity()
 	this->textureID = textureID;
 	renderer = RenderManager::GetSimpleRenderer("default");
 	color = glm::vec4(0, 0, 0, 0);
-	repeatUV = glm::vec2(1, 1);
+	uv = glm::vec4(0, 0, 1, 1);
 }
 
 Sprite::Sprite(int width, int height, glm::vec4 color)
@@ -19,7 +19,7 @@ Sprite::Sprite(int width, int height, glm::vec4 color)
 	this->color = color;
 	textureID = 0;
 	renderer = RenderManager::GetSimpleRenderer("default");
-	repeatUV = glm::vec2(1, 1);
+	uv = glm::vec4(0, 0, 1, 1);
 }
 
 Sprite::~Sprite() {

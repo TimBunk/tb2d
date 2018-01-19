@@ -749,7 +749,7 @@ void LevelEditor::UpdateCurrentlySelected()
 	else if (currentlySelected.type == Placeables::wall) {
 		B2Entity* _wall = dynamic_cast<B2Entity*>(currentlySelected.entity);
 		_wall->SetWidth(inputWallWidth.output);
-		_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
+		_wall->SetUV(glm::vec4(0, 0, _wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
 		_wall->localAngle = glm::radians(inputWallRotation.output);
 	}
 	// Update the mirror by their input values
@@ -771,7 +771,7 @@ void LevelEditor::UpdateCurrentlySelected()
 		_floor->localAngle = glm::radians(inputFloorRotation.output);
 		_floor->SetWidth(inputFloorWidth.output);
 		_floor->SetHeight(inputFloorHeight.output);
-		_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
+		_floor->SetUV(glm::vec4(0, 0, _floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
 	}
 	// Update the door by their input values
 	else if (currentlySelected.type == Placeables::door) {
@@ -1057,7 +1057,7 @@ void LevelEditor::Load()
 				_floor->CreateBoxCollider(_width, _height, glm::vec2(0.0f, 0.0f), true, true);
 				_floor->localPosition = _pos;
 				_floor->localAngle = _angle;
-				_floor->SetRepeatableUV(glm::vec2(_floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
+				_floor->SetUV(glm::vec4(0, 0, _floor->GetWidth() / 200.0f, _floor->GetHeight() / 200.0f));
 				floors.push_back(_floor);
 				continue;
 			}
@@ -1071,7 +1071,7 @@ void LevelEditor::Load()
 				_wall->CreateBoxCollider(_width, 100, glm::vec2(0.0f, 0.0f), false, false);
 				_wall->localPosition = _pos;
 				_wall->localAngle = _angle;
-				_wall->SetRepeatableUV(glm::vec2(_wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
+				_wall->SetUV(glm::vec4(0, 0, _wall->GetWidth() / 720.0f, _wall->GetHeight() / 750.0f));
 				eo.entity = _wall;
 				eo.type = Placeables::wall;
 			}

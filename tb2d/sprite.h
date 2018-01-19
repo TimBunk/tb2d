@@ -44,9 +44,10 @@ public:
 	/// @return void
 	void SetTextureID(unsigned int textureID) { this->textureID = textureID; };
 	/// @brief SetRepeatableUV sets the textureCoordinates of this Sprite
+	/// @brief by default the uv looks like this 0,0,1,1
 	/// @param repeat is how many times you want to repeat on x or y axis
 	/// @return void
-	void SetRepeatableUV(glm::vec2 repeat) { this->repeatUV = repeat; };
+	void SetUV(glm::vec4 uv) { this->uv = uv; };
 	/// @brief SetPivot sets the pivot of this Sprite
 	/// @param pivot is the new pivot of this sprite. Note that by default the pivot = 0,0. If you want it to be in the top left corner for example you set the pivot to -0.5, 0.5
 	/// @return void
@@ -69,7 +70,7 @@ public:
 	unsigned int GetTextureID() { return textureID; };
 	/// @brief GetRepeatableUV return the repeatableUV
 	/// @return glm::vec2
-	glm::vec2 GetRepeatableUV() { return repeatUV; };
+	glm::vec4 GetUV() { return uv; };
 	/// @brief GetPivot return the pivot
 	/// @return glm::vec2
 	glm::vec2 GetPivot() { return pivot; };
@@ -85,8 +86,8 @@ public:
 
 protected:
 	unsigned int textureID; ///< @brief textureID is the textureID of this sprite. NOTE that if 0 it will use the color instead
-	glm::vec2 repeatUV; ///< @brief repeatUV is the repeatableUV of this Sprite
-	glm::vec2 pivot; ///< @brief pivot is the pivot of this Sprite by default this is 0,0
+	glm::vec4 uv; ///< @brief uv is the uv coordinates for the texture by default it looks like this 0,0,1,1
+	glm::vec2 pivot; ///< @brief pivot is the pivot of this Sprite by default this is 0,0. If you want it to be in the top left corner for example you set the pivot to -0.5, 0.5
 	glm::vec4 color; ///< @brief color is the color of this Sprite by default this is 0,0,0,0
 	int width; ///< @brief width the width of the Sprite
 	int height; ///< @brief height the height of the Sprite
