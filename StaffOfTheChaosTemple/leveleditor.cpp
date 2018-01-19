@@ -24,6 +24,12 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	nameReceiverText = new Text("Type the name of the file here", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
 	nameReceiverText->localPosition.y = 200;
 	textVector.push_back(nameReceiverText);
+	// Cancel button for canceling the saving or or loading
+	cancel = new Button(300, 150, 0, true);
+	cancel->SetColor(glm::vec4(0.8f, 0.2f, 0.2f, 0.9f));
+	cancel->CreateText("cancel", ResourceManager::GetFont("fonts/arial.ttf", 1024, 96), glm::vec3(1, 1, 1));
+	cancel->localPosition = glm::vec2(825, 0);
+	cancel->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	// save button
 	saveButton = new Button(800/3, 150, 0, true);
 	saveButton->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -165,6 +171,7 @@ LevelEditor::~LevelEditor()
 	delete textfile;
 	delete saveButton;
 	delete nameReceiver;
+	delete cancel;
 	delete warning;
 	delete loadButton;
 	delete clearButton;
@@ -272,13 +279,23 @@ void LevelEditor::Update(double deltaTime)
 
 	// If saving or loading wait for the user to enter a name to load or save to
 	if (saving || loading) {
-		if (nameReceiver->IsActive() == false) {
+		if (cancel->Down()) {
+			RemoveChild(nameReceiver);
+			RemoveChild(nameReceiverText);
+			cancel->Update(deltaTime);
+			RemoveChild(cancel);
+			nameReceiver->SetText("");
+			saving = false;
+			loading = false;
+		}
+		else if (nameReceiver->IsActive() == false) {
 			if (nameReceiver->GetString().size() == 0) {
 				nameReceiver->SetActive(true);
 			}
 			else {
 				RemoveChild(nameReceiver);
 				RemoveChild(nameReceiverText);
+				RemoveChild(cancel);
 				if (saving) {
 					saving = false;
 					Save();
@@ -897,6 +914,7 @@ void LevelEditor::Save()
 			nameReceiverText->SetText("Type the name of the file you want to save to here");
 			AddChild(nameReceiverText);
 			AddChild(nameReceiver);
+			AddChild(cancel);
 			return;
 		}
 	}
@@ -1025,6 +1043,7 @@ void LevelEditor::Load()
 			nameReceiverText->SetText("Type the name of the save file you want to load here");
 			AddChild(nameReceiverText);
 			AddChild(nameReceiver);
+			AddChild(cancel);
 			return;
 		}
 	}

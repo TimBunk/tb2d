@@ -142,6 +142,7 @@ private:
 	B2Entity* _finish;
 
 	Textinput* nameReceiver; // Namereceiver will receive names for loading and saving files
+	Button* cancel; // Cancel button in case the user does not want to save or load anymore
 	Button* warning; // Warning will show warning when needed
 	bool warningState;
 	Text* nameReceiverText; // Text of the namereceiver
