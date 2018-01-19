@@ -17,6 +17,7 @@ add_subdirectory (glfw-3.2.1)
 
 include_directories(
 	glfw-3.2.1/include/GLFW/
+	glew-2.1.0/include/
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -33,3 +34,23 @@ set(OPENGL_LIBRARY
 	${GLFW_LIBRARIES}
 )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+### GLEW ###
+
+set(GLEW_SOURCE
+	glew-2.1.0/src/glew.c
+)
+
+set(GLEW_HEADERS
+)
+
+
+add_library( GLEW STATIC
+	${GLEW_SOURCE}
+	${GLEW_INCLUDE}
+)
+
+target_link_libraries(GLEW
+	${OPENGL_LIBRARY}
+	${EXTRA_LIBS}
+)

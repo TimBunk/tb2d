@@ -1,5 +1,5 @@
 #CMake entry point
-cmake_minimum_required (VERSION 2.8.0)
+cmake_minimum_required (VERSION 2.8.12)
 project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
@@ -55,7 +55,7 @@ include_directories(
   ${SOIL2_INCLUDE_DIR}
   ${FREETYPE2_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/glfw-3.2.1/include/GLFW
-  ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/glew-2.1.0/include
+  ${CMAKE_SOURCE_DIR}/external/glew-2.1.0/include
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/SOIL2
   ${CMAKE_SOURCE_DIR}/external/SOIL2/src/include
   ${CMAKE_SOURCE_DIR}/external/freetype-2.8.1/include
@@ -66,6 +66,7 @@ include_directories(
 
 set(ALL_GRAPHICS_LIBS
 	${OPENGL_LIBRARY}
+  GLEW
   glfw
   ${GLEW_LIBRARIES}
 )

@@ -375,10 +375,10 @@ SET (LIB_TYPE2 STATIC)
 
 ### GLEW ###
 include_directories(
-	glew-2.1.0/include/
+	../glew-2.1.0/include/
 )
 set(GLEW_SOURCE
-	glew-2.1.0/src/glew.c
+	../glew-2.1.0/src/glew.c
 )
 set(GLEW_HEADERS
 )
