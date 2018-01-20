@@ -4,7 +4,6 @@ project (TB2D)
 
 # delete CMakeCache.txt from the build directory when you edit these options
 ####################################################################
-OPTION(USE_TEST_PROJECT "Use project for testing purposes" OFF)
 OPTION(USE_STAFF_OF_THE_CHAOS_TEMPLE "Use Staff of the Chaos Temple" ON)
 OPTION(USE_BOX2D "Use Box2D" ON)
 
@@ -229,46 +228,6 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
   )
   file(
     COPY StaffOfTheChaosTemple/levels
-    DESTINATION ${CMAKE_BINARY_DIR}
-  )
-endif()
-
-####################################################################
-# TestProject                                                 #
-####################################################################
-if (USE_TEST_PROJECT)
-  add_executable(testProject
-    ${TB2DSOURCE}
-    testProject/main.cpp
-  )
-  target_link_libraries(testProject
-    ${BOX2D_LIB}
-    ${ALL_GRAPHICS_LIBS}
-    freetype
-    SOIL2
-  )
-  ADD_DEPENDENCIES(testProject
-    SOIL2
-  )
-  # Copy shaders and textures to the build directory
-  file(
-    COPY tb2d/shaders
-    DESTINATION ${CMAKE_BINARY_DIR}
-  )
-  file(
-    COPY tb2d/textures
-    DESTINATION ${CMAKE_BINARY_DIR}
-  )
-  file(
-    COPY tb2d/fonts
-    DESTINATION ${CMAKE_BINARY_DIR}
-  )
-  file(
-    COPY StaffOfTheChaosTemple/shaders
-    DESTINATION ${CMAKE_BINARY_DIR}
-  )
-  file(
-    COPY StaffOfTheChaosTemple/textures
     DESTINATION ${CMAKE_BINARY_DIR}
   )
 endif()
