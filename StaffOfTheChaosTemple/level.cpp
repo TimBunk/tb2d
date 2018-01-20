@@ -27,7 +27,6 @@ Level::Level(int screenWidthCamera, int screenHeightCamera) : Scene::Scene(scree
 	contactListener = new ContactListener();
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetAllowSleeping(false);
-	world->SetContactListener(contactListener);
 	// Create the textfile for loading files
 	LoadingErrors = "";
 	textfile = new Textfile();
@@ -140,6 +139,8 @@ void Level::Init()
 	// Clear all the the tmp link data
 	tmpLinks.clear();
 	tmpCrystals.clear();
+	this->UpdateChilderen(this, 0);
+	world->SetContactListener(contactListener);
 }
 
 void Level::ReadLine(std::string line)
