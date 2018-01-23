@@ -11,12 +11,28 @@
 #include "tickbox.h"
 #include "textinput.h"
 #include "level.h"
-
+#include "slider.h"
 
 struct InputFloat {
 	Text* text = nullptr;
 	Textinput* input = nullptr;
 	float output = 0.0f;
+};
+
+struct ColorPicker {
+	Text* text;
+	Sprite* colorExample;
+	Slider* r;
+	Slider* g;
+	Slider* b;
+	void SetColor(glm::vec4 color) {
+		r->SetValue(color.r);
+		g->SetValue(color.g);
+		b->SetValue(color.b);
+	}
+	glm::vec4 GetColor() {
+		return glm::vec4(r->GetValue(), g->GetValue(), b->GetValue(), 1.0f);
+	}
 };
 
 class LevelEditor : public Scene
@@ -57,6 +73,7 @@ private:
 
 	void UpdateTickboxes();
 	void UpdateInputFloats();
+	void UpdateColorPickers();
 
 	void Place();
 	void Select();
@@ -69,6 +86,7 @@ private:
 	void CreateEditorModeTickbox(std::string text, glm::vec2 position);
 
 	void CreateInputFloat(InputFloat& inputFloat, Sprite* canvas, std::string startValue, glm::vec2 position, std::string text);
+	void CreateColorPicker(ColorPicker& colorPicker, Sprite* canvas, float yPos);
 	Tickbox* CreateTickbox(Sprite* canvas, bool startValue, glm::vec2 position, std::string text);
 	Sprite* CreateCanvasPlaceable(std::string name);
 	void AddTextToGuide(std::string text, int fontsize, glm::vec2 position);
@@ -118,6 +136,7 @@ private:
 	// Crystal canvas
 	Sprite* crystalCanvas;
 	InputFloat inputCrystalRotation;
+	ColorPicker colorPickerCrystal;
 	// Floor canvas
 	Sprite* floorCanvas;
 	InputFloat inputFloorRotation;
@@ -127,6 +146,7 @@ private:
 	Sprite* doorCanvas;
 	InputFloat inputDoorRotation;
 	Tickbox* inputDoorLink;
+	ColorPicker colorPickerDoor;
 	// Enemy canvas
 	Sprite* enemyCanvas;
 	InputFloat inputEnemyRotation;
@@ -163,6 +183,8 @@ private:
 
 	bool guide;
 	Sprite* canvasGuide; // The guide for using the editor
+
+	std::vector<ColorPicker> colorPickers;
 };
 
 #endif // !LEVELEDITOR_H

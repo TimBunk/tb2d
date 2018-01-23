@@ -25,7 +25,8 @@ GameState gameState;
 
 int main() {
 	// Create the core
-	core = new Core("Staff of the Chaos Temple", true);
+	core = new Core("Staff of the Chaos Temple", false);
+	core->ResizeWindow(1600, 900);
 	core->SetWindowBackgroundColor(glm::vec3(0.0f, 0.4f, 0.8f));
 	// Load the textures
 	ResourceManager::CreateTexture("player", "textures/player.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
@@ -43,6 +44,7 @@ int main() {
 	ResourceManager::CreateTexture("tickboxActive", "textures/tickboxactive.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("textinput", "textures/textinput.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("menu", "textures/menu.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("slider", "textures/backgroundslider.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	// Load the shaders
 	ResourceManager::CreateShader("laser", "shaders\\basic.vs", "shaders\\laserParticle.fs");
 	// Create the renderers

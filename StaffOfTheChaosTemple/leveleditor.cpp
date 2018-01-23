@@ -78,6 +78,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	// Crystal options
 	crystalCanvas = CreateCanvasPlaceable("crystal");
 	CreateInputFloat(inputCrystalRotation, crystalCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateColorPicker(colorPickerCrystal, crystalCanvas, 200);
 	// Floor options
 	floorCanvas = CreateCanvasPlaceable("floor");
 	CreateInputFloat(inputFloorRotation, floorCanvas, "0", glm::vec2(-200, 500), "rotation");
@@ -86,6 +87,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	// Door options
 	doorCanvas = CreateCanvasPlaceable("door");
 	CreateInputFloat(inputDoorRotation, doorCanvas, "0", glm::vec2(-200, 500), "rotation");
+	CreateColorPicker(colorPickerDoor, doorCanvas, 200);
 	inputDoorLink = CreateTickbox(doorCanvas, false, glm::vec2(100, 500), "link");
 	// Enemy options
 	enemyCanvas = CreateCanvasPlaceable("enemy");
@@ -214,6 +216,16 @@ LevelEditor::~LevelEditor()
 		delete (*itInputFloat)->text;
 		itInputFloat = inputFloats.erase(itInputFloat);
 	}
+	// Delete the colorPickers
+	std::vector<ColorPicker>::iterator itColorPicker = colorPickers.begin();
+	while (itColorPicker != colorPickers.end()) {
+		delete (*itColorPicker).text;
+		delete (*itColorPicker).r;
+		delete (*itColorPicker).g;
+		delete (*itColorPicker).b;
+		delete (*itColorPicker).colorExample;
+		itColorPicker = colorPickers.erase(itColorPicker);
+	}
 	// Delete the world
 	delete world;
 }
@@ -274,6 +286,8 @@ void LevelEditor::Update(double deltaTime)
 	UpdateTickboxes();
 	// Update all of the input received by the user
 	UpdateInputFloats();
+	// Updata all of the color pickers
+	UpdateColorPickers();
 	// Update the currentlyselected placeable
 	UpdateCurrentlySelected();
 
@@ -537,6 +551,13 @@ void LevelEditor::UpdateInputFloats()
 	}
 }
 
+void LevelEditor::UpdateColorPickers()
+{
+	for (int i = 0; i < colorPickers.size(); i++) {
+		colorPickers[i].colorExample->SetColor(colorPickers[i].GetColor());
+	}
+}
+
 void LevelEditor::Place()
 {
 	// Player
@@ -564,7 +585,7 @@ void LevelEditor::Place()
 	// Crystal
 	else if (currentlySelected.type == Placeables::crystal) {
 		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
-		_crystal->SetColor(glm::vec4(0, 0, 0, 0));
+		_crystal->SetColor(colorPickerCrystal.GetColor());
 		_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 	}
 	// Floor
@@ -576,7 +597,7 @@ void LevelEditor::Place()
 	// Door
 	else if (currentlySelected.type == Placeables::door) {
 		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
-		_door->SetColor(glm::vec4(0, 0, 0, 0));
+		_door->SetColor(colorPickerDoor.GetColor());
 		_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 	}
 	// Enemy
@@ -626,10 +647,10 @@ void LevelEditor::Select()
 	// Crystal
 	else if (currentlySelected.type == Placeables::crystal) {
 		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
-		_crystal->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		// replace the input values with the crystal's data
 		std::string s = std::to_string((int)glm::degrees(_crystal->localAngle));
 		inputCrystalRotation.input->SetText(s);
+		colorPickerCrystal.SetColor(_crystal->GetColor());
 	}
 	// floor
 	else if (currentlySelected.type == Placeables::floor) {
@@ -646,10 +667,10 @@ void LevelEditor::Select()
 	// door
 	else if (currentlySelected.type == Placeables::door) {
 		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
-		_door->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		// replace the input values with the door data
 		std::string s = std::to_string((int)glm::degrees(_door->localAngle));
 		inputDoorRotation.input->SetText(s);
+		colorPickerDoor.SetColor(_door->GetColor());
 	}
 	// enemy
 	else if (currentlySelected.type == Placeables::enemy) {
@@ -706,7 +727,6 @@ void LevelEditor::GetPlaceable()
 		// Increase the id of the crystal so that it stays unique
 		crystalID++;
 		Crystal* _crystal = new Crystal(crystalID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
-		_crystal->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _crystal;
 		currentlySelected.type = Placeables::crystal;
 	}
@@ -723,7 +743,6 @@ void LevelEditor::GetPlaceable()
 	// Door
 	else if (currentPlaceable == Placeables::door) {
 		Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
-		_door->SetColor(glm::vec4(0, 0.5f, 1, 0.5f));
 		currentlySelected.entity = _door;
 		currentlySelected.type = Placeables::door;
 		Link link;
@@ -781,6 +800,7 @@ void LevelEditor::UpdateCurrentlySelected()
 	else if (currentlySelected.type == Placeables::crystal) {
 		Crystal* _crystal = dynamic_cast<Crystal*>(currentlySelected.entity);
 		_crystal->localAngle = glm::radians(inputCrystalRotation.output);
+		_crystal->SetColor(colorPickerCrystal.GetColor());
 	}
 	// Update the floor by their input values
 	else if (currentlySelected.type == Placeables::floor) {
@@ -794,6 +814,7 @@ void LevelEditor::UpdateCurrentlySelected()
 	else if (currentlySelected.type == Placeables::door) {
 		Door* _door = dynamic_cast<Door*>(currentlySelected.entity);
 		_door->localAngle = glm::radians(inputDoorRotation.output);
+		_door->SetColor(colorPickerDoor.GetColor());
 		// Call the linking function in case it has been activated
 		Linking();
 	}
@@ -1402,6 +1423,30 @@ void LevelEditor::CreateInputFloat(InputFloat& inputFloat, Sprite * canvas, std:
 	canvas->AddChild(inputFloat.text);
 	canvas->AddChild(inputFloat.input);
 	inputFloats.push_back(&inputFloat);
+}
+
+void LevelEditor::CreateColorPicker(ColorPicker & colorPicker, Sprite * canvas, float yPos)
+{
+	colorPicker.text = new Text("RGB color picker", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::centerY);
+	colorPicker.text->localPosition.y = 200 + yPos;
+	canvas->AddChild(colorPicker.text);
+	colorPicker.r = new Slider(100, 50, glm::vec4(0.5f, 0.5f, 0.5f, 1), true, 25, 300, ResourceManager::GetTexture("slider")->GetId());
+	colorPicker.r->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	colorPicker.r->localPosition = glm::vec2(-300, yPos);
+	canvas->AddChild(colorPicker.r);
+	colorPicker.g = new Slider(100, 50, glm::vec4(0.5f, 0.5f, 0.5f, 1), true, 25, 300, ResourceManager::GetTexture("slider")->GetId());
+	colorPicker.g->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	colorPicker.g->localPosition = glm::vec2(-175, yPos);
+	canvas->AddChild(colorPicker.g);
+	colorPicker.b = new Slider(100, 50, glm::vec4(0.5f, 0.5f, 0.5f, 1), true, 25, 300, ResourceManager::GetTexture("slider")->GetId());
+	colorPicker.b->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	colorPicker.b->localPosition = glm::vec2(-50, yPos);
+	canvas->AddChild(colorPicker.b);
+	colorPicker.colorExample = new Sprite(225, 300, glm::vec4(0,0,0,1));
+	colorPicker.colorExample->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	colorPicker.colorExample->localPosition = glm::vec2(143, yPos);
+	canvas->AddChild(colorPicker.colorExample);
+	colorPickers.push_back(colorPicker);
 }
 
 Tickbox* LevelEditor::CreateTickbox(Sprite * canvas, bool startValue, glm::vec2 position, std::string text)
