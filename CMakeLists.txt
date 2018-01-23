@@ -127,6 +127,8 @@ set(TB2DSOURCE
   tb2d/tickbox.h
   tb2d/textinput.cpp
   tb2d/textinput.h
+  tb2d/slider.cpp
+  tb2d/slider.h
 )
 
 ####################################################################
