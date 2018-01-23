@@ -984,6 +984,10 @@ void LevelEditor::Save()
 			data += std::to_string(_mirror->localPosition.y) + " ";
 			data += std::to_string(_mirror->localAngle) + " ";
 			data += std::to_string(_mirror->IsRotatable()) + " ";
+
+			data += std::to_string(_mirror->GetColor().r) + " ";
+			data += std::to_string(_mirror->GetColor().g) + " ";
+			data += std::to_string(_mirror->GetColor().b) + " ";
 		}
 		// Crystal
 		else if (editorObjects[i].type == Placeables::crystal) {
@@ -993,6 +997,9 @@ void LevelEditor::Save()
 			data += std::to_string(_crystal->localPosition.y) + " ";
 			data += std::to_string(_crystal->localAngle) + " ";
 			data += std::to_string(_crystal->GetUniqueID()) + " ";
+			data += std::to_string(_crystal->GetColor().r) + " ";
+			data += std::to_string(_crystal->GetColor().g) + " ";
+			data += std::to_string(_crystal->GetColor().b) + " ";
 		}
 		// Door
 		else if (editorObjects[i].type == Placeables::door) {
@@ -1001,6 +1008,9 @@ void LevelEditor::Save()
 			data += std::to_string(_door->localPosition.x) + " ";
 			data += std::to_string(_door->localPosition.y) + " ";
 			data += std::to_string(_door->localAngle) + " ";
+			data += std::to_string(_door->GetColor().r) + " ";
+			data += std::to_string(_door->GetColor().g) + " ";
+			data += std::to_string(_door->GetColor().b) + " ";
 			// Checking for any links the door might have
 			for (int i = 0; i < links.size(); i++) {
 				// If the correct links has been found
@@ -1133,11 +1143,13 @@ void LevelEditor::Load()
 				glm::vec2 _pos;
 				float _angle;
 				float uniqueID;
-				sscanf(lineoftext.c_str(), "crystal %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID);
+				glm::vec4 color = glm::vec4(0, 0, 0, 1);
+				sscanf(lineoftext.c_str(), "crystal %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID, &color.r, &color.g, &color.b);
 				Crystal* _crystal = new Crystal(uniqueID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
 				_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 				_crystal->localPosition = _pos;
 				_crystal->localAngle = _angle;
+				_crystal->SetColor(color);
 				eo.entity = _crystal;
 				eo.type = Placeables::crystal;
 				crystalID = uniqueID;
@@ -1149,11 +1161,13 @@ void LevelEditor::Load()
 				glm::vec2 _pos;
 				float _angle;
 				float _crystals;
-				sscanf(lineoftext.c_str(), "door %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_crystals);
+				glm::vec4 color = glm::vec4(0, 0, 0, 1);
+				sscanf(lineoftext.c_str(), "door %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &color.r, &color.g, &color.b, &_crystals);
 				Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 				_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 				_door->localPosition = _pos;
 				_door->localAngle = _angle;
+				_door->SetColor(color);
 				eo.entity = _door;
 				eo.type = Placeables::door;
 				// Create all the links that belong to that door

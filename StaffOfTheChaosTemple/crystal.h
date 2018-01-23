@@ -13,8 +13,11 @@ public:
 
 	void Hit() { hit = true; }
 	bool IsEnabled() { return enabled; }
+
+	void SetColor(glm::vec4 color);
 private:
 	// Every crystal has its own uniqueID
+	glm::vec4 activeColor;
 	int uniqueID;
 	bool hit;
 	bool enabled;

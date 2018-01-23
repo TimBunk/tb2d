@@ -193,11 +193,13 @@ void Level::ReadLine(std::string line)
 		glm::vec2 _pos;
 		float _angle;
 		float uniqueID;
-		sscanf(line.c_str(), "crystal %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID);
+		glm::vec4 color = glm:: vec4(0, 0, 0, 1);
+		sscanf(line.c_str(), "crystal %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &uniqueID, &color.r, &color.g, &color.b);
 		Crystal* _crystal = new Crystal(uniqueID, 70, 70, ResourceManager::GetTexture("crystal")->GetId(), world);
 		_crystal->CreateBoxCollider(70, 70, glm::vec2(0.0f, 0.0f), false, false);
 		_crystal->localPosition = _pos;
 		_crystal->localAngle = _angle;
+		_crystal->SetColor(color);
 		AddChild(_crystal);
 		levelObjects.push_back(_crystal);
 		tmpCrystals.push_back(_crystal);
@@ -207,11 +209,13 @@ void Level::ReadLine(std::string line)
 		glm::vec2 _pos;
 		float _angle;
 		float _crystals;
-		sscanf(line.c_str(), "door %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_crystals);
+		glm::vec4 color = glm::vec4(0, 0, 0, 1);
+		sscanf(line.c_str(), "door %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &color.r, &color.g, &color.b, &_crystals);
 		Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 		_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 		_door->localPosition = _pos;
 		_door->localAngle = _angle;
+		_door->SetColor(color);
 		AddChild(_door);
 		levelObjects.push_back(_door);
 		Link link;
@@ -281,21 +285,21 @@ void Level::LoadTutorial()
 		"wall -50.000000 -1040.000000 0.000000 720",
 		"wall 263.594482 803.651245 1.570796 3600",
 		"wall -364.405518 807.651245 1.570796 3600",
-		"door -51.730713 2646.793701 0.000000 1",
+		"door -51.730713 2646.793701 0.000000 1.000000 0.000000 0.000000 1",
 		"1",
-		"crystal -193.730713 2422.793701 0.000000 1",
+		"crystal -193.730713 2422.793701 0.000000 1 1.000000 0.000000 0.000000",
 		"wall 940.294189 2654.337158 0.000000 1440",
 		"wall -1047.705811 2652.337158 0.000000 1440",
 		"wall -1729.132202 3680.050781 1.570796 2160",
 		"wall 1612.586426 3681.895508 1.570796 2160",
 		"wall -1065.898682 4714.273926 0.000000 1440",
 		"wall 941.484619 4714.927734 0.000000 1440",
-		"door -65.148315 4708.441895 0.000000 2",
+		"door -65.148315 4708.441895 0.000000 0.000000 1.000000 0.000000 2",
 		"5",
 		"4",
 		"wall -1064.328125 3711.977539 0.000000 1440",
-		"crystal -784.328125 3319.977539 0.000000 4",
-		"crystal -788.328125 4099.977539 0.000000 5",
+		"crystal -784.328125 3319.977539 0.000000 4 0.000000 1.000000 0.000000",
+		"crystal -788.328125 4099.977539 0.000000 5 0.000000 1.000000 0.000000",
 		"mirror 71.671875 3705.977539 4.3 1",
 		"wall 261.416016 5478.670410 1.570796 1440",
 		"wall -390.583984 5472.670410 1.570796 1440",
@@ -312,11 +316,13 @@ void Level::LoadTutorial()
 			glm::vec2 _pos;
 			float _angle;
 			float _crystals;
-			sscanf(tutorialString[i].c_str(), "door %f %f %f %f", &_pos.x, &_pos.y, &_angle, &_crystals);
+			glm::vec4 color = glm::vec4(0, 0, 0, 1);
+			sscanf(tutorialString[i].c_str(), "door %f %f %f %f %f %f %f", &_pos.x, &_pos.y, &_angle, &color.r, &color.g, &color.b, &_crystals);
 			Door* _door = new Door(550, 550, ResourceManager::GetTexture("door")->GetId(), world);
 			_door->CreateBoxCollider(550, 100, glm::vec2(0, 0), false, false);
 			_door->localPosition = _pos;
 			_door->localAngle = _angle;
+			_door->SetColor(color);
 			AddChild(_door);
 			levelObjects.push_back(_door);
 			Link link;

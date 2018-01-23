@@ -6,6 +6,7 @@ Crystal::Crystal(int uniqueID, int width, int height, unsigned int textureID, b2
 	this->uniqueID = uniqueID;
 	enabled = false;
 	hit = false;
+	activeColor = glm::vec4(0, 0, 0, 1);
 }
 
 Crystal::~Crystal()
@@ -23,6 +24,12 @@ void Crystal::Update(double deltaTime)
 	}
 	else {
 		enabled = false;
-		color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		color = activeColor;
 	}
+}
+
+void Crystal::SetColor(glm::vec4 color)
+{
+	this->color = color;
+	activeColor = color;
 }
