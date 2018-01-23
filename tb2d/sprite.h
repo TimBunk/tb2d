@@ -38,7 +38,7 @@ public:
 	/// @brief SetRenderer sets the simpleRenderer of this Sprite
 	/// @param renderer is the SimpleRenderer that you want to use
 	/// @return void
-	void SetRenderer(SimpleRenderer* renderer) { this->renderer = renderer; };
+	virtual void SetRenderer(SimpleRenderer* renderer) { this->renderer = renderer; };
 	/// @brief SetTextureID sets the textureID of this Sprite
 	/// @param textureID is the new textureID, if set to 0 a color will be used instead of a texture
 	/// @return void
