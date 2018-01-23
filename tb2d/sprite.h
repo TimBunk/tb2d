@@ -55,7 +55,7 @@ public:
 	/// @brief SetColor sets the color of this Sprite
 	/// @param color is the new color of this Sprite
 	/// @return void
-	void SetColor(glm::vec4 color) { this->color = color; };
+	virtual void SetColor(glm::vec4 color) { this->color = color; };
 	/// @brief SetWidth sets the width of this Sprite
 	/// @param width is the new width of this Sprite
 	/// @return void
