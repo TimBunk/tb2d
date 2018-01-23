@@ -6,6 +6,7 @@ Button::Button(int width, int height, unsigned int textureID, bool hud) : Sprite
 	this->text = nullptr;
 	hover = false;
 	down = false;
+	heldDown = false;
 }
 Button::~Button() {
 	// Check if text has been created and if so delete it
@@ -32,6 +33,12 @@ void Button::Update(double deltaTime) {
 		}
 		else {
 			down = false;
+		}
+		if (Input::MouseDown(0)) {
+			heldDown = true;
+		}
+		else {
+			heldDown = false;
 		}
 	}
 	else {
@@ -66,4 +73,15 @@ void Button::SetTextColor(glm::vec4 color)
 	if (text != nullptr) {
 		text->SetColor(color);
 	}
+}
+
+bool Button::HeldDown()
+{
+	if (heldDown && Input::MouseDown(0)) {
+		return true;
+	}
+	else if (heldDown) {
+		heldDown = false;
+	}
+	return false;
 }

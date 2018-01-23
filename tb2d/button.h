@@ -59,12 +59,15 @@ public:
 	/// @return bool
 	bool Down() { return down; }
 
+	bool HeldDown();
+
 private:
 	Text* text; ///< @brief text is the text of the Button
 
 	bool hud; ///< @brief hud boolean for if it is a hud
 	bool hover; ///< @brief hover boolean that will be true whenever the mouse is hovering over the Button
 	bool down; ///< @brief down boolean that will be true whenever the left button mouse has been pressed and is hovering over the Button
+	bool heldDown;
 };
 
 #endif //!BUTTON_H
