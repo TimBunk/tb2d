@@ -376,7 +376,7 @@ void Level::LoadTutorial()
 	text->SetTextRenderer(RenderManager::GetTextRenderer("freetypeworld"));
 	AddChild(text);
 	textVector.push_back(text);
-	text = new Text("Also note that the mirror can be rotated by pushing it", ResourceManager::GetFont("fonts/arial.ttf", 512, 60), glm::vec3(1, 0, 0), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
+	text = new Text("Also note that the mirror can be rotated by pushing it", ResourceManager::GetFont("fonts/arial.ttf", 1024, 60), glm::vec3(1, 0, 0), Text::AlignmentX::leftX, Text::AlignmentY::bottomY);
 	text->localPosition.x = 200;
 	text->localPosition.y = 3615;
 	text->SetTextRenderer(RenderManager::GetTextRenderer("freetypeworld"));
