@@ -108,6 +108,10 @@ void Levelselector::FinishLevel()
 	victoryDefeat->SetText("VICTORY");
 	AddChild(victoryDefeat);
 	ExitLevel();
+	if (error->GetText().length() > 0) {
+		error->SetText("");
+		RemoveChild(error);
+	}
 }
 
 void Levelselector::EndLevel()
@@ -120,6 +124,10 @@ void Levelselector::EndLevel()
 	victoryDefeat->SetText("YOU DIED");
 	AddChild(victoryDefeat);
 	ExitLevel();
+	if (error->GetText().length() > 0) {
+		error->SetText("");
+		RemoveChild(error);
+	}
 }
 
 void Levelselector::ExitLevel()
