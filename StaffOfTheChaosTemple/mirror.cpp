@@ -40,10 +40,11 @@ void Mirror::Rotatable(bool boolean)
 	}
 	// Create a new rotator
 	if (boolean) {
-		rotator = new Rotator(250, 250, ResourceManager::GetTexture("rotator")->GetId(), world);
+		rotator = new Rotator(70, 25, ResourceManager::GetTexture("rotator")->GetId(), world);
+		rotator->SetColor(glm::vec4(0, 0, 0, 1));
 		rotator->localPosition = glm::vec2(15, 5);
-		rotator->SetPivot(glm::vec2(-0.5f, 0.0f));
-		rotator->CreateBoxCollider(90, 15, glm::vec2(-0.15f, 0.0f), false, false);
+		rotator->SetPivot(glm::vec2(-1.1f, 0.0f));
+		rotator->CreateBoxCollider(70, 25, glm::vec2(-1.1f, 0.0f), false, false);
 		this->AddChild(rotator);
 	}
 }

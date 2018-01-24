@@ -37,7 +37,7 @@ int main() {
 	ResourceManager::CreateTexture("sword", "textures/weapon_enemy.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("door", "textures/door.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("mirror", "textures/mirror.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
-	ResourceManager::CreateTexture("rotator", "textures/rotator2.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
+	ResourceManager::CreateTexture("rotator", "textures/rotator.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("floor", "textures/floor_tiles.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("laserParticle", "textures/laserParticle.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
 	ResourceManager::CreateTexture("tickboxNotActive", "textures/tickbox.png", TextureWrap::repeat, TextureFilter::linear, MipmapFilter::linear_mipmap_linear);
