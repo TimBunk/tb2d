@@ -184,6 +184,8 @@ private:
 	bool guide;
 	Sprite* canvasGuide; // The guide for using the editor
 
+	Tickbox* debug;
+
 	std::vector<ColorPicker> colorPickers;
 };
 

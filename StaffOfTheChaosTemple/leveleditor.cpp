@@ -163,6 +163,19 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	AddTextToGuide("You can move the camera around using the arrow keys or holding the middle mouse button and moving the mouse.", 50, glm::vec2(-1400, 0));
 	AddTextToGuide("Saving and loading", 70, glm::vec2(-1400, -100));
 	AddTextToGuide("You can press the save or load button in the bottom left corner and then type a name for the file to save to or load from.", 50, glm::vec2(-1400, -150));
+
+	// Debug option
+	debug = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
+	debug->SetActive(true);
+	debug->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
+	debug->localPosition = glm::vec2(300, -520);
+	canvasEditor->AddChild(debug);
+	editorObjectsTickBoxes.push_back(debug);
+	// Create a text for the debug
+	Text* t = new Text("debug", ResourceManager::GetFont("fonts/arial.ttf", 512, 44), glm::vec3(1, 1, 1), Text::AlignmentX::centerX, Text::AlignmentY::bottomY);
+	t->localPosition = glm::vec2(300, -470);
+	canvasEditor->AddChild(t);
+	textVector.push_back(t);
 }
 
 LevelEditor::~LevelEditor()
@@ -232,6 +245,12 @@ LevelEditor::~LevelEditor()
 
 void LevelEditor::Update(double deltaTime)
 {
+	if (debug->IsActive()) {
+		DebugRenderer::SetActive(true);
+	}
+	else {
+		DebugRenderer::SetActive(false);
+	}
 	// Move the camera using the middle mouse button
 	if (Input::MouseDown(GLFW_MOUSE_BUTTON_3)) {
 		glm::vec2 mousePos = Input::GetMousePositionScreenSpace();
