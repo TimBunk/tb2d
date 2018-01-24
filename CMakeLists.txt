@@ -167,7 +167,7 @@ ENDIF()
 ####################################################################
 
 if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
-  add_executable(staff
+  add_executable(StaffOfTheChaosTemple
     ${TB2DSOURCE}
     StaffOfTheChaosTemple/player.h
     StaffOfTheChaosTemple/player.cpp
@@ -198,13 +198,13 @@ if (USE_STAFF_OF_THE_CHAOS_TEMPLE)
     StaffOfTheChaosTemple/levelselector.cpp
   )
 
-  target_link_libraries(staff
+  target_link_libraries(StaffOfTheChaosTemple
     ${BOX2D_LIB}
     ${ALL_GRAPHICS_LIBS}
     freetype
     SOIL2
   )
-  ADD_DEPENDENCIES(staff
+  ADD_DEPENDENCIES(StaffOfTheChaosTemple
     SOIL2
   )
   # Copy shaders and textures to the build directory
