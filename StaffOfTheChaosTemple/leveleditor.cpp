@@ -163,6 +163,8 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	AddTextToGuide("You can move the camera around using the arrow keys or holding the middle mouse button and moving the mouse.", 50, glm::vec2(-1400, 0));
 	AddTextToGuide("Saving and loading", 70, glm::vec2(-1400, -100));
 	AddTextToGuide("You can press the save or load button in the bottom left corner and then type a name for the file to save to or load from.", 50, glm::vec2(-1400, -150));
+	AddTextToGuide("Clear", 70, glm::vec2(-1400, -250));
+	AddTextToGuide("Removes all of the objects currently in the editor.", 50, glm::vec2(-1400, -300));
 
 	// Debug option
 	debug = new Tickbox(true, ResourceManager::GetTexture("tickboxNotActive")->GetId(), 50, 50, ResourceManager::GetTexture("tickboxActive")->GetId());
