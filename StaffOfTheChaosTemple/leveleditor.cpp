@@ -150,7 +150,7 @@ LevelEditor::LevelEditor(int screenWidthCamera, int screenHeightCamera) : Scene:
 	canvasGuide->SetRenderer(RenderManager::GetSimpleRenderer("hud"));
 	AddTextToGuide("Editor guide", 120, glm::vec2(-300, 800));
 	AddTextToGuide("Place mode", 70, glm::vec2(-1400, 700));
-	AddTextToGuide("In place mode you can place any of the object showns in the bottom left corner.", 50, glm::vec2(-1400, 650));
+	AddTextToGuide("In place mode you can place any of the object shown in the bottom left corner.", 50, glm::vec2(-1400, 650));
 	AddTextToGuide("If you press right mouse button you can place the object in to the scene.", 50, glm::vec2(-1400, 600));
 	AddTextToGuide("Also you can edit their properties that are shown all the way on the left.", 50, glm::vec2(-1400, 550));
 	AddTextToGuide("Select mode", 70, glm::vec2(-1400, 450));
