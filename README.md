@@ -5,6 +5,13 @@ tb2d is a basic framework that is used for making 2D games. It is still a work i
 ## Compiling
 
 You can use CMake to create the project files.
+Under windows run this in the PowerShell to generate the project files, the project files will be placed in a folder called `build`.
+
+```
+  mkdir build
+  cd build
+  cmake -Wno-dev ..
+```
 
 I have only tested my framework on windows 10 with visual studio 2017. So if you are using something else there is no guarantee it will work.
 
@@ -18,7 +25,7 @@ To generate the documentation open your command prompt(or terminal depending on 
   doxygen Doxyfile
 ```
 
-Then open `documentation.html` in the `documentation/` directory.
+Then open `documentation.html` in the `doc` directory.
 
 ## Libraries
 
